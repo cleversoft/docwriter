@@ -18,48 +18,49 @@ html
     body
         .d-wrapper
             div.navbar.navbar-default.navbar-fixed-top
-                div.container2
-                    div.navbar-header
-                        button.navbar-toggle(type="button", data-toggle="collapse", data-target="#navbar-collapse")
-                            span.sr-only Toggle navigation
-                            span.icon-bar
-                            span.icon-bar
-                            span.icon-bar
-                        a.navbar-brand(href="/admin") NodeDesk
+                div.navbar-header
+                    button.navbar-toggle(type="button", data-toggle="collapse", data-target="#navbar-collapse")
+                        span.sr-only Toggle navigation
+                        span.icon-bar
+                        span.icon-bar
+                        span.icon-bar
+                    a.navbar-brand(href="/admin") NodeDesk
 
-                    div#navbar-collapse.collapse.navbar-collapse
-                        ul.nav.navbar-nav
+                div#navbar-collapse.collapse.navbar-collapse
+                    div.d-topnav
+                        block topnav
 
-                        ul.nav.navbar-nav.navbar-right
-                            li.dropdown
-                                a.dropdown-toggle(href="#", data-toggle="dropdown")
-                                    | Hello #{sessionUser.username} &nbsp;
-                                    b.caret
-                                ul.dropdown-menu
-                                    li
-                                        a(href="/admin/password") Change password
-                                    li.divider
-                                    li
-                                        a(href="/") Visit website
-                                    li
-                                        a(href="/admin/signout") Sign out
+                    ul.nav.navbar-nav.navbar-right
+                        li.dropdown
+                            a.dropdown-toggle(href="#", data-toggle="dropdown")
+                                | Hello #{sessionUser.username} &nbsp;
+                                b.caret
+                            ul.dropdown-menu
+                                li
+                                    a(href="/admin/password") Change password
+                                li.divider
+                                li
+                                    a(href="/") Visit website
+                                li
+                                    a(href="/admin/signout") Sign out
 
-            .container
-                .d-main
-                    .d-sidebar
-                        div.list-group
-                            a.list-group-item(href="/admin/category")
-                                i.fa.fa-tag
-                                | Categories
-                            a.list-group-item(href="/admin/post")
-                                i.fa.fa-edit
-                                | Posts
-                            a.list-group-item(href="/admin/users")
-                                i.fa.fa-user
-                                | Users
+            .d-main
+                .d-sidebar
+                    div.list-group
+                        a.list-group-item(href="/admin/category")
+                            i.fa.fa-tag
+                            | Categories
+                        a.list-group-item(href="/admin/post")
+                            i.fa.fa-edit
+                            | Posts
+                        a.list-group-item(href="/admin/user")
+                            i.fa.fa-user
+                            | Users
 
+                .d-content-wrapper
                     .d-content
                         block content
+
             .d-push
 
         footer
@@ -73,5 +74,11 @@ html
         //<![endif]
 
         script(src="/vendor/bootstrap/js/bootstrap.min.js")
+
+        script(type="text/javascript").
+            $(document).ready(function() {
+                // Activate menu
+                $('a.list-group-item[href^="' + window.location.pathname + '"]').addClass('active');
+            });
 
         block footerScript

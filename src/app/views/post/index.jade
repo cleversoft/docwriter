@@ -1,0 +1,28 @@
+extends ../layouts/backend
+
+block topnav
+    form.nav.navbar-form.navbar-left
+        div.form-group
+            input.form-control(placeholder="Search for posts", style="width: 300px")
+        button.btn.btn-primary.btn-sm(type="submit")
+            i.fa.fa-search
+
+    div.nav.navbar-form.navbar-left
+        div.btn-group
+            a.btn.btn-default.btn-sm
+                i.fa.fa-th-list
+            a.btn.btn-default.btn-sm
+                i.fa.fa-check
+            a.btn.btn-default.btn-sm
+                i.fa.fa-ban
+            a.btn.btn-default.btn-sm
+                i.fa.fa-edit
+
+    div.nav.navbar-form.navbar-left
+        a.btn.btn-sm.btn-info(href="/admin/post/add")
+            i.fa.fa-plus
+            | &nbsp;Write new post
+
+block content
+    ol.breadcrumb
+        li.active Posts

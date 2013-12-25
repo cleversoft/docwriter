@@ -12,10 +12,14 @@ html, body {
   height: auto !important;
   height: 100%;
   margin: 0 auto -#{$footerHeight} auto;
+
+  .navbar-right {
+    padding-right: 15px;
+  }
 }
 .d-main {
   padding-top: $footerHeight;
-  padding-left: -#{$sidebarWidth};
+  padding-left: $sidebarWidth;
 }
 .d-push {
   height: $footerHeight;
@@ -30,6 +34,11 @@ footer {
   .container {
     padding-top: 8px;
   }
+}
+
+// Top nav
+.d-topnav {
+  margin-left: $sidebarWidth;
 }
 
 // Left sidebar
@@ -52,8 +61,21 @@ footer {
     }
   }
 }
-.d-content {
+.d-content-wrapper {
   width: 100%;
+}
+.d-content {
+  padding: 0 15px;
+
+  .breadcrumb {
+    background: none;
+    border: none;
+    border-bottom: 1px solid #e5e5e5;
+    border-radius: 0;
+    height: 39px;
+    line-height: 39px;
+    padding: 0;
+  }
 }
 
 // Helpers

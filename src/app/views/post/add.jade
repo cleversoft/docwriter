@@ -1,0 +1,67 @@
+extends ../layouts/backend
+
+block topnav
+    form.nav.navbar-form.navbar-left
+        div.form-group
+            input.form-control(placeholder="Search for posts", style="width: 300px")
+        button.btn.btn-primary.btn-sm(type="submit")
+            i.fa.fa-search
+
+    div.nav.navbar-form.navbar-left
+        div.btn-group
+            a.btn.btn-default.btn-sm
+                i.fa.fa-th-list
+            a.btn.btn-default.btn-sm
+                i.fa.fa-check
+            a.btn.btn-default.btn-sm
+                i.fa.fa-ban
+            a.btn.btn-default.btn-sm
+                i.fa.fa-edit
+
+    div.nav.navbar-form.navbar-left
+        a.btn.btn-sm.btn-info(href="/admin/post/add")
+            i.fa.fa-plus
+            | &nbsp;Write new post
+
+block content
+    ol.breadcrumb
+        li
+            a(href="/admin/post") Posts
+        li.active Write new post
+
+    form.form-horizontal
+        div.form-group
+            div.col-sm-5
+                input.form-control(name="title", placeholder="Title")
+
+        div.form-group
+            div.col-sm-5
+                input.form-control(name="slug", placeholder="Slug")
+
+        div.form-group
+            div.col-sm-12
+                ul.nav.nav-tabs
+                    li.active
+                        a(href="#contentTab", data-toggle="tab") Content
+                    li
+                        a(href="#previewTab", data-toggle="tab") Preview
+
+                div.tab-content
+                    div#contentTab.tab-pane.active
+                        div#editorContainer
+                            textarea.form-control(style="height: 100%;")
+                    div#previewTab.tab-pane
+
+        div#buttons.form-group
+            div.col-sm-12
+                button.btn.btn-primary(type="submit") Save
+                button.btn.btn-default(type="submit", name="publish", value="true") Save and Publish
+                button.btn.btn-default(type="submit", name="draft", value="true") Save as draft
+
+block footerScript
+    script(type="text/javascript").
+        $(document).ready(function() {
+            var editorContainerHeight = $(document).height() - $('#buttons').outerHeight(true) - $('footer').outerHeight(true),
+                editorHeight          = editorContainerHeight - $('#editorContainer').offset().top - 20;
+            $('#editorContainer').height(editorHeight);
+        });
