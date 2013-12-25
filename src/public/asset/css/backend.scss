@@ -1,0 +1,75 @@
+// Variables
+$footerHeight: 45px;
+$sidebarWidth: 200px;
+$sidebarBgColor: #e5e5e5;
+
+// Sticky footer
+html, body {
+  height: 100%;
+}
+.d-wrapper {
+  min-height: 100%;
+  height: auto !important;
+  height: 100%;
+  margin: 0 auto -#{$footerHeight} auto;
+}
+.d-main {
+  padding-top: $footerHeight;
+  padding-left: -#{$sidebarWidth};
+}
+.d-push {
+  height: $footerHeight;
+}
+footer {
+  border-top: 1px solid #c0c0c0;
+  height: $footerHeight - 1;
+  line-height: $footerHeight - 1;
+  margin-left: $sidebarWidth;
+  padding-left: 10px;
+
+  .container {
+    padding-top: 8px;
+  }
+}
+
+// Left sidebar
+.d-sidebar {
+  border-right: 1px solid #c0c0c0;
+  margin-left: -#{$sidebarWidth};
+  left: $sidebarWidth;
+  width: $sidebarWidth;
+  position: fixed;
+  height: 100%;
+  overflow-y: auto;
+  z-index: 1000;
+  .list-group {
+    a {
+      border-left: none;
+      border-right: none;
+    }
+    i {
+      padding-right: 10px;
+    }
+  }
+}
+.d-content {
+  width: 100%;
+}
+
+// Helpers
+.d-separator {
+  border-top: 1px solid #e5e5e5;
+  border-bottom: none;
+  border-left: none;
+  border-right: none;
+  display: block;
+  text-align: center;
+
+  legend {
+    padding: 5px 10px;
+    // Overwrite Bootstrap
+    border-bottom: none;
+    width: auto;
+  }
+}
+

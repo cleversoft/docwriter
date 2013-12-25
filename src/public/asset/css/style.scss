@@ -1,0 +1,17 @@
+.d-wrapper {}
+
+.d-separator {
+  border-top: 1px solid #e5e5e5;
+  border-bottom: none;
+  border-left: none;
+  border-right: none;
+  display: block;
+  text-align: center;
+
+  legend {
+    padding: 5px 10px;
+    // Overwrite Bootstrap
+    border-bottom: none;
+    width: auto;
+  }
+}

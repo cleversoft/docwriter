@@ -1,0 +1,45 @@
+extends ../layouts/default
+
+block content
+    div(style="margin: 200px auto 0 auto; max-width: 320px;")
+        fieldset.d-separator
+            legend Sign in
+
+        include ../partial/flash
+
+        div.panel.panel-default
+            div.panel-body
+                form#signinForm(method="post", action="/admin/signin")
+                    div.form-group
+                        input.form-control(type="text", name="user_name", placeholder="Username")
+                    div.form-group
+                        input.form-control(type="password", name="password", placeholder="Password")
+                    div.form-group
+                        button.btn.btn-primary(type="submit") Sign in
+                        span.form-control-static(style="margin: 0 10px;") &mdash; or &mdash;
+                        a.btn.btn-default(href="/") Visit website
+
+block footerScript
+    script(type="text/javascript", src="/vendor/bootstrapvalidator/js/bootstrapValidator.min.js")
+    script(type="text/javascript").
+        $(document).ready(function() {
+            // Form validator
+            $('#signinForm').bootstrapValidator({
+                fields: {
+                    user_name: {
+                        validators: {
+                            notEmpty: {
+                                message: 'The username is required'
+                            }
+                        }
+                    },
+                    password: {
+                        validators: {
+                            notEmpty: {
+                                message: 'The password is required'
+                            }
+                        }
+                    }
+                }
+            });
+        });

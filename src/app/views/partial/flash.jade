@@ -1,0 +1,12 @@
+- for (var type in messages)
+    if (messages[type].length > 0)
+        div.alert(class="alert-" + type)
+            a.close(data-dismiss="alert", href="#", aria-hidden="true") &times;
+
+            if (messages[type].length == 1)
+                = messages[type][0]
+            else
+                ul
+                    - for (var i in messages[type])
+                    li
+                        = messages[type][i]
