@@ -15,18 +15,19 @@ module.exports = function(app) {
     // --- Back-end routes ---
 
     // Auth
-    app.all('/admin/signin', auth.signin);
+    app.all('/admin/signin',  auth.signin);
     app.get('/admin/signout', auth.signout);
 
     // Dashboard
     app.get('/admin', authentication.requireAuthentication, dashboard.index);
 
     // Categories
-    app.get('/admin/category', authentication.requireAuthentication, category.index);
+    app.get('/admin/category',       authentication.requireAuthentication, category.index);
+    app.post('/admin/category/add',  authentication.requireAuthentication, category.add);
     app.post('/admin/category/slug', authentication.requireAuthentication, category.slug);
 
     // Posts
-    app.get('/admin/post', authentication.requireAuthentication, post.index);
+    app.get('/admin/post',     authentication.requireAuthentication, post.index);
     app.all('/admin/post/add', authentication.requireAuthentication, post.add);
 
     // Users

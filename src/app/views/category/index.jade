@@ -25,7 +25,7 @@ block content
                 td
                     div.btn-group
                         button.btn.btn-default.editButton.btn-sm(type="button") Edit
-                        button.btn.btn-default.deleteButton.btn-sm(type="button") Delete
+                        button.btn.btn-warning.deleteButton.btn-sm(type="button") Delete
             tr#editTemplate.hide.active.editRow
                 td
                     input#editName.form-control.categoryName(type="text")
@@ -86,6 +86,35 @@ block footerScript
                     dataType: 'json'
                 }).success(function(response) {
                     $slug.val(response.slug);
+                });
+            });
+
+            // Add new category
+            $('#addCategory').on('click', function() {
+                var $that = $(this), name = $('#name').val(), slug = $('#slug').val();
+                if (name == '' || slug == '') {
+                    return;
+                }
+                $that.attr('disabled', 'disabled');
+                $.ajax({
+                    type: 'POST',
+                    url: '/admin/category/add',
+                    data: {
+                        name: name,
+                        slug: slug
+                    },
+                    dataType: 'json'
+                }).success(function(response) {
+                    $that.removeAttr('disabled');
+                    if ('ok' == response.result) {
+                        $('#name').val('');
+                        $('#slug').val('');
+                        var template = $('#template').html().replace(/##name##/g, name)
+                                                            .replace(/##slug##/g, slug);
+                        $('<tr/>').html(template)
+                                  .attr('data-id', response.id)
+                                  .appendTo('#categories');
+                    }
                 });
             });
         });
