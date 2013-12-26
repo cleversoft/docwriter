@@ -151,4 +151,70 @@ block footerScript
                         .end()
                     .modal('show');
             });
+
+            // Edit category
+            $('#editTemplate')
+                .on('save', function() {
+                    var name = $('#editName').val(), slug = $('#editSlug').val();
+                    if (name == '' || slug == '') {
+                        return;
+                    }
+
+                    $('#saveButton').attr('disabled', 'disabled');
+                    $.ajax({
+                        type: 'post',
+                        url: '/admin/category/edit',
+                        data: {
+                            id: $('#editTemplate').data('currentRow').attr('data-id'),
+                            name: name,
+                            slug: slug
+                        },
+                        dataType: 'json'
+                    }).done(function(response) {
+                        $('#saveButton').removeAttr('disabled');
+                        if ('ok' == response.result) {
+                            $('#editTemplate')
+                                .data('currentRow')
+                                    .find('td')
+                                        .eq(0).html(name).end()
+                                        .eq(1).html(slug)
+                                        .end()
+                                    .end()
+                                .trigger('cancel');
+                        } else {
+                            $('#messageDialog')
+                                .find('.message')
+                                    .html('Sorry, cannot update the category')
+                                    .end()
+                                .modal('show');
+                        }
+                    });
+                })
+                .on('cancel', function() {
+                    var currentEditRow = $(this).data('currentRow');
+                    if (currentEditRow) {
+                        $(currentEditRow).show();
+                    }
+                    $(this).hide();
+                });
+            $('#saveButton').on('click', function() {
+                $('#editTemplate').trigger('save');
+            });
+            $('#cancelButton').on('click', function() {
+                $('#editTemplate').trigger('cancel');
+            });
+
+            $('#categories').on('click', '.editButton', function() {
+                $('#editTemplate').trigger('cancel');
+
+                var $that = $(this),
+                    $row  = $that.parents('tr'),
+                    name  = $row.find('td').eq(0).html(),
+                    slug  = $row.find('td').eq(1).html();
+
+                $('#editName').val(name);
+                $('#editSlug').val(slug);
+                $('#editTemplate').data('currentRow', $row).insertAfter($row).removeClass('hide').show();
+                $row.hide();
+            });
         });

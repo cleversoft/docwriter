@@ -33,6 +33,25 @@ exports.add = function(req, res) {
 };
 
 /**
+ * Update category
+ */
+exports.edit = function(req, res) {
+    var id = req.body.id;
+    Category
+        .findOne({ _id: id })
+        .exec(function(err, category) {
+            if (err || !category) {
+                return res.json({ result: 'error'});
+            }
+            category.name = req.body.name;
+            category.slug = req.body.slug;
+            category.save(function(err) {
+                return res.json({ result: err ? 'error' : 'ok' });
+            });
+        });
+};
+
+/**
  * Remove category
  */
 exports.remove = function(req, res) {

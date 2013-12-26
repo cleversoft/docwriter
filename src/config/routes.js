@@ -24,6 +24,7 @@ module.exports = function(app) {
     // Categories
     app.get('/admin/category',         authentication.requireAuthentication, category.index);
     app.post('/admin/category/add',    authentication.requireAuthentication, category.add);
+    app.post('/admin/category/edit',   authentication.requireAuthentication, category.edit);
     app.post('/admin/category/remove', authentication.requireAuthentication, category.remove);
     app.post('/admin/category/slug',   authentication.requireAuthentication, category.slug);
 
