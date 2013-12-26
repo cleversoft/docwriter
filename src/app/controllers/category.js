@@ -73,9 +73,11 @@ exports.remove = function(req, res) {
  */
 exports.slug = function(req, res) {
     var category = new Category({
-        _id: req.body.id,
         name: req.body.name
     });
+    if (req.body.id) {
+        category._id = req.body.id;
+    }
     Category.generateSlug(category, function(slug) {
         res.json({
             slug: slug

@@ -72,7 +72,7 @@ block footerScript
         $(document).ready(function() {
             // Generate slug based on category's name
             $('#categoryTable').on('keyup', '.categoryName', function() {
-                var name = $(this).val(), $that = $(this), $slug = $that.parents('tr').find('.categorySlug');
+                var name = $(this).val(), $that = $(this), $tr = $that.parents('tr'), $slug = $tr.find('.categorySlug');
                 if (name == '') {
                     $slug.val('');
                     return;
@@ -81,6 +81,7 @@ block footerScript
                     type: 'POST',
                     url: '/admin/category/slug',
                     data: {
+                        id: $tr.attr('data-id'),
                         name: name
                     },
                     dataType: 'json'
@@ -177,10 +178,8 @@ block footerScript
                                 .data('currentRow')
                                     .find('td')
                                         .eq(0).html(name).end()
-                                        .eq(1).html(slug)
-                                        .end()
-                                    .end()
-                                .trigger('cancel');
+                                        .eq(1).html(slug);
+                            $('#editTemplate').trigger('cancel');
                         } else {
                             $('#messageDialog')
                                 .find('.message')
@@ -191,11 +190,10 @@ block footerScript
                     });
                 })
                 .on('cancel', function() {
-                    var currentEditRow = $(this).data('currentRow');
+                    var currentEditRow = $(this).removeAttr('data-id').hide().data('currentRow');
                     if (currentEditRow) {
                         $(currentEditRow).show();
                     }
-                    $(this).hide();
                 });
             $('#saveButton').on('click', function() {
                 $('#editTemplate').trigger('save');
@@ -214,7 +212,7 @@ block footerScript
 
                 $('#editName').val(name);
                 $('#editSlug').val(slug);
-                $('#editTemplate').data('currentRow', $row).insertAfter($row).removeClass('hide').show();
+                $('#editTemplate').data('currentRow', $row).insertAfter($row).removeClass('hide').attr('data-id', $row.attr('data-id')).show();
                 $row.hide();
             });
         });
