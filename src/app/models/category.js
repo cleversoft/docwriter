@@ -1,9 +1,10 @@
 var mongoose       = require('mongoose'),
     Schema         = mongoose.Schema,
     categorySchema = new Schema({
-        name:     { type: String, default: '' },
-        slug:     { type: String, default: '' },
-        position: { type: Number, default: 0 }
+        name:      { type: String, default: '' },
+        slug:      { type: String, default: '' },
+        position:  { type: Number, default: 0 },
+        num_posts: { type: Number, default: 0 }
     });
 
 categorySchema.methods.generateSlug = function() {
@@ -11,11 +12,11 @@ categorySchema.methods.generateSlug = function() {
                 .name
                 .toString()
                 .toLowerCase()
-                    .replace(/\s+/g, '-')
-                    .replace(/[^\w\-]+/g, '')
-                    .replace(/\-\-+/g, '-')
-                    .replace(/^-+/, '')
-                    .replace(/-+$/, '');
+                .replace(/\s+/g, '-')
+                .replace(/[^\w\-]+/g, '')
+                .replace(/\-\-+/g, '-')
+                .replace(/^-+/, '')
+                .replace(/-+$/, '');
 };
 
 categorySchema.statics.generateSlug = function(category, cb) {

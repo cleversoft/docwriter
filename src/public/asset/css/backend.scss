@@ -78,6 +78,17 @@ footer {
   }
 }
 
+// Markdown editor
+.d-markdown-editor {
+  .CodeMirror {
+    border: 1px solid #e5e5e5;
+  }
+}
+.d-markdown-preview {
+  border: 1px solid #e5e5e5;
+  padding: 10px;
+}
+
 // Helpers
 .d-separator {
   border-top: 1px solid #e5e5e5;

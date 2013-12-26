@@ -25,10 +25,10 @@ exports.signin = function(req, res) {
                 return res.redirect('/admin/signin');
             }
 
-            req.session.user = {
-                username: user.username,
-                role: user.role
-            };
+            delete user.hashed_password;
+            delete user.salt;
+
+            req.session.user = user;
 
             if (req.session.returnTo) {
                 var to = req.session.returnTo;

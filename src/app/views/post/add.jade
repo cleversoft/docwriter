@@ -1,5 +1,8 @@
 extends ../layouts/backend
 
+block head
+    link(rel="stylesheet", href="/vendor/codemirror/lib/codemirror.css")
+
 block topnav
     form.nav.navbar-form.navbar-left
         div.form-group
@@ -29,18 +32,26 @@ block content
             a(href="/admin/post") Posts
         li.active Write new post
 
-    form.form-horizontal
+    form#addForm.form-horizontal(method="post", action="/admin/post/add")
         div.form-group
-            div.col-sm-5
+            div.col-sm-6
                 input.form-control(name="title", placeholder="Title")
-
-        div.form-group
-            div.col-sm-5
+            div.col-sm-6
                 input.form-control(name="slug", placeholder="Slug")
+
+        if categories
+            div.form-group
+                div.col-sm-6
+                    p.form-control-static Categories
+                    for category in categories
+                        div.checkbox
+                            label
+                                input(type="checkbox", name="categories[]", value="#{category._id}")
+                                | #{category.name}
 
         div.form-group
             div.col-sm-12
-                ul.nav.nav-tabs
+                ul#editorTabs.nav.nav-tabs
                     li.active
                         a(href="#contentTab", data-toggle="tab") Content
                     li
@@ -48,9 +59,11 @@ block content
 
                 div.tab-content
                     div#contentTab.tab-pane.active
-                        div#editorContainer
-                            textarea.form-control(style="height: 100%;")
+                        div#editorContainer.d-markdown-editor
+                            textarea#editor.form-control(name="content", style="height: 100%;")
                     div#previewTab.tab-pane
+                        div#previewContainer
+                            div.d-markdown-preview(style="height: 100%;")
 
         div#buttons.form-group
             div.col-sm-12
@@ -59,9 +72,56 @@ block content
                 button.btn.btn-default(type="submit", name="draft", value="true") Save as draft
 
 block footerScript
+    script(type="text/javascript", src="/vendor/marked/marked.js")
+    script(type="text/javascript", src="/vendor/codemirror/lib/codemirror.js")
+    script(type="text/javascript", src="/vendor/codemirror/mode/markdown/markdown.js")
     script(type="text/javascript").
         $(document).ready(function() {
             var editorContainerHeight = $(document).height() - $('#buttons').outerHeight(true) - $('footer').outerHeight(true),
                 editorHeight          = editorContainerHeight - $('#editorContainer').offset().top - 20;
             $('#editorContainer').height(editorHeight);
+            $('#previewContainer').height(editorHeight);
+
+            // Markdown editor
+            var editor = CodeMirror.fromTextArea($('#editor').get(0), {
+                mode: 'markdown',
+                lineNumbers: false,
+                matchBrackets: true,
+                lineWrapping: true,
+                theme: 'default'
+            });
+            editor.setSize('100%', editorHeight);
+
+            // Preview the content
+            $('#editorTabs a').click(function(e) {
+                e.preventDefault();
+                $(this).tab('show');
+
+                if ($(this).attr('href') == '#previewTab') {
+                    var content = editor.getDoc().getValue();
+                    $('.d-markdown-preview').html(marked(content));
+                }
+            });
+
+            $('#addForm')
+                // Generate slug based on post's title
+                .find('input[name="title"]')
+                    .on('keyup', function() {
+                        var title = $(this).val(), $slug = $('#addForm').find('input[name="slug"]')
+                        if (title == '') {
+                            $slug.val('');
+                            return;
+                        }
+                        $.ajax({
+                            type: 'POST',
+                            url: '/admin/post/slug',
+                            data: {
+                                title: title
+                            },
+                            dataType: 'json'
+                        }).success(function(response) {
+                            $slug.val(response.slug);
+                        });
+                    })
+                    .end();
         });

@@ -57,6 +57,13 @@ footer {
     line-height: 39px;
     padding: 0; }
 
+.d-markdown-editor .CodeMirror {
+  border: 1px solid #e5e5e5; }
+
+.d-markdown-preview {
+  border: 1px solid #e5e5e5;
+  padding: 10px; }
+
 .d-separator {
   border-top: 1px solid #e5e5e5;
   border-bottom: none;
