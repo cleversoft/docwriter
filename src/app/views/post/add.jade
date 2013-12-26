@@ -70,11 +70,11 @@ block content
                 button.btn.btn-primary(type="submit") Save
                 button.btn.btn-default(type="submit", name="publish", value="true") Save and Publish
                 button.btn.btn-default(type="submit", name="draft", value="true") Save as draft
-
 block footerScript
-    script(type="text/javascript", src="/vendor/marked/marked.js")
+    script(type="text/javascript", src="/vendor/autosave/jquery.autosave.min.js")
     script(type="text/javascript", src="/vendor/codemirror/lib/codemirror.js")
     script(type="text/javascript", src="/vendor/codemirror/mode/markdown/markdown.js")
+    script(type="text/javascript", src="/vendor/marked/marked.js")
     script(type="text/javascript").
         $(document).ready(function() {
             var editorContainerHeight = $(document).height() - $('#buttons').outerHeight(true) - $('footer').outerHeight(true),
@@ -123,5 +123,37 @@ block footerScript
                             $slug.val(response.slug);
                         });
                     })
-                    .end();
+                    .end()
+                // Auto save
+                .autosave({
+                    callbacks: {
+                        trigger: {
+                            method: 'interval',
+                            options: {
+                                interval: #{autoSave * 60 * 1000}
+                            }
+                        },
+                        scope: 'all',
+                        data: 'serializeObject',
+                        condition: function(options, $inputs, formData, caller) {
+                            if (#{autoSave} <= 0 || null == formData || '' == formData.title || '' == formData.slug || '' == formData.content) {
+                                return false;
+                            }
+                            return true;
+                        },
+                        save: function(options, formData) {
+                            $.ajax({
+                                type: 'POST',
+                                url: $('#addForm').attr('action'),
+                                data: formData,
+                                dataType: 'json'
+                            }).success(function(response) {
+                                if ('ok' == response.result) {
+                                    $('#addForm').attr('action', response.url);
+                                }
+                            });
+                        }
+                    }
+                });
         });
+

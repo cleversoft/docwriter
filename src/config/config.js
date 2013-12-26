@@ -19,7 +19,8 @@ module.exports = {
             host: 'localhost',
             port: 6379,
             namespace: 'nodedesk'
-        }
+        },
+        autoSave: 1     // Auto-save interval time in minutes
     },
     test: {
         root: rootPath
