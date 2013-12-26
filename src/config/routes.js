@@ -23,6 +23,7 @@ module.exports = function(app) {
 
     // Categories
     app.get('/admin/category', authentication.requireAuthentication, category.index);
+    app.post('/admin/category/slug', authentication.requireAuthentication, category.slug);
 
     // Posts
     app.get('/admin/post', authentication.requireAuthentication, post.index);

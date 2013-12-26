@@ -7,7 +7,7 @@ module.exports = {
         session: {
             domain: '.nodedesk.dev',
             secret: 'XrQ2Vsw2tESughz71l1B80NwqxA7z499',
-            lifetime: 3600 * 1000 * 1           // 1 hour
+            lifetime: 3600 * 1000 * 24           // 1 day
         },
         db: 'mongodb://localhost/nodedesk_dev',
         upload: {

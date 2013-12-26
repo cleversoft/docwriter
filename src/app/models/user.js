@@ -2,14 +2,14 @@ var mongoose   = require('mongoose'),
     Schema     = mongoose.Schema,
     crypto     = require('crypto'),
     userSchema = new Schema({
-        first_name: { type: String, default: '' },
-        last_name: { type: String, default: '' },
-        username: { type: String, default: '' },
-        email: { type: String, default: '' },
-        hashed_password: { type: String, default: '' },
-        salt: { type: String, default: '' },
-        role: { type: String, default: 'admin' },
-        locked: { type: Boolean, default: false }
+        first_name:      { type: String,  default: '' },
+        last_name:       { type: String,  default: '' },
+        username:        { type: String,  default: '' },
+        email:           { type: String,  default: '' },
+        hashed_password: { type: String,  default: '' },
+        salt:            { type: String,  default: '' },
+        role:            { type: String,  default: 'admin' },
+        locked:          { type: Boolean, default: false }
     });
 
 userSchema
