@@ -42,4 +42,20 @@ categorySchema.statics.generateSlug = function(category, cb) {
     findUntilNotFound();
 };
 
+categorySchema.post('remove', function(category) {
+    // Update the position of other categories which have larger position
+    var Category = mongoose.model('category');
+    Category
+        .update({
+            position: { $gte: parseInt(category.position) }
+        }, {
+            $inc: { position: -1 }
+        }, {
+            multi: true
+        })
+        .exec();
+
+    // TODO: Remove category from posts
+});
+
 module.exports = mongoose.model('category', categorySchema, 'category');

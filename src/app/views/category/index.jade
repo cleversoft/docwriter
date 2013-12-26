@@ -37,7 +37,7 @@ block content
         tbody#categories
             if categories
                 for category in categories
-                    tr(data-id="#{category->_id}")
+                    tr(data-id="#{category._id}")
                         td #{category.name}
                         td #{category.slug}
                         td
@@ -45,27 +45,27 @@ block content
                                 button.btn.btn-default.btn-sm.editButton(type="button") Edit
                                 button.btn.btn-warning.btn-sm.deleteButton(type="button") Delete
 
-div#deleteDialog.modal.fade.in
-    div.modal-dialog
-        div.modal-content
-            div.modal-header
-                button.close(type="button", data-dismiss="modal", aria-hidden="true") &times;
-                h4.modal-title Delete category
-            div.modal-body Are you sure you want to delete the category?
-            div.modal-footer
-                button.btn.btn-danger.yesButton Yes
-                button.btn.noButton No
+    div#deleteDialog.modal.fade(aria-hidden="true")
+        div.modal-dialog
+            div.modal-content
+                div.modal-header
+                    button.close(type="button", data-dismiss="modal", aria-hidden="true") &times;
+                    h4.modal-title Delete category
+                div.modal-body Are you sure you want to delete the category?
+                div.modal-footer
+                    button.btn.btn-danger.yesButton(type="button") Yes
+                    button.btn(type="button", data-dismiss="modal") No
 
-div#messageDialog.modal.fade
-    div.modal-dialog
-        div.modal-content
-            div.modal-header
-                button.close(type="button", data-dismiss="modal", aria-hidden="true") &times;
-                h4.modal-title Message
-            div.modal-body
-                span.message
-            div.modal-footer
-                button.btn.closeButton Close
+    div#messageDialog.modal.fade(aria-hidden="true")
+        div.modal-dialog
+            div.modal-content
+                div.modal-header
+                    button.close(type="button", data-dismiss="modal", aria-hidden="true") &times;
+                    h4.modal-title Message
+                div.modal-body
+                    span.message
+                div.modal-footer
+                    button.btn.btn-default(type="button", data-dismiss="modal") Close
 
 block footerScript
     script(type="text/javascript").
@@ -111,10 +111,44 @@ block footerScript
                         $('#slug').val('');
                         var template = $('#template').html().replace(/##name##/g, name)
                                                             .replace(/##slug##/g, slug);
-                        $('<tr/>').html(template)
-                                  .attr('data-id', response.id)
-                                  .appendTo('#categories');
+                        $('<tr/>')
+                            .html(template)
+                            .attr('data-id', response.id)
+                            .appendTo('#categories');
                     }
                 });
+            });
+
+            // Delete category
+            $('#categories').on('click', '.deleteButton', function() {
+                var $that = $(this), id = $that.parents('tr').attr('data-id');
+                $that.attr('disabled', 'disabled');
+
+                var deleteDialog = $('#deleteDialog');
+                deleteDialog
+                    .on('hidden.bs.modal', function() {
+                        $that.removeAttr('disabled');
+                    })
+                    // Yes button click handler
+                    .find('.yesButton')
+                        .off('click')
+                        .on('click', function() {
+                            $.ajax({
+                                type: 'post',
+                                url: '/admin/category/remove',
+                                data: {
+                                    id: id
+                                },
+                                dataType: 'json'
+                            }).done(function(response) {
+                                $that.removeAttr('disabled');
+                                if ('ok' == response.result) {
+                                    $that.parents('tr').remove();
+                                }
+                                deleteDialog.modal('hide');
+                            });
+                        })
+                        .end()
+                    .modal('show');
             });
         });

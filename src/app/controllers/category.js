@@ -19,9 +19,7 @@ exports.add = function(req, res) {
         slug: req.body.slug
     });
     if (!category.name || !category.slug) {
-        return res.json({
-            result: 'error'
-        });
+        return res.json({ result: 'error' });
     }
     Category.count(function(err, total) {
         category.position = total;
@@ -32,6 +30,23 @@ exports.add = function(req, res) {
             });
         });
     });
+};
+
+/**
+ * Remove category
+ */
+exports.remove = function(req, res) {
+    var id = req.body.id;
+    Category
+        .findOne({ _id: id })
+        .exec(function(err, category) {
+            if (err || !category) {
+                return res.json({ result: 'error'});
+            }
+            category.remove(function(err) {
+                return res.json({ result: err ? 'error' : 'ok' });
+            });
+        });
 };
 
 /**

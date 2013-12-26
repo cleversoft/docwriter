@@ -22,9 +22,10 @@ module.exports = function(app) {
     app.get('/admin', authentication.requireAuthentication, dashboard.index);
 
     // Categories
-    app.get('/admin/category',       authentication.requireAuthentication, category.index);
-    app.post('/admin/category/add',  authentication.requireAuthentication, category.add);
-    app.post('/admin/category/slug', authentication.requireAuthentication, category.slug);
+    app.get('/admin/category',         authentication.requireAuthentication, category.index);
+    app.post('/admin/category/add',    authentication.requireAuthentication, category.add);
+    app.post('/admin/category/remove', authentication.requireAuthentication, category.remove);
+    app.post('/admin/category/slug',   authentication.requireAuthentication, category.slug);
 
     // Posts
     app.get('/admin/post',     authentication.requireAuthentication, post.index);
