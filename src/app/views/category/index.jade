@@ -7,10 +7,12 @@ block content
     table#categoryTable.table.table-hover
         thead
             tr
+                th.col-lg-1 Position
                 th.col-lg-4 Name
                 th.col-lg-4 Slug
                 th Actions
             tr
+                td
                 td
                     input#name.form-control.categoryName(type="text")
                 td
@@ -20,6 +22,7 @@ block content
                         i.fa.fa-plus
                         |  Add
             tr#template.hide
+                td ##position##
                 td ##name##
                 td ##slug##
                 td
@@ -27,17 +30,19 @@ block content
                         button.btn.btn-default.editButton.btn-sm(type="button") Edit
                         button.btn.btn-warning.deleteButton.btn-sm(type="button") Delete
             tr#editTemplate.hide.active.editRow
+                td#editPosition
                 td
                     input#editName.form-control.categoryName(type="text")
                 td
                     input#editSlug.form-control.categorySlug(type="text")
                 td
-                    button#saveButton.btn.btn-primary.btn-sm(type="button") Save
-                    button#cancelButton.btn.btn-default.btn-sm(type="button") Cancel
+                    button.btn.btn-primary.btn-sm.saveButton(type="button") Save
+                    button.btn.btn-default.btn-sm.cancelButton(type="button") Cancel
         tbody#categories
             if categories
                 for category in categories
                     tr(data-id="#{category._id}")
+                        td #{category.position + 1}
                         td #{category.name}
                         td #{category.slug}
                         td
@@ -68,6 +73,7 @@ block content
                     button.btn.btn-default(type="button", data-dismiss="modal") Close
 
 block footerScript
+    script(type="text/javascript", src="/vendor/jquery-ui/js/jquery-ui-1.10.3.custom.min.js")
     script(type="text/javascript").
         $(document).ready(function() {
             // Generate slug based on category's name
@@ -110,7 +116,8 @@ block footerScript
                     if ('ok' == response.result) {
                         $('#name').val('');
                         $('#slug').val('');
-                        var template = $('#template').html().replace(/##name##/g, name)
+                        var template = $('#template').html().replace(/##position##/g, response.position + 1)
+                                                            .replace(/##name##/g, name)
                                                             .replace(/##slug##/g, slug);
                         $('<tr/>')
                             .html(template)
@@ -120,42 +127,9 @@ block footerScript
                 });
             });
 
-            // Delete category
-            $('#categories').on('click', '.deleteButton', function() {
-                var $that = $(this), id = $that.parents('tr').attr('data-id');
-                $that.attr('disabled', 'disabled');
-
-                var deleteDialog = $('#deleteDialog');
-                deleteDialog
-                    .on('hidden.bs.modal', function() {
-                        $that.removeAttr('disabled');
-                    })
-                    // Yes button click handler
-                    .find('.yesButton')
-                        .off('click')
-                        .on('click', function() {
-                            $.ajax({
-                                type: 'post',
-                                url: '/admin/category/remove',
-                                data: {
-                                    id: id
-                                },
-                                dataType: 'json'
-                            }).done(function(response) {
-                                $that.removeAttr('disabled');
-                                if ('ok' == response.result) {
-                                    $that.parents('tr').remove();
-                                }
-                                deleteDialog.modal('hide');
-                            });
-                        })
-                        .end()
-                    .modal('show');
-            });
-
             // Edit category
             $('#editTemplate')
-                .on('save', function() {
+                .on('save.category', function() {
                     var name = $('#editName').val(), slug = $('#editSlug').val();
                     if (name == '' || slug == '') {
                         return;
@@ -177,9 +151,9 @@ block footerScript
                             $('#editTemplate')
                                 .data('currentRow')
                                     .find('td')
-                                        .eq(0).html(name).end()
-                                        .eq(1).html(slug);
-                            $('#editTemplate').trigger('cancel');
+                                        .eq(1).html(name).end()
+                                        .eq(2).html(slug);
+                            $('#editTemplate').trigger('cancel.category');
                         } else {
                             $('#messageDialog')
                                 .find('.message')
@@ -189,30 +163,97 @@ block footerScript
                         }
                     });
                 })
-                .on('cancel', function() {
+                .on('cancel.category', function() {
                     var currentEditRow = $(this).removeAttr('data-id').hide().data('currentRow');
                     if (currentEditRow) {
                         $(currentEditRow).show();
                     }
+                })
+                .on('click', '.saveButton', function() {
+                    $('#editTemplate').trigger('save.category');
+                })
+                .on('click', '.cancelButton', function() {
+                    $('#editTemplate').trigger('cancel.category');
                 });
-            $('#saveButton').on('click', function() {
-                $('#editTemplate').trigger('save');
-            });
-            $('#cancelButton').on('click', function() {
-                $('#editTemplate').trigger('cancel');
-            });
 
-            $('#categories').on('click', '.editButton', function() {
-                $('#editTemplate').trigger('cancel');
+            // Delete category
+            $('#categories')
+                .on('click', '.deleteButton', function() {
+                    var $that = $(this), id = $that.parents('tr').attr('data-id');
+                    $that.attr('disabled', 'disabled');
 
-                var $that = $(this),
-                    $row  = $that.parents('tr'),
-                    name  = $row.find('td').eq(0).html(),
-                    slug  = $row.find('td').eq(1).html();
+                    var deleteDialog = $('#deleteDialog');
+                    deleteDialog
+                        .on('hidden.bs.modal', function() {
+                            $that.removeAttr('disabled');
+                        })
+                        // Yes button click handler
+                        .find('.yesButton')
+                            .off('click')
+                            .on('click', function() {
+                                $.ajax({
+                                    type: 'post',
+                                    url: '/admin/category/remove',
+                                    data: {
+                                        id: id
+                                    },
+                                    dataType: 'json'
+                                }).done(function(response) {
+                                    $that.removeAttr('disabled');
+                                    if ('ok' == response.result) {
+                                        $that.parents('tr').remove();
+                                        $('#categories').find('tr').each(function(index, row) {
+                                            $(row).find('td').eq(0).html(index + 1);
+                                        });
+                                    }
+                                    deleteDialog.modal('hide');
+                                });
+                            })
+                            .end()
+                        .modal('show');
+                })
+                .on('click', '.editButton', function() {
+                    $('#editTemplate').trigger('cancel');
 
-                $('#editName').val(name);
-                $('#editSlug').val(slug);
-                $('#editTemplate').data('currentRow', $row).insertAfter($row).removeClass('hide').attr('data-id', $row.attr('data-id')).show();
-                $row.hide();
-            });
+                    var $that    = $(this),
+                        $row     = $that.parents('tr'),
+                        position = $row.find('td').eq(0).html(),
+                        name     = $row.find('td').eq(1).html(),
+                        slug     = $row.find('td').eq(2).html();
+
+                    $('#editPosition').html(position);
+                    $('#editName').val(name);
+                    $('#editSlug').val(slug);
+                    $('#editTemplate').data('currentRow', $row).insertAfter($row).removeClass('hide').attr('data-id', $row.attr('data-id')).show();
+                    $row.hide();
+                })
+                // Change the order of categories
+                .sortable({
+                    // Simple fix to ensure the width of dropped cells as it is
+                    helper: function(e, ui) {
+                        ui.children().each(function() {
+                            $(this).width($(this).width());
+                        });
+                        return ui;
+                    },
+                    stop: function(e, ui) {
+                        var index = $('#categories').find('tr:not(.editRow)').index(ui.item), id = $(ui.item).attr('data-id');
+                        $.ajax({
+                            url: '/admin/category/order',
+                            data: {
+                                id: id,
+                                position: index
+                            },
+                            dataType: 'json',
+                            type: 'post'
+                        }).success(function(response) {
+                            if ('ok' == response.result) {
+                                $('#categories').find('tr').each(function(index, row) {
+                                    $(row).find('td').eq(0).html(index + 1);
+                                });
+                            }
+                        });
+                    }
+                })
+                .disableSelection();
         });

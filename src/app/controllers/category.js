@@ -2,7 +2,7 @@ var mongoose = require('mongoose'),
     Category = mongoose.model('category');
 
 exports.index = function(req, res) {
-    Category.find({}, function(err, categories) {
+    Category.find({}).sort({ position: 1 }).exec(function(err, categories) {
         res.render('category/index', {
             title: 'Categories',
             categories: categories
@@ -25,8 +25,9 @@ exports.add = function(req, res) {
         category.position = total;
         category.save(function(err) {
             return res.json({
-                result: err ? 'error' : 'ok',
-                id: err ? null : category._id
+                result:   err ? 'error' : 'ok',
+                id:       err ? null    : category._id,
+                position: err ? null    : category.position
             });
         });
     });
@@ -47,6 +48,24 @@ exports.edit = function(req, res) {
             category.slug = req.body.slug;
             category.save(function(err) {
                 return res.json({ result: err ? 'error' : 'ok' });
+            });
+        });
+};
+
+/**
+ * Change the category position
+ */
+exports.order = function(req, res) {
+    var id       = req.body.id,
+        position = req.body.position;
+    Category
+        .findOne({ _id: id })
+        .exec(function(err, category) {
+            if (err || !category) {
+                return res.json({ result: 'error'});
+            }
+            Category.updatePosition(category, position, function() {
+                return res.json({ result: 'ok'});
             });
         });
 };

@@ -47,7 +47,7 @@ categorySchema.post('remove', function(category) {
     var Category = mongoose.model('category');
     Category
         .update({
-            position: { $gte: parseInt(category.position) }
+            position: { $gte: category.position }
         }, {
             $inc: { position: -1 }
         }, {
@@ -57,5 +57,37 @@ categorySchema.post('remove', function(category) {
 
     // TODO: Remove category from posts
 });
+
+// Update the position
+categorySchema.statics.updatePosition = function(category, position, callback) {
+    var cb = callback || function() {};
+
+    if (category.position == position) {
+        return cb();
+    }
+
+    // Update the position of other categories which have larger/smaller position
+    var Category = mongoose.model('category');
+    Category
+        .update({
+            position: {
+                $gte: Math.min(category.position, position),
+                $lte: Math.max(category.position, position)
+            }
+        }, {
+            $inc: { position: category.position > position ? 1 : -1 }
+        }, {
+            multi: true
+        })
+        .exec(function(err) {
+            if (err) {
+                return cb();
+            }
+            category.position = position;
+            category.save(function() {
+                cb();
+            });
+        });
+};
 
 module.exports = mongoose.model('category', categorySchema, 'category');
