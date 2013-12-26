@@ -77,8 +77,13 @@ html
 
         script(type="text/javascript").
             $(document).ready(function() {
-                // Activate menu
-                $('a.list-group-item[href^="' + window.location.pathname + '"]').addClass('active');
+                // Activate menu item based on the current URI
+                var path = window.location.pathname;
+                $('a.list-group-item').each(function(index, item) {
+                    if (path.substr(0, $(this).attr('href').length) == $(this).attr('href')) {
+                        $(this).addClass('active');
+                    }
+                });
             });
 
         block footerScript
