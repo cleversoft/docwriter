@@ -48,6 +48,14 @@ exports.signin = function(req, res) {
     }
 };
 
+/**
+ * Sign out
+ */
 exports.signout = function(req, res) {
-
+    if (req.session.user) {
+        delete req.session.user;
+        res.redirect('/admin/signin');
+    } else {
+        res.redirect('/');
+    }
 };
