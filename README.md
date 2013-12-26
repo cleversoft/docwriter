@@ -5,6 +5,14 @@ A help desk powered by NodeJs, Express and MongoDB
 
 ## Installing
 
+### Installing NodeJS modules
+
+From the ```src``` directory, execute the command below to install NodeJS modules defined in ```package.json```:
+
+```bash
+$ sudo npm install
+```
+
 ### Preparing the database
 
 From the MongoDB shell, create the database:
@@ -27,3 +35,20 @@ Index the collections by the commands:
 > db.user.ensureIndex({ email: 1 });
 > db.user.ensureIndex({ username: 1 });
 ```
+
+## Running
+
+Run the app:
+
+```bash
+$ cd <SRC_DIRECTORY>
+$ node app.js
+```
+
+Then access the browser at ```http://localhost:3000```
+
+## License
+
+Copyright (c) 2013 Nguyen Huu Phuoc
+
+NodeDesk is licensed under the MIT license
