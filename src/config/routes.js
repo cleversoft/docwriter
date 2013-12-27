@@ -31,6 +31,7 @@ module.exports = function(app) {
 
     // Posts
     app.get('/admin/post',          authentication.requireAuthentication, post.index);
+    app.all('/admin/post/activate', authentication.requireAuthentication, post.activate);
     app.all('/admin/post/add',      authentication.requireAuthentication, post.add);
     app.all('/admin/post/edit/:id', authentication.requireAuthentication, post.edit);
     app.post('/admin/post/remove',  authentication.requireAuthentication, post.remove);

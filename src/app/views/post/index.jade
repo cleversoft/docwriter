@@ -29,10 +29,10 @@ block content
             | &nbsp;ALL
         a.btn.btn-sm(class=criteria.status == 'activated' ? 'active btn-success' : 'btn-info', href="#{url(req, { page: 1, status: 'activated' })}")
             i.fa.fa-check
-            | &nbsp;ACTIVATED
+            | &nbsp;PUBLISHED
         a.btn.btn-sm(class=criteria.status == 'deactivated' ? 'active btn-success' : 'btn-info', href="#{url(req, { page: 1, status: 'deactivated' })}")
             i.fa.fa-ban
-            | &nbsp;DEACTIVATED
+            | &nbsp;NOT YET PUBLISHED
         a.btn.btn-sm(class=criteria.status == 'draft' ? 'active btn-success' : 'btn-info', href="#{url(req, { page: 1, status: 'draft' })}")
             i.fa.fa-edit
             | &nbsp;DRAFT
@@ -62,7 +62,14 @@ block content
                             else if ('created_user.username' == sortBy && -1 == sortDirection)
                                 | &darr;&nbsp;
                             | Created by
-                    th Actions
+                    th
+                        a(href="#{url(req, { sort: (1 == sortDirection ? '-' : '') + 'status' })}")
+                            if ('status' == sortBy && 1 == sortDirection)
+                                | &uarr;&nbsp;
+                            else if ('status' == sortBy && -1 == sortDirection)
+                                | &darr;&nbsp;
+                            | Status
+                    th(width="400px") Actions
             tbody#posts
                 for post in posts
                     tr(data-id="#{post._id}")
@@ -70,9 +77,23 @@ block content
                         td #{moment(post.created_date).format('YYYY-MM-DD HH:mm')}
                         td #{post.created_user.username}
                         td
+                            if post.status == 'activated'
+                                | Published
+                            else if post.status == 'deactivated'
+                                | Not yet published
+                            else
+                                | Draft
+                        td
                             div.btn-group
                                 a.btn.btn-default.btn-sm(href="/admin/post/edit/#{post._id}") EDIT
                                 button.btn.btn-warning.btn-sm.removeButton(type="button") DELETE
+                                button.btn.btn-default.btn-sm.publishButton(type="button", data-status="#{post.status}")
+                                    if post.status == 'activated'
+                                        | UNPUBLISH
+                                    else
+                                        | PUBLISH
+
+                            a.btn.btn-sm.btn-link.viewButton(class=post.status != 'activated' ? 'hide' : '', href="/post/#{post.slug}") VIEW
 
         // Pagination
         if (numPages > 1)
@@ -105,7 +126,7 @@ block footerScript
     script(type="text/javascript").
         $(document).ready(function() {
             $('#posts')
-                // Delete post handler
+                // Removing post handler
                 .on('click', '.removeButton', function() {
                     var $that = $(this),
                         $tr   = $that.parents('tr'),
@@ -139,5 +160,33 @@ block footerScript
                             })
                             .end()
                         .modal('show');
+                })
+                // Publishing post handler
+                .on('click', '.publishButton', function() {
+                    var $that  = $(this),
+                        id     = $that.parents('tr').attr('data-id');
+                    $that.attr('disabled', 'disabled');
+                    $.ajax({
+                        type: 'post',
+                        url: '/admin/post/activate',
+                        data: {
+                            id: id
+                        },
+                        dataType: 'json'
+                    }).done(function(response) {
+                        $that.removeAttr('disabled');
+                        if ('ok' == response.result) {
+                            var status = ('activated' == $that.attr('data-status')) ? 'deactivated' : 'activated';
+                            $that
+                                .attr('data-status', status)
+                                .html('activated' == status ? 'UNPUBLISH' : 'PUBLISH')
+                                .parents('tr')
+                                    .find('td')
+                                        .eq(3).html('activated' == status ? 'Published' : 'Not yet published')
+                                        .end()
+                                    .find('.viewButton')
+                                        .toggleClass('hide');
+                        }
+                    });
                 });
         });

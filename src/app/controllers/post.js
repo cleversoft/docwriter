@@ -62,6 +62,24 @@ exports.index = function(req, res) {
 };
 
 /**
+ * Activate/deactivate post
+ */
+exports.activate = function(req, res) {
+    var id = req.body.id;
+    Post
+        .findOne({ _id: id })
+        .exec(function(err, post) {
+            if (err || !post) {
+                return res.json({ result: 'error'});
+            }
+            post.status = (post.status == 'activated') ? 'deactivated' : 'activated';
+            post.save(function(err) {
+                return res.json({ result: err ? 'error' : 'ok' });
+            });
+        });
+};
+
+/**
  * Add new post
  */
 exports.add = function(req, res) {
