@@ -10,7 +10,7 @@ block topnav
     div.nav.navbar-form.navbar-left
         a.btn.btn-sm.btn-info(href="/admin/post/add")
             i.fa.fa-plus
-            | &nbsp;Write new post
+            | &nbsp;WRITE NEW POST
 
 block content
     ol.breadcrumb
@@ -63,15 +63,16 @@ block content
                                 | &darr;&nbsp;
                             | Created by
                     th Actions
-            tbody
+            tbody#posts
                 for post in posts
-                    tr
+                    tr(data-id="#{post._id}")
                         td #{post.title}
                         td #{moment(post.created_date).format('YYYY-MM-DD HH:mm')}
                         td #{post.created_user.username}
                         td
                             div.btn-group
-                                a.btn.btn-default.btn-sm(href="/admin/post/edit/#{post._id}") Edit
+                                a.btn.btn-default.btn-sm(href="/admin/post/edit/#{post._id}") EDIT
+                                button.btn.btn-warning.btn-sm.removeButton(type="button") DELETE
 
         // Pagination
         if (numPages > 1)
@@ -88,3 +89,55 @@ block content
                         a(href="#{url(req, { page: parseInt(page) + 1 })}") &raquo;
                     li(class=page == numPages ? 'disabled' : '')
                         a(href="#{url(req, { page: numPages })}") &rarr;
+
+    div#deleteDialog.modal.fade(aria-hidden="true")
+        div.modal-dialog
+            div.modal-content
+                div.modal-header
+                    button.close(type="button", data-dismiss="modal", aria-hidden="true") &times;
+                    h4.modal-title Delete post
+                div.modal-body Are you sure you want to delete the post?
+                div.modal-footer
+                    button.btn.btn-danger.yesButton(type="button") YES
+                    button.btn(type="button", data-dismiss="modal") NO
+
+block footerScript
+    script(type="text/javascript").
+        $(document).ready(function() {
+            $('#posts')
+                // Delete post handler
+                .on('click', '.removeButton', function() {
+                    var $that = $(this),
+                        $tr   = $that.parents('tr'),
+                        id    = $tr.attr('data-id');
+                    $that.attr('disabled', 'disabled');
+
+                    var deleteDialog = $('#deleteDialog');
+                    deleteDialog
+                        // No button click handler
+                        .on('hidden.bs.modal', function() {
+                            $that.removeAttr('disabled');
+                        })
+                        // Yes button click handler
+                        .find('.yesButton')
+                            .off('click')
+                            .on('click', function() {
+                                $.ajax({
+                                    type: 'post',
+                                    url: '/admin/post/remove',
+                                    data: {
+                                        id: id
+                                    },
+                                    dataType: 'json'
+                                }).done(function(response) {
+                                    $that.removeAttr('disabled');
+                                    if ('ok' == response.result) {
+                                        $tr.remove();
+                                    }
+                                    deleteDialog.modal('hide');
+                                });
+                            })
+                            .end()
+                        .modal('show');
+                });
+        });

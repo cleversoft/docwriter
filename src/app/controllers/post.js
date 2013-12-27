@@ -157,6 +157,23 @@ exports.edit = function(req, res) {
 };
 
 /**
+ * Remove post
+ */
+exports.remove = function(req, res) {
+    var id = req.body.id;
+    Post
+        .findOne({ _id: id })
+        .exec(function(err, post) {
+            if (err || !post) {
+                return res.json({ result: 'error'});
+            }
+            post.remove(function(err) {
+                return res.json({ result: err ? 'error' : 'ok' });
+            });
+        });
+};
+
+/**
  * Generate slug
  */
 exports.slug = function(req, res) {
@@ -167,8 +184,6 @@ exports.slug = function(req, res) {
         post._id = req.body.id;
     }
     Post.generateSlug(post, function(slug) {
-        res.json({
-            slug: slug
-        });
+        res.json({ slug: slug });
     });
 };

@@ -98,8 +98,6 @@ exports.slug = function(req, res) {
         category._id = req.body.id;
     }
     Category.generateSlug(category, function(slug) {
-        res.json({
-            slug: slug
-        });
+        res.json({ slug: slug });
     });
 };

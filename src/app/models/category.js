@@ -45,8 +45,8 @@ categorySchema.statics.generateSlug = function(category, cb) {
 
 categorySchema.post('remove', function(category) {
     // Update the position of other categories which have larger position
-    var Category = mongoose.model('category');
-    Category
+    mongoose
+        .model('category')
         .update({
             position: { $gte: category.position }
         }, {
@@ -68,8 +68,8 @@ categorySchema.statics.updatePosition = function(category, position, callback) {
     }
 
     // Update the position of other categories which have larger/smaller position
-    var Category = mongoose.model('category');
-    Category
+    mongoose
+        .model('category')
         .update({
             position: {
                 $gte: Math.min(category.position, position),

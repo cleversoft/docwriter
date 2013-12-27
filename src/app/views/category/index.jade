@@ -20,15 +20,15 @@ block content
                 td
                     button#addCategory.btn.btn-success.btn-sm(type="button")
                         i.fa.fa-plus
-                        |  Add
+                        |  ADD
             tr#template.hide
                 td ##position##
                 td ##name##
                 td ##slug##
                 td
                     div.btn-group
-                        button.btn.btn-default.editButton.btn-sm(type="button") Edit
-                        button.btn.btn-warning.deleteButton.btn-sm(type="button") Delete
+                        button.btn.btn-default.editButton.btn-sm(type="button") EDIT
+                        button.btn.btn-warning.deleteButton.btn-sm(type="button") DELETE
             tr#editTemplate.hide.active.editRow
                 td#editPosition
                 td
@@ -36,8 +36,8 @@ block content
                 td
                     input#editSlug.form-control.categorySlug(type="text")
                 td
-                    button.btn.btn-primary.btn-sm.saveButton(type="button") Save
-                    button.btn.btn-default.btn-sm.cancelButton(type="button") Cancel
+                    button.btn.btn-primary.btn-sm.saveButton(type="button") SAVE
+                    button.btn.btn-default.btn-sm.cancelButton(type="button") CANCEL
         tbody#categories
             if categories
                 for category in categories
@@ -47,8 +47,8 @@ block content
                         td #{category.slug}
                         td
                             div.btn-group
-                                button.btn.btn-default.btn-sm.editButton(type="button") Edit
-                                button.btn.btn-warning.btn-sm.deleteButton(type="button") Delete
+                                button.btn.btn-default.btn-sm.editButton(type="button") EDIT
+                                button.btn.btn-warning.btn-sm.deleteButton(type="button") DELETE
 
     div#deleteDialog.modal.fade(aria-hidden="true")
         div.modal-dialog
@@ -58,8 +58,8 @@ block content
                     h4.modal-title Delete category
                 div.modal-body Are you sure you want to delete the category?
                 div.modal-footer
-                    button.btn.btn-danger.yesButton(type="button") Yes
-                    button.btn(type="button", data-dismiss="modal") No
+                    button.btn.btn-danger.yesButton(type="button") YES
+                    button.btn(type="button", data-dismiss="modal") NO
 
     div#messageDialog.modal.fade(aria-hidden="true")
         div.modal-dialog
@@ -70,7 +70,7 @@ block content
                 div.modal-body
                     span.message
                 div.modal-footer
-                    button.btn.btn-default(type="button", data-dismiss="modal") Close
+                    button.btn.btn-default(type="button", data-dismiss="modal") CLOSE
 
 block footerScript
     script(type="text/javascript", src="/vendor/jquery-ui/js/jquery-ui-1.10.3.custom.min.js")

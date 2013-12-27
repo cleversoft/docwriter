@@ -33,6 +33,7 @@ module.exports = function(app) {
     app.get('/admin/post',          authentication.requireAuthentication, post.index);
     app.all('/admin/post/add',      authentication.requireAuthentication, post.add);
     app.all('/admin/post/edit/:id', authentication.requireAuthentication, post.edit);
+    app.post('/admin/post/remove',  authentication.requireAuthentication, post.remove);
     app.post('/admin/post/slug',    authentication.requireAuthentication, post.slug);
 
     // Users

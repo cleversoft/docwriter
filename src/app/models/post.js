@@ -91,4 +91,17 @@ postSchema.post('save', function(post) {
         .exec();
 });
 
+postSchema.post('remove', function(post) {
+    mongoose
+        .model('category')
+        .update({
+            _id: { $in: post.categories }
+        }, {
+            $inc: { num_posts: -1 }
+        }, {
+            multi: true
+        })
+        .exec();
+});
+
 module.exports = mongoose.model('post', postSchema, 'post');
