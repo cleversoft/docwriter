@@ -1,22 +1,11 @@
 extends ../layouts/backend
 
 block topnav
-    form.nav.navbar-form.navbar-left
+    form.nav.navbar-form.navbar-left(method="get", action="/admin/post")
         div.form-group
-            input.form-control(placeholder="Search for posts", style="width: 300px")
+            input.form-control(name="q", placeholder="Search for posts", style="width: 300px", value="#{q}")
         button.btn.btn-primary.btn-sm(type="submit")
             i.fa.fa-search
-
-    div.nav.navbar-form.navbar-left
-        div.btn-group
-            a.btn.btn-default.btn-sm
-                i.fa.fa-th-list
-            a.btn.btn-default.btn-sm
-                i.fa.fa-check
-            a.btn.btn-default.btn-sm
-                i.fa.fa-ban
-            a.btn.btn-default.btn-sm
-                i.fa.fa-edit
 
     div.nav.navbar-form.navbar-left
         a.btn.btn-sm.btn-info(href="/admin/post/add")
@@ -25,4 +14,77 @@ block topnav
 
 block content
     ol.breadcrumb
-        li.active Posts
+        li.active
+            a(href="/admin/post") Posts
+        li
+            span
+                if total == 0
+                    | There is no posts
+                else
+                    | Found #{total} posts
+
+    div.btn-group
+        a.btn.btn-sm(class=!criteria.status ? 'active btn-success' : 'btn-info', href="#{url(req, { page: 1 }, ['status'])}")
+            i.fa.fa-th-list
+            | &nbsp;ALL
+        a.btn.btn-sm(class=criteria.status == 'activated' ? 'active btn-success' : 'btn-info', href="#{url(req, { page: 1, status: 'activated' })}")
+            i.fa.fa-check
+            | &nbsp;ACTIVATED
+        a.btn.btn-sm(class=criteria.status == 'deactivated' ? 'active btn-success' : 'btn-info', href="#{url(req, { page: 1, status: 'deactivated' })}")
+            i.fa.fa-ban
+            | &nbsp;DEACTIVATED
+        a.btn.btn-sm(class=criteria.status == 'draft' ? 'active btn-success' : 'btn-info', href="#{url(req, { page: 1, status: 'draft' })}")
+            i.fa.fa-edit
+            | &nbsp;DRAFT
+
+    if total > 0
+        table.table(style="margin-top: 20px;")
+            thead
+                tr
+                    th
+                        a(href="#{url(req, { sort: (1 == sortDirection ? '-' : '') + 'title' })}")
+                            if ('title' == sortBy && 1 == sortDirection)
+                                | &uarr;&nbsp;
+                            else if ('title' == sortBy && -1 == sortDirection)
+                                | &darr;&nbsp;
+                            | Title
+                    th
+                        a(href="#{url(req, { sort: (1 == sortDirection ? '-' : '') + 'created_date' })}")
+                            if ('created_date' == sortBy && 1 == sortDirection)
+                                | &uarr;&nbsp;
+                            else if ('created_date' == sortBy && -1 == sortDirection)
+                                | &darr;&nbsp;
+                            | Created date
+                    th
+                        a(href="#{url(req, { sort: (1 == sortDirection ? '-' : '') + 'created_user.username' })}")
+                            if ('created_user.username' == sortBy && 1 == sortDirection)
+                                | &uarr;&nbsp;
+                            else if ('created_user.username' == sortBy && -1 == sortDirection)
+                                | &darr;&nbsp;
+                            | Created by
+                    th Actions
+            tbody
+                for post in posts
+                    tr
+                        td #{post.title}
+                        td #{moment(post.created_date).format('YYYY-MM-DD HH:mm')}
+                        td #{post.created_user.username}
+                        td
+                            div.btn-group
+                                a.btn.btn-default.btn-sm(href="/admin/post/edit/#{post._id}") Edit
+
+        // Pagination
+        if (numPages > 1)
+            div.text-center
+                ul.pagination
+                    li(class=page == 1 ? 'disabled' : '')
+                        a(href="#{url(req, { page: 1 })}") &larr;
+                    li(class=page == 1 ? 'disabled' : '')
+                        a(href="#{url(req, { page: parseInt(page) - 1 })}") &laquo;
+                    - for (i = startRange; i <= endRange; i++)
+                        li(class=(i == page) ? 'active' : '')
+                            a(href="#{url(req, { page: i })}") #{i}
+                    li(class=page == numPages ? 'disabled' : '')
+                        a(href="#{url(req, { page: parseInt(page) + 1 })}") &raquo;
+                    li(class=page == numPages ? 'disabled' : '')
+                        a(href="#{url(req, { page: numPages })}") &rarr;
