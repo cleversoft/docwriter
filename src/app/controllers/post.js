@@ -164,7 +164,7 @@ exports.edit = function(req, res) {
             var config = req.app.get('config');
             Category.find({}).sort({ position: 1 }).exec(function(err, categories) {
                 res.render('post/edit', {
-                    title: 'Write new post',
+                    title: 'Edit post',
                     autoSave: config.autoSave || 0,
                     categories: categories,
                     post: post
