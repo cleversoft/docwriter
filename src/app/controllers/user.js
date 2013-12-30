@@ -61,20 +61,65 @@ exports.check = function(req, res) {
 };
 
 /**
- * Lock/unlock user
+ * Update an user
  */
-exports.lock = function(req, res) {
-    var id = req.body.id;
-    User.findOne({ _id: id }, function(err, user) {
-        if (req.session.user.username == user.username) {
-            return res.json({ success: false });
-        }
+exports.edit = function(req, res) {
+    var id = req.param('id');
+    if ('post' == req.method.toLowerCase()) {
+        User.findOne({ _id: id }, function(err, user) {
+            var isCurrentUser = (req.session.user.username == user.username);
 
-        user.locked = !user.locked;
-        user.save(function(err) {
-            return res.json({ success: !err });
+            user.first_name = req.body.first_name;
+            user.last_name  = req.body.last_name;
+            //user.username   = req.body.username;
+            user.email      = req.body.email;
+            user.role       = req.body.role;
+
+            if (req.body.password && req.body.confirm_password && req.body.password == req.body.confirm_password) {
+                user.password = req.body.password;
+            }
+
+            var callback = function(success) {
+                req.flash(success ? 'success' : 'error', success ? 'The user has been updated successfully' : 'Cannot update the user');
+
+                // Update the session
+                if (success && isCurrentUser) {
+                    delete user.hashed_password;
+                    delete user.salt;
+
+                    req.session.user = user;
+                }
+
+                return res.redirect('/admin/user/edit/' + id);
+            };
+            User.isAvailable(user, 'username', function(isUsernameAvailable, foundUser) {
+                if (isUsernameAvailable || (foundUser && foundUser._id == id)) {
+                    User.isAvailable(user, 'email', function(isEmailAvailable, foundUser) {
+                        if (isEmailAvailable || (foundUser && foundUser._id == id)) {
+                            user.save(function(err) {
+                                callback(!err);
+                            });
+                        } else {
+                            callback(false);
+                        }
+                    });
+                } else {
+                    callback(false);
+                }
+            });
         });
-    });
+    } else {
+        User.findOne({ _id: id }, function(err, user) {
+            res.render('user/edit', {
+                title: 'Edit user',
+                messages: {
+                    warning: req.flash('error'),
+                    success: req.flash('success')
+                },
+                user: user
+            });
+        });
+    }
 };
 
 /**
@@ -117,6 +162,23 @@ exports.index = function(req, res) {
                 startRange: startRange,
                 endRange: endRange
             });
+        });
+    });
+};
+
+/**
+ * Lock/unlock user
+ */
+exports.lock = function(req, res) {
+    var id = req.body.id;
+    User.findOne({ _id: id }, function(err, user) {
+        if (req.session.user.username == user.username) {
+            return res.json({ success: false });
+        }
+
+        user.locked = !user.locked;
+        user.save(function(err) {
+            return res.json({ success: !err });
         });
     });
 };
