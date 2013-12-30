@@ -118,7 +118,11 @@ exports.add = function(req, res) {
             res.render('post/add', {
                 title: 'Write new post',
                 autoSave: config.autoSave || 0,
-                categories: categories
+                categories: categories,
+                messages: {
+                    warning: req.flash('error'),
+                    success: req.flash('success')
+                }
             });
         });
     }
@@ -167,6 +171,10 @@ exports.edit = function(req, res) {
                     title: 'Edit post',
                     autoSave: config.autoSave || 0,
                     categories: categories,
+                    messages: {
+                        warning: req.flash('error'),
+                        success: req.flash('success')
+                    },
                     post: post
                 });
             });

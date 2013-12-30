@@ -21,6 +21,8 @@ block content
             a(href="/admin/post") Posts
         li.active Write new post
 
+    include ../partial/flash
+
     form#addForm.form-horizontal(method="post", action="/admin/post/add")
         div.form-group
             div.col-sm-6
