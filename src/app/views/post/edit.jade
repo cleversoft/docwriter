@@ -259,6 +259,7 @@ block footerScript
                             type: 'POST',
                             url: '/admin/post/slug',
                             data: {
+                                id: '#{post._id}',
                                 title: title
                             },
                             dataType: 'json'
