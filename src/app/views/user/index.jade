@@ -14,13 +14,16 @@ block topnav
 
 block content
     ol.breadcrumb
-        li.active Users
+        li
+            a(href="/admin/user") Users
+        li
+            span
+                if total == 0
+                    | There are no users
+                else
+                    | Found #{total} users
 
-    if total == 0
-        p.text-center There are no users
-    else
-        p Found #{total} users
-
+    if total > 0
         table.table(style="margin-top: 20px;")
             thead
                 tr
@@ -29,7 +32,7 @@ block content
                     th Email
                     th Role
                     th Actions
-            tbody
+            tbody#users
                 for user in users
                     tr
                         td #{user.full_name}
@@ -58,3 +61,25 @@ block content
                         a(href="#{url(req, { page: parseInt(page) + 1 })}") &raquo;
                     li(class=page == numPages ? 'disabled' : '')
                         a(href="#{url(req, { page: numPages })}") &rarr;
+
+block footerScript
+    script(type="text/javascript").
+        $(document).ready(function() {
+            $('#users')
+                .on('click', '.lockButton', function() {
+                    var $that  = $(this),
+                        locked = $that.attr('data-locked'),
+                        id     = $that.attr('data-user');
+                    $that.attr('disabled', 'disabled');
+                    $.post('/admin/user/lock', {
+                        id: id
+                    }).success(function(response) {
+                        $that.removeAttr('disabled');
+                        if (response.success) {
+                            $that
+                                .html('true' == locked ? 'Lock' : 'Unlock')
+                                .attr('data-locked', 'true' == locked ? 'false' : 'true');
+                        }
+                    });
+                });
+        });
