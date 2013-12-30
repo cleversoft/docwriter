@@ -1,5 +1,60 @@
 extends ../layouts/backend
 
+block topnav
+    form.nav.navbar-form.navbar-left(method="get", action="/admin/user")
+        div.form-group
+            input.form-control(name="q", placeholder="Search for users", style="width: 300px", value="#{q}")
+        button.btn.btn-primary.btn-sm(type="submit")
+            i.fa.fa-search
+
+    div.nav.navbar-form.navbar-left
+        a.btn.btn-sm.btn-info(href="/admin/user/add")
+            i.fa.fa-plus
+            | &nbsp;ADD NEW USER
+
 block content
     ol.breadcrumb
         li.active Users
+
+    if total == 0
+        p.text-center There are no users
+    else
+        p Found #{total} users
+
+        table.table(style="margin-top: 20px;")
+            thead
+                tr
+                    th Full name
+                    th Username
+                    th Email
+                    th Role
+                    th Actions
+            tbody
+                for user in users
+                    tr
+                        td #{user.full_name}
+                        td #{user.username}
+                        td #{user.email}
+                        td #{user.role}
+                        td
+                            div.btn-group
+                                a.btn.btn-sm.btn-default(href="/admin/user/edit/#{user._id}") Edit
+                                if (user.username != currentUser)
+                                    button.btn.btn-warning.lockButton(data-user="#{user._id}", data-locked="#{user.locked}")
+                                        = user.locked ? 'Unlock' : 'Lock'
+
+        // Pagination
+        if (numPages > 1)
+            div.text-center
+                ul.pagination
+                    li(class=page == 1 ? 'disabled' : '')
+                        a(href="#{url(req, { page: 1 })}") &larr;
+                    li(class=page == 1 ? 'disabled' : '')
+                        a(href="#{url(req, { page: parseInt(page) - 1 })}") &laquo;
+                    - for (i = startRange; i <= endRange; i++)
+                        li(class=(i == page) ? 'active' : '')
+                            a(href="#{url(req, { page: i })}") #{i}
+                    li(class=page == numPages ? 'disabled' : '')
+                        a(href="#{url(req, { page: parseInt(page) + 1 })}") &raquo;
+                    li(class=page == numPages ? 'disabled' : '')
+                        a(href="#{url(req, { page: numPages })}") &rarr;
