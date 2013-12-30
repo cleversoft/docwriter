@@ -15,11 +15,12 @@ module.exports = function(app) {
     // --- Back-end routes ---
 
     // Auth
-    app.all('/admin/signin',  auth.signin);
-    app.get('/admin/signout', auth.signout);
+    app.all('/admin/signin',   auth.signin);
+    app.get('/admin/signout',  auth.signout);
+    app.all('/admin/password', authentication.requireAuthentication, auth.changePassword);
 
     // Dashboard
-    app.get('/admin', authentication.requireAuthentication, dashboard.index);
+    app.get('/admin',          authentication.requireAuthentication, dashboard.index);
 
     // Categories
     app.get('/admin/category',         authentication.requireAuthentication, category.index);
