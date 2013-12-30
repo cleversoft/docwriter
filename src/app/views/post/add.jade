@@ -2,6 +2,7 @@ extends ../layouts/backend
 
 block head
     link(rel="stylesheet", href="/vendor/codemirror/lib/codemirror.css")
+    link(rel="stylesheet", href="/vendor/fileupload/css/jquery.fileupload-ui.css")
 
 block topnav
     form.nav.navbar-form.navbar-left(method="get", action="/admin/post")
@@ -50,6 +51,48 @@ block content
 
                 div.tab-content
                     div#contentTab.tab-pane.active
+                        div#editorToolbar
+                            div.btn-group
+                                button.btn.btn-default.markdownFormatButton(type="button", data-command="undo")
+                                    i.fa.fa-undo
+                                button.btn.btn-default.markdownFormatButton(type="button", data-command="redo")
+                                    i.fa.fa-repeat
+
+                                div.btn-group
+                                    button.btn.btn-default.dropdown-toggle(type="button", data-toggle="dropdown")
+                                        | H
+                                        span.caret
+                                    ul.dropdown-menu
+                                        - for i in [1, 2, 3, 4, 5, 6]
+                                            li
+                                                a.markdownFormatButton(href="javascript: void(0);", data-command="heading", data-heading="#{i}")
+                                                    | h#{i}
+
+                                button.btn.btn-default.markdownFormatButton(type="button", data-command="bold")
+                                    i.fa.fa-bold
+                                button.btn.btn-default.markdownFormatButton(type="button", data-command="italic")
+                                    i.fa.fa-italic
+                                button.btn.btn-default.markdownFormatButton(type="button", data-command="strike")
+                                    i.fa.fa-strikethrough
+                                button.btn.btn-default.markdownFormatButton(type="button", data-command="quote")
+                                    i.fa.fa-quote-left
+                                button.btn.btn-default.markdownFormatButton(type="button", data-command="unordered-list")
+                                    i.fa.fa-list-ul
+                                button.btn.btn-default.markdownFormatButton(type="button", data-command="ordered-list")
+                                    i.fa.fa-list-ol
+                                button.btn.btn-default.markdownFormatButton(type="button", data-command="table")
+                                    i.fa.fa-table
+                                button.btn.btn-default.markdownFormatButton(type="button", data-command="link")
+                                    i.fa.fa-link
+                                button.btn.btn-default.markdownFormatButton(type="button", data-command="code")
+                                    i.fa.fa-code
+                                button.btn.btn-default.markdownFormatButton(type="button", data-command="rule") &mdash;
+                                    i.fa.fa-ru
+
+                                span.btn.btn-success.fileinput-button
+                                    span Upload file
+                                    input#uploader(type="file", name="file", data-url="/admin/file/upload")
+
                         div#editorContainer.d-markdown-editor
                             textarea#editor.form-control(name="content", style="height: 100%;")
                     div#previewTab.tab-pane
@@ -66,13 +109,17 @@ block footerScript
     script(type="text/javascript", src="/vendor/autosave/jquery.autosave.min.js")
     script(type="text/javascript", src="/vendor/codemirror/lib/codemirror.js")
     script(type="text/javascript", src="/vendor/codemirror/mode/markdown/markdown.js")
+    script(type="text/javascript", src="/vendor/fileupload/js/vendor/jquery.ui.widget.js")
+    script(type="text/javascript", src="/vendor/fileupload/js/jquery.iframe-transport.js")
+    script(type="text/javascript", src="/vendor/fileupload/js/jquery.fileupload.js")
     script(type="text/javascript", src="/vendor/marked/marked.js")
     script(type="text/javascript").
         $(document).ready(function() {
             var editorContainerHeight = $(document).height() - $('#buttons').outerHeight(true) - $('footer').outerHeight(true),
-                editorHeight          = editorContainerHeight - $('#editorContainer').offset().top - 20;
+                editorHeight          = editorContainerHeight - $('#editorContainer').offset().top - 20,
+                previewHeight         = editorHeight + $('#editorToolbar').outerHeight(true);
             $('#editorContainer').height(editorHeight);
-            $('#previewContainer').height(editorHeight);
+            $('#previewContainer').height(previewHeight);
 
             // Markdown editor
             var editor = CodeMirror.fromTextArea($('#editor').get(0), {
@@ -92,6 +139,111 @@ block footerScript
                 if ($(this).attr('href') == '#previewTab') {
                     var content = editor.getDoc().getValue();
                     $('.d-markdown-preview').html(marked(content));
+                }
+            });
+
+            $('.markdownFormatButton').on('click', function() {
+                var command  = $(this).attr('data-command'),
+                    doc      = editor.getDoc(),
+                    text     = doc.getSelection(),
+                    length   = text.length,
+                    lines    = text.split('\n'),
+                    numLines = lines.length,
+                    replace  = [];
+                switch (command) {
+                    case 'undo':
+                        doc.undo();
+                        break;
+                    case 'redo':
+                        doc.redo();
+                        break;
+                    case 'heading':
+                        var heading = parseInt($(this).attr('data-heading'));
+                        doc.replaceSelection(Array(heading + 1).join('#') + ' ' + text);
+                        break;
+
+                    case 'bold':
+                        doc.replaceSelection(('**' == text.substr(0, 2) && '**' == text.substr(length - 2, 2)) ? text.substr(2, length - 4) : '**' + text + '**');
+                        break;
+                    case 'italic':
+                        doc.replaceSelection(('*' == text.substr(0, 1) && '*' == text.substr(length - 1, 1)) ? text.substr(1, length - 2) : '*' + text + '*');
+                        break;
+                    case 'strike':
+                        doc.replaceSelection(('~~' == text.substr(0, 2) && '~~' == text.substr(length - 2, 2)) ? text.substr(2, length - 4) : '~~' + text + '~~');
+                        break;
+                    case 'quote':
+                        for (var i = 0; i < numLines; i++) {
+                            replace.push('> ' == lines[i].substr(0, 2) ? lines[i].substr(2) : '> ' + lines[i]);
+                        }
+                        doc.replaceSelection(replace.join('\n'));
+                        break;
+                    case 'unordered-list':
+                        for (var i = 0; i < numLines; i++) {
+                            if ('* ' == lines[i].substr(0, 2)) {
+                                replace.push(lines[i].substr(2));
+                            } else if ('1. ' == lines[i].substr(0, 3)) {
+                                replace.push('* ' + lines[i].substr(3));
+                            } else {
+                                replace.push('* ' + lines[i]);
+                            }
+                        }
+                        doc.replaceSelection(replace.join('\n'));
+                        break;
+                    case 'ordered-list':
+                        for (var i = 0; i < numLines; i++) {
+                            if ('* ' == lines[i].substr(0, 2)) {
+                                replace.push('1. ' + lines[i].substr(2));
+                            } else if ('1. ' == lines[i].substr(0, 3)) {
+                                replace.push(lines[i].substr(3));
+                            } else {
+                                replace.push('1. ' + lines[i]);
+                            }
+                        }
+                        doc.replaceSelection(replace.join('\n'));
+                        break;
+                    case 'table':
+                        replace.push('| Header | Header |');
+                        replace.push('|--------|--------|')
+                        replace.push('| Cell   | Cell   |');
+                        doc.replaceSelection(replace.join('\n'));
+                        break;
+
+                    case 'link':
+                        doc.replaceSelection('[text](url)');
+                        break;
+                    case 'code':
+                        if ('```' == text.substr(0, 3) && '```' == text.substr(length - 3, 3)) {
+                            if (numLines == 1) {
+                                replace.push(text.substr(3, length - 6));
+                            } else {
+                                replace.push(text.substr(4, length - 8));
+                            }
+                        } else {
+                            replace.push(numLines == 1 ? '```' + text + '```' : '```\n' + text + '\n```');
+                        }
+                        doc.replaceSelection(replace.join('\n'));
+                        break;
+                    case 'rule':
+                        doc.replaceSelection('\n\n---' == text.substr(length - 5, 5) ? text.substr(0, length - 5) : text + '\n\n---');
+                        break;
+
+                    default:
+                        break;
+                }
+            });
+
+            // Upload handler
+            $('#uploader').fileupload({
+                dataType: 'json',
+                done: function(e, data) {
+                    var files = data.result.files;
+                    $.each(data.result.files, function(index, file) {
+                        var text = ['[', file.title, '](', file.url, ')'].join('');
+                        if (['bmp', 'gif', 'jpeg', 'jpg', 'png'].indexOf(file.extension.toLowerCase()) != -1) {
+                            text = '!' + text;
+                        }
+                        editor.doc.replaceSelection(text);
+                    });
                 }
             });
 

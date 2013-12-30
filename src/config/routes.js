@@ -1,6 +1,7 @@
 var auth      = require('../app/controllers/auth'),
     category  = require('../app/controllers/category'),
     dashboard = require('../app/controllers/dashboard'),
+    file      = require('../app/controllers/file'),
     index     = require('../app/controllers/index'),
     post      = require('../app/controllers/post'),
     user      = require('../app/controllers/user');
@@ -29,6 +30,9 @@ module.exports = function(app) {
     app.post('/admin/category/order',  authentication.requireAuthentication, category.order);
     app.post('/admin/category/remove', authentication.requireAuthentication, category.remove);
     app.post('/admin/category/slug',   authentication.requireAuthentication, category.slug);
+
+    // File
+    app.post('/admin/file/upload', authentication.requireAuthentication, file.upload);
 
     // Posts
     app.get('/admin/post',          authentication.requireAuthentication, post.index);

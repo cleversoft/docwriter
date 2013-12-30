@@ -11,8 +11,8 @@ module.exports = {
         },
         db: 'mongodb://localhost/nodedesk_dev',
         upload: {
-            dir: '/Volumes/data/projects_workspace/nodedesk',
-            url: 'http://files.nodedesk.dev',
+            dir: '/Volumes/data/projects_workspace/nodedesk/upload',
+            url: '/upload',
             maxSize: 1024 * 1024 * 1024 * 2     // 2 GB
         },
         redis: {
