@@ -39,5 +39,7 @@ module.exports = function(app) {
     app.post('/admin/post/slug',    authentication.requireAuthentication, post.slug);
 
     // Users
-    app.get('/admin/user', adminAuthorization, user.index);
+    app.get('/admin/user',               adminAuthorization, user.index);
+    app.all('/admin/user/add',           adminAuthorization, user.add);
+    app.post('/admin/user/check/:field', adminAuthorization, user.check);
 };

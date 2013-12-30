@@ -40,7 +40,7 @@ block content
                             div.btn-group
                                 a.btn.btn-sm.btn-default(href="/admin/user/edit/#{user._id}") Edit
                                 if (user.username != currentUser)
-                                    button.btn.btn-warning.lockButton(data-user="#{user._id}", data-locked="#{user.locked}")
+                                    button.btn.btn-sm.btn-warning.lockButton(data-user="#{user._id}", data-locked="#{user.locked}")
                                         = user.locked ? 'Unlock' : 'Lock'
 
         // Pagination
