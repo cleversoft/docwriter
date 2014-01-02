@@ -20,7 +20,10 @@ module.exports = {
             port: 6379,
             namespace: 'nodedesk'
         },
-        autoSave: 1     // Auto-save interval time in minutes
+        autoSave: 0,    // Auto-save interval time in minutes
+        app: {
+            name: 'ZooTemplate Documents'
+        }
     },
     test: {
         root: rootPath

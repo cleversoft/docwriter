@@ -26,7 +26,7 @@ html
                         span.icon-bar
                         span.icon-bar
                         span.icon-bar
-                    a.navbar-brand(href="/admin") NodeDesk
+                    a.navbar-brand(href="/admin") #{config.app.name}
 
                 div#navbar-collapse.collapse.navbar-collapse
                     div.d-topnav
@@ -66,7 +66,7 @@ html
             .d-push
 
         footer
-            small &copy; 2013 NodeDesk
+            small &copy; 2013 #{config.app.name}
 
         //if lt IE 9
             script(src="/vendor/jquery/jquery-1.10.2.min.js")

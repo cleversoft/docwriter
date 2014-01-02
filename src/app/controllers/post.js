@@ -1,7 +1,78 @@
-var moment   = require('moment'),
+var marked   = require('marked'),
+    moment   = require('moment'),
     mongoose = require('mongoose'),
     Category = mongoose.model('category'),
     Post     = mongoose.model('post');
+
+/**
+ * List posts in given category
+ */
+exports.category = function(req, res) {
+    var slug = req.param('slug');
+    Category.find({}).sort({ position: 1 }).exec(function(err, categories) {
+        Category.findOne({ slug: slug }).exec(function(err, category) {
+            var perPage   = 10,
+                pageRange = 5,
+                page      = req.param('page') || 1,
+                q         = req.param('q') || '',
+                criteria  = q ? { title: new RegExp(q, 'i') } : {};
+
+            criteria.status     = 'activated';
+            criteria.categories = { $in: [category._id] };
+
+            Post.count(criteria, function(err, total) {
+                Post.find(criteria).sort({ created_date: -1 }).skip((page - 1) * perPage).limit(perPage).exec(function(err, posts) {
+                    if (err) {
+                        posts = [];
+                    }
+
+                    var numPages   = Math.ceil(total / perPage),
+                        startRange = (page == 1) ? 1 : pageRange * Math.floor((page - 1) / pageRange) + 1,
+                        endRange   = startRange + pageRange;
+
+                    if (endRange > numPages) {
+                        endRange = numPages;
+                    }
+
+                    res.render('partial/posts', {
+                        title: category.name,
+                        categories: categories,
+                        category: category,
+                        req: req,
+                        moment: moment,
+                        total: total,
+                        posts: posts,
+
+                        // Criteria
+                        q: q,
+                        criteria: criteria,
+
+                        // Pagination
+                        page: page,
+                        numPages: numPages,
+                        startRange: startRange,
+                        endRange: endRange
+                    });
+                });
+            });
+        });
+    });
+};
+
+/**
+ * View post details
+ */
+exports.view = function(req, res) {
+    var slug = req.param('slug');
+    Post.findOne({ slug: slug }).populate('categories').exec(function(err, post) {
+        res.render('post/view', {
+            title: post.title,
+            marked: marked,
+            moment: moment,
+            post: post
+        });
+    });
+};
 
 /**
  * List posts
@@ -104,12 +175,12 @@ exports.add = function(req, res) {
 
         post.prev_categories = null;
         post.save(function(err) {
-            if (err) {
-                req.flash('error', 'Could not add the post');
-                return req.xhr ? res.json({ result: 'error' }) : res.redirect('/admin/post/add');
+            if (req.xhr) {
+                return res.json({ result: err ? 'error' : 'ok' });
             } else {
-                req.flash('success', 'The post has been added successfully');
-                return req.xhr ? res.json({ result: 'ok' }) : res.redirect('/admin/post/edit/' + post._id);
+                req.flash(err ? 'error'                  : 'success',
+                          err ? 'Could not add the post' : 'The post has been added successfully');
+                return res.redirect(err ? '/admin/post/add' : '/admin/post/edit/' + post._id);
             }
         });
     } else {
@@ -132,7 +203,8 @@ exports.add = function(req, res) {
  * Edit post
  */
 exports.edit = function(req, res) {
-    var id = req.param('id');
+    var id     = req.param('id'),
+        config = req.app.get('config');
     Post.findOne({ _id: id }).exec(function(err, post) {
         if ('post' == req.method.toLowerCase()) {
             // Backup current categories
@@ -156,16 +228,16 @@ exports.edit = function(req, res) {
             }
 
             post.save(function(err) {
-                if (err) {
-                    req.flash('error', 'Could not update the post');
-                    return req.xhr ? res.json({ result: 'error' }) : res.redirect('/admin/post/edit/' + id);
-                } else {
-                    req.flash('success', 'The post has been added successfully');
-                    return req.xhr ? res.json({ result: 'ok' }) : res.redirect('/admin/post/edit/' + id);
+                // TODO: Export to PDF as background job
+
+                if (req.xhr) {
+                    return res.json({ result: err ? 'error' : 'ok' });
                 }
+                req.flash(err ? 'error'                     : 'success',
+                          err ? 'Could not update the post' : 'The post has been updated successfully');
+                return res.redirect('/admin/post/edit/' + id);
             });
         } else {
-            var config = req.app.get('config');
             Category.find({}).sort({ position: 1 }).exec(function(err, categories) {
                 res.render('post/edit', {
                     title: 'Edit post',

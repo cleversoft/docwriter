@@ -9,6 +9,7 @@
         "formidable": "1.0.14",
         "hiredis": "0.1.16",
         "jade": "1.0.0",
+        "marked": "0.3.0",
         "mkdirp": "0.3.5",
         "moment": "2.5.0",
         "mongoose": "3.8.3",

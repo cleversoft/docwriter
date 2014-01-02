@@ -1,0 +1,77 @@
+extends ../layouts/frontend
+
+block head
+    link(rel="stylesheet", href="/vendor/tocjs/css/toc-scroll.min.css")
+
+block content
+    div.container
+        h2
+            a(href="/post/#{post.slug}") #{post.title}
+        .d-post-meta
+            | Posted by #{post.created_user.username} on #{moment(post.created_date).format('YYYY-MM-DD HH:mm')}
+            if post.categories
+                |  in&nbsp;
+                span
+                    for category in post.categories
+                        a.label.label-info(href="/category/#{category.slug}") #{category.name}
+
+        hr
+
+        div.row
+            div.col-lg-3
+                div#toc
+
+            div.col-lg-9
+                div#content
+                    != marked(post.content)
+
+block footerScript
+    script(type="text/javascript", src="/vendor/tocjs/js/toc.min.js")
+    script(type="text/javascript").
+        $(document).ready(function() {
+            // Style the table
+            $('#content').find('table').addClass('table table-bordered');
+
+            // Make the image responsive
+            $('#content').find('img').addClass('img-responsive');
+
+            // Generate table of contents
+            $('#toc')
+                .css('max-width', $('#toc').width())
+                .toc({
+                    selector: 'h1:not(.toc-excluded), h2, h3, h4, h5, h6',
+                    elementClass: 'toc',
+                    ulClass: 'nav',
+                    heading: 'Table of Contents'
+                });
+
+            var $window = $(window),
+                $body   = $(document.body);
+            $body.scrollspy({
+                target: '#toc',
+                //offset: 100
+                //offset: $('#content').offset().top
+                offset: $('#navbar').outerHeight(true)
+            });
+
+            $window.on('load', function() {
+                $body.scrollspy('refresh');
+            });
+
+            setTimeout(function() {
+                var $sideBar = $('#toc');
+                $sideBar.affix({
+                    offset: {
+                        top: function() {
+                            var offsetTop      = $sideBar.offset().top,
+                                sideBarMargin  = parseInt($sideBar.children(0).css('margin-top'), 10),
+                                navOuterHeight = $('#navbar').height();
+                            return (this.top = offsetTop - navOuterHeight - sideBarMargin);
+                        },
+                        bottom: function() {
+                            return (this.bottom = $('footer').outerHeight(true));
+                        }
+                    }
+                });
+            }, 100);
+        });

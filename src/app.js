@@ -31,7 +31,8 @@ require('./config/routes')(app);
 
 // View helpers
 app.locals({
-    url: require('./app/helpers/url')
+    url: require('./app/helpers/url'),
+    config: config
 });
 
 var socketConnections = {};

@@ -1,5 +1,32 @@
-.d-wrapper {}
+// Variables
+$footerHeight: 80px;
 
+// Sticky footer
+html, body {
+  height: 100%;
+}
+.d-wrapper {
+  min-height: 100%;
+  height: auto !important;
+  height: 100%;
+  margin: 0 auto -#{$footerHeight} auto;
+}
+.d-main {
+  padding-top: $footerHeight;
+}
+.d-push {
+  height: $footerHeight;
+}
+footer {
+  border-top: 1px solid #c0c0c0;
+  height: $footerHeight - 1;
+
+  .container {
+    padding-top: 8px;
+  }
+}
+
+// Helpers
 .d-separator {
   border-top: 1px solid #e5e5e5;
   border-bottom: none;
@@ -13,5 +40,11 @@
     // Overwrite Bootstrap
     border-bottom: none;
     width: auto;
+  }
+}
+
+.d-post-meta {
+  a {
+    margin: 0 5px;
   }
 }

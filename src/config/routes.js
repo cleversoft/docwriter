@@ -12,6 +12,8 @@ var authentication     = require('./middlewares/authentication'),
 module.exports = function(app) {
     // --- Front-end routes ---
     app.get('/', index.index);
+    app.get('/category/:slug', post.category);
+    app.get('/post/:slug',     post.view);
 
     // --- Back-end routes ---
 

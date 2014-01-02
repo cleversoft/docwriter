@@ -1,0 +1,45 @@
+extends ../layouts/frontend
+
+block content
+    div.container
+        div.row
+            div.col-lg-3
+                h2 Categories
+                div.panel.panel-default
+                    div.list-group
+                        for cat in categories
+                            a.list-group-item(href="/category/#{cat.slug}", class=category && category._id.toString() == cat._id.toString() ? 'active' : '')
+                                | #{cat.name}
+                                span.badge #{cat.num_posts}
+
+            div.col-lg-9
+                h2
+                    if category
+                        a(href="/category/#{category.slug}") #{category.name}
+                        |  /&nbsp;Latest documents
+                    else
+                        | Latest documents
+                hr
+
+                ul.list-unstyled
+                    for post in posts
+                        li
+                            h3
+                                a(href="/post/#{post.slug}") #{post.title}
+                            small Posted by #{post.created_user.username} on #{moment(post.created_date).format('YYYY-MM-DD HH:mm')}
+
+                // Pagination
+                if (numPages > 1)
+                    div.text-center
+                        ul.pagination
+                            li(class=page == 1 ? 'disabled' : '')
+                                a(href="#{url(req, { page: 1 })}") &larr;
+                            li(class=page == 1 ? 'disabled' : '')
+                                a(href="#{url(req, { page: parseInt(page) - 1 })}") &laquo;
+                            - for (i = startRange; i <= endRange; i++)
+                                li(class=(i == page) ? 'active' : '')
+                                    a(href="#{url(req, { page: i })}") #{i}
+                            li(class=page == numPages ? 'disabled' : '')
+                                a(href="#{url(req, { page: parseInt(page) + 1 })}") &raquo;
+                            li(class=page == numPages ? 'disabled' : '')
+                                a(href="#{url(req, { page: numPages })}") &rarr;
