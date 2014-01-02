@@ -48,3 +48,10 @@ footer {
     margin: 0 5px;
   }
 }
+
+// Table of contents
+.d-toc {
+  &.affix {
+    top: 60px;
+  }
+}

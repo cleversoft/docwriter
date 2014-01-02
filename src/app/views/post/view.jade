@@ -19,7 +19,7 @@ block content
 
         div.row
             div.col-lg-3
-                div#toc
+                div#toc.d-toc
 
             div.col-lg-9
                 div#content
@@ -33,7 +33,7 @@ block footerScript
             $('#content').find('table').addClass('table table-bordered');
 
             // Make the image responsive
-            $('#content').find('img').addClass('img-responsive');
+            $('#content').find('img').addClass('img-responsive img-thumbnail');
 
             // Generate table of contents
             $('#toc')
@@ -49,9 +49,9 @@ block footerScript
                 $body   = $(document.body);
             $body.scrollspy({
                 target: '#toc',
-                //offset: 100
+                offset: 100
                 //offset: $('#content').offset().top
-                offset: $('#navbar').outerHeight(true)
+                // offset: 0 // $('#navbar').outerHeight(true)
             });
 
             $window.on('load', function() {

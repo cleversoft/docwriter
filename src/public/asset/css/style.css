@@ -33,3 +33,6 @@ footer {
 
 .d-post-meta a {
   margin: 0 5px; }
+
+.d-toc.affix {
+  top: 60px; }
