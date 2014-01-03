@@ -107,6 +107,7 @@ exports.signin = function(req, res) {
 exports.signout = function(req, res) {
     if (req.session.user) {
         delete req.session.user;
+        delete req.app.locals.sessionUser;
         res.redirect('/signin');
     } else {
         res.redirect('/');
