@@ -3,6 +3,17 @@ extends ../layouts/frontend
 block head
     link(rel="stylesheet", href="/vendor/tocjs/css/toc-scroll.min.css")
 
+block topnav
+    div.nav.navbar-form
+        a.btn.btn-sm.btn-success(href="/post/pdf/#{post.slug}")
+            i.fa.fa-download
+            |  DOWNLOAD PDF
+
+        if signedIn
+            a.btn.btn-sm.btn-info(href="/admin/post/edit/#{post._id}", style="margin: 0 5px;")
+                i.fa.fa-edit
+                |  EDIT
+
 block content
     div.container
         h1

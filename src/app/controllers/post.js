@@ -121,6 +121,7 @@ exports.view = function(req, res) {
             marked: marked,
             moment: moment,
             post: post,
+            signedIn: (req.session && req.session.user),
             siteUrl: req.protocol + '://' + req.get('host')
         });
     });

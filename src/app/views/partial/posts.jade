@@ -22,12 +22,15 @@ block content
                         | Latest Guides
                 hr
 
-                ul.list-unstyled
-                    for post in posts
-                        li
-                            h3
-                                a(href="/post/#{post.slug}") #{post.title}
-                            small Posted by #{post.created_user.username} on #{moment(post.created_date).format('YYYY-MM-DD HH:mm')}
+                if !posts || posts.length == 0
+                    p Not found guides
+                else
+                    ul.list-unstyled
+                        for post in posts
+                            li
+                                h3
+                                    a(href="/post/#{post.slug}") #{post.title}
+                                small Posted by #{post.created_user.username} on #{moment(post.created_date).format('YYYY-MM-DD HH:mm')}
 
                 // Pagination
                 if (numPages > 1)
