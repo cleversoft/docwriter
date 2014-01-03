@@ -1,0 +1,13 @@
+extends layouts/default
+
+block content
+    fieldset.d-separator
+        legend Oops! Error
+
+    div.row
+        div.col-lg-8.col-lg-offset-2
+            blockquote(style="max-height: 500px; overflow: scroll;")
+                | #{error}
+
+    div.text-center
+        a.btn.btn-info(href="/") Homepage

@@ -62,7 +62,7 @@ module.exports = function(app, config) {
 
             // Respond with html page
             if (req.accepts('html')) {
-                res.render('layouts/404', {
+                res.render('404', {
                     title: 'Not found',
                     url: req.url
                 });
@@ -82,7 +82,7 @@ module.exports = function(app, config) {
         // Handle 500 error
         app.use(function(err, req, res, next) {
             res.status(err.status || 500);
-            res.render('layouts/500', {
+            res.render('500', {
                 title: 'Error',
                 error: err
             });
