@@ -8,9 +8,7 @@ block content
                 div.panel.panel-default
                     div.list-group
                         for cat in categories
-                            a.list-group-item(href="/category/#{cat.slug}", class=category && category._id.toString() == cat._id.toString() ? 'active' : '')
-                                | #{cat.name}
-                                span.badge #{cat.num_posts}
+                            a.list-group-item(href="/category/#{cat.slug}", class=category && category._id.toString() == cat._id.toString() ? 'active' : '') #{cat.name}
 
             div.col-lg-9
                 h2
@@ -23,7 +21,7 @@ block content
                 hr
 
                 if !posts || posts.length == 0
-                    p Not found guides
+                    p There are no guides
                 else
                     ul.list-unstyled
                         for post in posts
