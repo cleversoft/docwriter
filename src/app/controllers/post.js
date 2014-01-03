@@ -69,7 +69,8 @@ exports.view = function(req, res) {
             title: post.title,
             marked: marked,
             moment: moment,
-            post: post
+            post: post,
+            siteUrl: req.protocol + '://' + req.get('host')
         });
     });
 };

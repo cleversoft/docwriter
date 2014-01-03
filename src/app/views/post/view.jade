@@ -5,7 +5,7 @@ block head
 
 block content
     div.container
-        h2
+        h1
             a(href="/post/#{post.slug}") #{post.title}
         .d-post-meta
             | Posted by #{post.created_user.username} on #{moment(post.created_date).format('YYYY-MM-DD HH:mm')}
@@ -19,27 +19,72 @@ block content
 
         div.row
             div.col-lg-3
+                // Post table of contents
                 div#toc.d-post-toc
 
             div.col-lg-9
+                // Post content
                 div#content.d-post-content
                     != marked(post.content)
+
+                // Post comments
+                div#comments.d-post-comments
+                    h2 Let's us know what you think
+
+                    hr
+
+                    p Help us improve this document by leaving your comments, suggestions below. Thank you!
+
+                    ul.nav.nav-tabs
+                        li.active
+                            a(href="#facebookComments") Facebook comments
+                        li
+                            a(href="#googleComments") Google+ comments
+
+                    div.tab-content
+                        div#facebookComments.tab-pane.active
+                            div.fb-comments(data-href="#{siteUrl}/post/#{post.slug}")
+                        div#googleComments.tab-pane
+                            div.g-comments(data-first_party_property="BLOGGER", data-view_type="FILTERED_POSTMOD", data-href="#{siteUrl}/post/#{post.slug}")
 
 block footerScript
     script(type="text/javascript", src="/vendor/tocjs/js/toc.min.js")
     script(type="text/javascript").
-        $(document).ready(function() {
-            // Style the table
-            $('#content').find('table').addClass('table table-bordered');
+        (function(d, s, id){
+            var js, fjs = d.getElementsByTagName(s)[0];
+            if (d.getElementById(id)) {return;}
+            js = d.createElement(s); js.id = id; js.async = true;
+            js.src = "http://connect.facebook.net/en_US/all.js#xfbml=1";
+            fjs.parentNode.insertBefore(js, fjs);
+        }(document, 'script', 'facebook-jssdk'));
 
-            // Make the image responsive
-            $('#content').find('img').addClass('img-responsive img-thumbnail');
+        (function() {
+            var po = document.createElement('script'); po.type = 'text/javascript'; po.async = true;
+            po.src = 'https://apis.google.com/js/plusone.js';
+            var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(po, s);
+        })();
+
+        $(document).ready(function() {
+            // Make the comment tabs
+            $('.d-post-comments .nav a').click(function(e) {
+                e.preventDefault();
+                $(this).tab('show');
+            });
+
+            $('#content')
+                // Style the table
+                .find('table')
+                    .addClass('table table-bordered')
+                    .end()
+                // Make the image responsive
+                .find('img')
+                    .addClass('img-responsive img-thumbnail');
 
             // Generate table of contents
             $('#toc')
                 .css('max-width', $('#toc').width())
                 .toc({
-                    selector: 'h2, h3, h4, h5, h6',
+                    selector: '#content > h2, h3, h4, h5, h6',
                     elementClass: 'toc',
                     ulClass: 'nav',
                     heading: 'Table of Contents'

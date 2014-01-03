@@ -39,5 +39,8 @@ footer {
   .d-post-content h2:first-child {
     padding-top: 0; }
 
+.d-post-comments {
+  margin: 40px 0; }
+
 .d-post-toc.affix {
   top: 60px; }
