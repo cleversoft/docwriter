@@ -8,7 +8,10 @@ var
     io      = require('socket.io').listen(server, { log: env == 'development' }),
 
     // Load configuration
-    config  = require('./config/config')[env];
+    config  = require('./config/config')[env],
+
+    redis       = require('redis'),
+    redisClient = redis.createClient(config.redis.port || 6379, config.redis.host || '127.0.0.1');
 
 // Connect DB
 var mongoose = require('mongoose');
@@ -43,6 +46,12 @@ io.sockets.on('connection', function(socket) {
             app.set('socketConnections', socketConnections);
         }
     });
+
+//    redisClient.subscribe('jobs');
+//    redisClient.on('message', function(channel, message) {
+//        console.log(channel);
+//        console.log(message);
+//    });
 });
 
 // Listening

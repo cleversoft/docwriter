@@ -45,7 +45,7 @@ exports.edit = function(req, res) {
         .findOne({ _id: id })
         .exec(function(err, category) {
             if (err || !category) {
-                return res.json({ result: 'error'});
+                return res.json({ result: 'error' });
             }
             category.name = req.body.name;
             category.slug = req.body.slug;
@@ -65,10 +65,10 @@ exports.order = function(req, res) {
         .findOne({ _id: id })
         .exec(function(err, category) {
             if (err || !category) {
-                return res.json({ result: 'error'});
+                return res.json({ result: 'error' });
             }
             Category.updatePosition(category, position, function() {
-                return res.json({ result: 'ok'});
+                return res.json({ result: 'ok' });
             });
         });
 };
@@ -82,7 +82,7 @@ exports.remove = function(req, res) {
         .findOne({ _id: id })
         .exec(function(err, category) {
             if (err || !category) {
-                return res.json({ result: 'error'});
+                return res.json({ result: 'error' });
             }
             category.remove(function(err) {
                 return res.json({ result: err ? 'error' : 'ok' });

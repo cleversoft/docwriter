@@ -306,6 +306,11 @@ exports.edit = function(req, res) {
 
             post.save(function(err) {
                 // TODO: Export to PDF as background job
+                var kue  = require('kue'),
+                    jobs = kue.createQueue();
+                jobs.create('exportPdf', {
+                    id: id
+                }).save();
 
                 if (req.xhr) {
                     return res.json({ result: err ? 'error' : 'ok' });
