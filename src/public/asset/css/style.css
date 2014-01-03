@@ -8,7 +8,7 @@ html, body {
   margin: 0 auto -80px auto; }
 
 .d-main {
-  padding-top: 80px; }
+  padding-top: 45px; }
 
 .d-push {
   height: 80px; }
@@ -34,5 +34,10 @@ footer {
 .d-post-meta a {
   margin: 0 5px; }
 
-.d-toc.affix {
+.d-post-content h2 {
+  padding-top: 55px; }
+  .d-post-content h2:first-child {
+    padding-top: 0; }
+
+.d-post-toc.affix {
   top: 60px; }

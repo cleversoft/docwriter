@@ -1,5 +1,6 @@
 // Variables
 $footerHeight: 80px;
+$navbarHeight: 45px;
 
 // Sticky footer
 html, body {
@@ -12,7 +13,7 @@ html, body {
   margin: 0 auto -#{$footerHeight} auto;
 }
 .d-main {
-  padding-top: $footerHeight;
+  padding-top: $navbarHeight;
 }
 .d-push {
   height: $footerHeight;
@@ -48,9 +49,17 @@ footer {
     margin: 0 5px;
   }
 }
+.d-post-content {
+  h2 {
+    padding-top: $navbarHeight + 10;
+    &:first-child {
+      padding-top: 0;
+    }
+  }
+}
 
 // Table of contents
-.d-toc {
+.d-post-toc {
   &.affix {
     top: 60px;
   }
