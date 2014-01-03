@@ -109,6 +109,7 @@ block content
                 button.btn.btn-primary(type="submit") SAVE
                 button.btn.btn-default(type="submit", name="publish", value="true") SAVE and PUBLISH
                 button.btn.btn-default(type="submit", name="draft", value="true") SAVE as DRAFT
+
 block footerScript
     script(type="text/javascript", src="/vendor/autosave/jquery.autosave.min.js")
     script(type="text/javascript", src="/vendor/codemirror/lib/codemirror.js")
@@ -134,6 +135,11 @@ block footerScript
                 theme: 'default'
             });
             editor.setSize('100%', editorHeight);
+            editor.on('change', function(e) {
+                // To ensure the form pass content for auto-saving
+                var text = e.getValue();
+                $('#editor').val(text).trigger('change');
+            });
 
             // Preview the content
             $('#editorTabs a').click(function(e) {

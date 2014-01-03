@@ -229,7 +229,10 @@ exports.add = function(req, res) {
         post.prev_categories = null;
         post.save(function(err) {
             if (req.xhr) {
-                return res.json({ result: err ? 'error' : 'ok' });
+                return res.json({
+                    result: err ? 'error' : 'ok',
+                    id: err ? null : post._id
+                });
             } else {
                 req.flash(err ? 'error'                  : 'success',
                           err ? 'Could not add the post' : 'The post has been added successfully');

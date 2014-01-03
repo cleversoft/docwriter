@@ -130,6 +130,11 @@ block footerScript
                 theme: 'default'
             });
             editor.setSize('100%', editorHeight);
+            editor.on('change', function(e) {
+                // To ensure the form pass content for auto-saving
+                var text = e.getValue();
+                $('#editor').val(text).trigger('change');
+            });
 
             // Preview the content
             $('#editorTabs a').click(function(e) {
@@ -293,7 +298,7 @@ block footerScript
                                 dataType: 'json'
                             }).success(function(response) {
                                 if ('ok' == response.result) {
-                                    $('#addForm').attr('action', response.url);
+                                    $('#addForm').attr('action', '/admin/post/edit/' + response.id);
                                 }
                             });
                         }
