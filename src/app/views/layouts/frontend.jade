@@ -29,6 +29,20 @@ html
                         a.navbar-brand(href="/") #{config.app.name}
 
                     div#navbar-collapse.collapse.navbar-collapse
+                        if sessionUser
+                            ul.nav.navbar-nav.navbar-right
+                                li.dropdown
+                                    a.dropdown-toggle(href="#", data-toggle="dropdown")
+                                        b.caret
+                                    ul.dropdown-menu
+                                        li
+                                            a(href="/admin") Go to administration
+                                        li
+                                            a(href="/signout") Sign out
+                        else
+                            div.nav.navbar-form.navbar-right
+                                a.btn.btn-sm.btn-success(href="/signin") SIGN IN
+
                         div.d-topnav.navbar-right
                             block topnav
 

@@ -3,12 +3,8 @@ exports.requireAuthentication = function(req, res, next) {
         if (!req.xhr) {
             req.session.returnTo = req.originalUrl;
         }
-        return res.redirect('/admin/signin');
+        return res.redirect('/signin');
     }
-    // Set the variable for layout
-    req.app.locals({
-        sessionUser: req.session.user
-    });
     next();
 };
 

@@ -50,6 +50,14 @@ module.exports = function(app, config) {
             })
         }));
 
+        app.use(function(req, res, next) {
+            // Set the variable for layout
+            if (req.session && req.session.user) {
+                req.app.locals.sessionUser = req.session.user;
+            }
+            next();
+        });
+
         // Connect flash for flash messages
         // Should be declared after sessions
         app.use(flash());

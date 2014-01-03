@@ -67,15 +67,15 @@ exports.signin = function(req, res) {
         User.findOne({ username: req.body.user_name }, function(err, user) {
             if (err || !user) {
                 req.flash('error', 'Not found administrator account');
-                return res.redirect('/admin/signin');
+                return res.redirect('/signin');
             }
             if (user.locked) {
                 req.flash('error', 'The administrator is locked');
-                return res.redirect('/admin/signin');
+                return res.redirect('/signin');
             }
             if (!user.verifyPassword(req.body.password)) {
                 req.flash('error', 'Wrong password');
-                return res.redirect('/admin/signin');
+                return res.redirect('/signin');
             }
 
             delete user.hashed_password;
@@ -107,7 +107,7 @@ exports.signin = function(req, res) {
 exports.signout = function(req, res) {
     if (req.session.user) {
         delete req.session.user;
-        res.redirect('/admin/signin');
+        res.redirect('/signin');
     } else {
         res.redirect('/');
     }
