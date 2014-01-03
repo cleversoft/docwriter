@@ -16,9 +16,10 @@ block content
                 h2
                     if category
                         a(href="/category/#{category.slug}") #{category.name}
-                        |  /&nbsp;Latest documents
+                    else if q
+                        | Search Results
                     else
-                        | Latest documents
+                        | Latest Guides
                 hr
 
                 ul.list-unstyled

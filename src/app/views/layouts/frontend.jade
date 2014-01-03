@@ -29,6 +29,12 @@ html
                         a.navbar-brand(href="/") #{config.app.name}
 
                     div#navbar-collapse.collapse.navbar-collapse
+                        form.nav.navbar-form.navbar-right(method="get", action="/search")
+                            div.form-group
+                                input.form-control(name="q", placeholder="Search for guides", style="width: 300px", value=q || '')
+                            button.btn.btn-primary.btn-sm(type="submit")
+                                i.fa.fa-search
+
                         div.d-topnav
                             block topnav
 
