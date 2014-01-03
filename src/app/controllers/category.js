@@ -2,12 +2,15 @@ var mongoose = require('mongoose'),
     Category = mongoose.model('category');
 
 exports.index = function(req, res) {
-    Category.find({}).sort({ position: 1 }).exec(function(err, categories) {
-        res.render('category/index', {
-            title: 'Categories',
-            categories: categories
+    Category
+        .find({})
+        .sort({ position: 1 })
+        .exec(function(err, categories) {
+            res.render('category/index', {
+                title: 'Categories',
+                categories: categories
+            });
         });
-    });
 };
 
 /**

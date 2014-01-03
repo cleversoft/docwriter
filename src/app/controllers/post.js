@@ -9,53 +9,63 @@ var marked   = require('marked'),
  */
 exports.category = function(req, res) {
     var slug = req.param('slug');
-    Category.find({}).sort({ position: 1 }).exec(function(err, categories) {
-        Category.findOne({ slug: slug }).exec(function(err, category) {
-            var perPage   = 10,
-                pageRange = 5,
-                page      = req.param('page') || 1,
-                q         = req.param('q') || '',
-                criteria  = q ? { title: new RegExp(q, 'i') } : {};
+    Category
+        .find({})
+        .sort({ position: 1 })
+        .exec(function(err, categories) {
+            Category
+                .findOne({ slug: slug })
+                .exec(function(err, category) {
+                    var perPage   = 10,
+                        pageRange = 5,
+                        page      = req.param('page') || 1,
+                        q         = req.param('q') || '',
+                        criteria  = q ? { title: new RegExp(q, 'i') } : {};
 
-            criteria.status     = 'activated';
-            criteria.categories = { $in: [category._id] };
+                    criteria.status     = 'activated';
+                    criteria.categories = { $in: [category._id] };
 
-            Post.count(criteria, function(err, total) {
-                Post.find(criteria).sort({ created_date: -1 }).skip((page - 1) * perPage).limit(perPage).exec(function(err, posts) {
-                    if (err) {
-                        posts = [];
-                    }
+                    Post.count(criteria, function(err, total) {
+                        Post
+                            .find(criteria)
+                            .sort({ created_date: -1 })
+                            .skip((page - 1) * perPage)
+                            .limit(perPage)
+                            .exec(function(err, posts) {
+                                if (err) {
+                                    posts = [];
+                                }
 
-                    var numPages   = Math.ceil(total / perPage),
-                        startRange = (page == 1) ? 1 : pageRange * Math.floor((page - 1) / pageRange) + 1,
-                        endRange   = startRange + pageRange;
+                                var numPages   = Math.ceil(total / perPage),
+                                    startRange = (page == 1) ? 1 : pageRange * Math.floor((page - 1) / pageRange) + 1,
+                                    endRange   = startRange + pageRange;
 
-                    if (endRange > numPages) {
-                        endRange = numPages;
-                    }
+                                if (endRange > numPages) {
+                                    endRange = numPages;
+                                }
 
-                    res.render('partial/posts', {
-                        title: category.name,
-                        categories: categories,
-                        category: category,
-                        req: req,
-                        moment: moment,
-                        total: total,
-                        posts: posts,
+                                res.render('partial/posts', {
+                                    title: category.name,
+                                    categories: categories,
+                                    category: category,
+                                    req: req,
+                                    moment: moment,
+                                    total: total,
+                                    posts: posts,
 
-                        // Criteria
-                        q: q,
-                        criteria: criteria,
+                                    // Criteria
+                                    q: q,
+                                    criteria: criteria,
 
-                        // Pagination
-                        page: page,
-                        numPages: numPages,
-                        startRange: startRange,
-                        endRange: endRange
+                                    // Pagination
+                                    page: page,
+                                    numPages: numPages,
+                                    startRange: startRange,
+                                    endRange: endRange
+                                });
+                            });
                     });
-                });
             });
-        });
     });
 };
 
@@ -74,38 +84,43 @@ exports.search = function(req, res) {
         criteria.status = 'activated';
 
         Post.count(criteria, function(err, total) {
-            Post.find(criteria).sort({ created_date: -1 }).skip((page - 1) * perPage).limit(perPage).exec(function(err, posts) {
-                if (err) {
-                    posts = [];
-                }
+            Post
+                .find(criteria)
+                .sort({ created_date: -1 })
+                .skip((page - 1) * perPage)
+                .limit(perPage)
+                .exec(function(err, posts) {
+                    if (err) {
+                        posts = [];
+                    }
 
-                var numPages   = Math.ceil(total / perPage),
-                    startRange = (page == 1) ? 1 : pageRange * Math.floor((page - 1) / pageRange) + 1,
-                    endRange   = startRange + pageRange;
+                    var numPages   = Math.ceil(total / perPage),
+                        startRange = (page == 1) ? 1 : pageRange * Math.floor((page - 1) / pageRange) + 1,
+                        endRange   = startRange + pageRange;
 
-                if (endRange > numPages) {
-                    endRange = numPages;
-                }
+                    if (endRange > numPages) {
+                        endRange = numPages;
+                    }
 
-                res.render('partial/posts', {
-                    title: 'Search for ' + q,
-                    categories: categories,
-                    req: req,
-                    moment: moment,
-                    total: total,
-                    posts: posts,
+                    res.render('partial/posts', {
+                        title: 'Search for ' + q,
+                        categories: categories,
+                        req: req,
+                        moment: moment,
+                        total: total,
+                        posts: posts,
 
-                    // Criteria
-                    q: q,
-                    criteria: criteria,
+                        // Criteria
+                        q: q,
+                        criteria: criteria,
 
-                    // Pagination
-                    page: page,
-                    numPages: numPages,
-                    startRange: startRange,
-                    endRange: endRange
+                        // Pagination
+                        page: page,
+                        numPages: numPages,
+                        startRange: startRange,
+                        endRange: endRange
+                    });
                 });
-            });
         });
     });
 };
@@ -149,39 +164,44 @@ exports.index = function(req, res) {
     }
 
     Post.count(criteria, function(err, total) {
-        Post.find(criteria).sort(sortCriteria).skip((page - 1) * perPage).limit(perPage).exec(function(err, posts) {
-            if (err) {
-                posts = [];
-            }
+        Post
+            .find(criteria)
+            .sort(sortCriteria)
+            .skip((page - 1) * perPage)
+            .limit(perPage)
+            .exec(function(err, posts) {
+                if (err) {
+                    posts = [];
+                }
 
-            var numPages   = Math.ceil(total / perPage),
-                startRange = (page == 1) ? 1 : pageRange * Math.floor((page - 1) / pageRange) + 1,
-                endRange   = startRange + pageRange;
+                var numPages   = Math.ceil(total / perPage),
+                    startRange = (page == 1) ? 1 : pageRange * Math.floor((page - 1) / pageRange) + 1,
+                    endRange   = startRange + pageRange;
 
-            if (endRange > numPages) {
-                endRange = numPages;
-            }
+                if (endRange > numPages) {
+                    endRange = numPages;
+                }
 
-            res.render('post/index', {
-                title: 'Posts',
-                req: req,
-                moment: moment,
-                total: total,
-                posts: posts,
+                res.render('post/index', {
+                    title: 'Posts',
+                    req: req,
+                    moment: moment,
+                    total: total,
+                    posts: posts,
 
-                // Criteria
-                q: q,
-                criteria: criteria,
-                sortBy: sortBy,
-                sortDirection: sortDirection,
+                    // Criteria
+                    q: q,
+                    criteria: criteria,
+                    sortBy: sortBy,
+                    sortDirection: sortDirection,
 
-                // Pagination
-                page: page,
-                numPages: numPages,
-                startRange: startRange,
-                endRange: endRange
+                    // Pagination
+                    page: page,
+                    numPages: numPages,
+                    startRange: startRange,
+                    endRange: endRange
+                });
             });
-        });
     });
 };
 
