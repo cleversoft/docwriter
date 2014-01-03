@@ -196,7 +196,8 @@ exports.activate = function(req, res) {
             if (err || !post) {
                 return res.json({ result: 'error'});
             }
-            post.status = (post.status == 'activated') ? 'deactivated' : 'activated';
+            post.status          = (post.status == 'activated') ? 'deactivated' : 'activated';
+            post.prev_categories = post.categories;
             post.save(function(err) {
                 return res.json({ result: err ? 'error' : 'ok' });
             });
