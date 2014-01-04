@@ -76,9 +76,13 @@ html
         //<![endif]
 
         script(src="/vendor/bootstrap/js/bootstrap.min.js")
+        script(type="text/javascript", src="/vendor/socket.io/socket.io.min.js")
 
         script(type="text/javascript").
             $(document).ready(function() {
+                var socket = io.connect();
+                socket.emit('userName', '#{sessionUser.username}');
+
                 // Activate menu item based on the current URI
                 var path = window.location.pathname;
                 $('a.list-group-item').each(function(index, item) {

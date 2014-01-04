@@ -47,11 +47,15 @@ io.sockets.on('connection', function(socket) {
         }
     });
 
-//    redisClient.subscribe('jobs');
-//    redisClient.on('message', function(channel, message) {
-//        console.log(channel);
-//        console.log(message);
-//    });
+    var pubSubChannel = [config.redis.namespace, 'jobs'].join(':');
+    redisClient.subscribe(pubSubChannel);
+    redisClient.on('message', function(channel, message) {
+        console.log(message);
+//        if (channel == pubSubChannel) {
+//            message = JSON.parse(message);
+//            console.log(message);
+//        }
+    });
 });
 
 // Listening

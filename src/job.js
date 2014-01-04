@@ -1,20 +1,20 @@
-var
-    env         = process.env.NODE_ENV || 'development',
-    config      = require('./config/config')[env],
-    redis       = require('redis'),
-    redisClient = redis.createClient(config.redis.port || 6379, config.redis.host || '127.0.0.1'),
-    kue         = require('kue'),
-    jobs        = kue.createQueue();
+var env           = process.env.NODE_ENV || 'development',
+    config        = require('./config/config')[env],
 
-jobs.process('exportPdf', function(job, done) {
-    console.log(job.data);
+    redis         = require('redis'),
+    redisClient   = redis.createClient(config.redis.port || 6379, config.redis.host || '127.0.0.1'),
+    pubSubChannel = [config.redis.namespace, 'jobs'].join(':'),
 
-    redisClient.publish('jobs', JSON.stringify({
-        queue: 'exportPdf',
-        id: job.data.id
-    }));
+    Queue         = require(config.root + '/app/queue/queue'),
+    queue         = new Queue();
 
-    done();
+queue.process('exportPdf', function(job) {
+
+
+    //redisClient.publish(pubSubChannel, JSON.stringify({
+    //    queue: 'exportPdf',
+    //    id: job.data.id
+    //}));
 });
 
 /*

@@ -305,12 +305,10 @@ exports.edit = function(req, res) {
             }
 
             post.save(function(err) {
-                // TODO: Export to PDF as background job
-                var kue  = require('kue'),
-                    jobs = kue.createQueue();
-                jobs.create('exportPdf', {
-                    id: id
-                }).save();
+                // Export to PDF as background job
+                var Queue = require(config.root + '/app/queue/queue'),
+                    queue = new Queue();
+                queue.enqueue('exportPdf', '/app/jobs/exportPdf', { id: id });
 
                 if (req.xhr) {
                     return res.json({ result: err ? 'error' : 'ok' });
