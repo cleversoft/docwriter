@@ -22,7 +22,15 @@ module.exports = {
         },
         autoSave: 0,    // Auto-save interval time in minutes
         app: {
+            url: 'http://nodedesk.dev',
             name: 'ZooTemplate Documents'
+        },
+        jobs: {
+            exportPdf: {
+                command: '/Applications/wkhtmltopdf.app/Contents/MacOS/wkhtmltopdf --outline --margin-top 30 --margin-bottom 30 --footer-spacing 10 --footer-html {footer_template} {preview_url} {pdf_path}',
+                dir: '/Volumes/data/projects_workspace/nodedesk/pdf',
+                footerTemplate: rootPath + '/config/template/pdfFooter.html'
+            }
         }
     },
     test: {

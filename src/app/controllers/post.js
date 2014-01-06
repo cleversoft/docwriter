@@ -143,6 +143,26 @@ exports.view = function(req, res) {
 };
 
 /**
+ * Preview post
+ * It's used by exporting to PDF job
+ */
+exports.preview = function(req, res) {
+    var slug   = req.param('slug'),
+        config = req.app.get('config');
+    Post.findOne({ slug: slug }).exec(function(err, post) {
+        res.render('post/preview', {
+            title: post.title,
+            appName: config.app.name,
+            marked: marked,
+            moment: moment,
+            post: post,
+            siteUrl: req.protocol + '://' + req.get('host'),
+            year: new Date().getFullYear()
+        });
+    });
+};
+
+/**
  * List posts
  */
 exports.index = function(req, res) {
@@ -209,7 +229,9 @@ exports.index = function(req, res) {
  * Activate/deactivate post
  */
 exports.activate = function(req, res) {
-    var id = req.body.id;
+    var id     = req.body.id,
+        config = req.app.get('config');
+
     Post
         .findOne({ _id: id })
         .exec(function(err, post) {
@@ -219,6 +241,17 @@ exports.activate = function(req, res) {
             post.status          = (post.status == 'activated') ? 'deactivated' : 'activated';
             post.prev_categories = post.categories;
             post.save(function(err) {
+                if (post.status == 'activated') {
+                    // Export to PDF as background job
+                    var Queue = require(config.root + '/app/queue/queue'),
+                        queue = new Queue();
+                    queue.enqueue('exportPdf', '/app/jobs/exportPdf', {
+                        id: id,
+                        url: config.app.url + '/post/preview/' + post.slug,
+                        file: config.jobs.exportPdf.dir + '/' + post.slug + '.pdf'
+                    });
+                }
+
                 return res.json({ result: err ? 'error' : 'ok' });
             });
         });
@@ -228,6 +261,7 @@ exports.activate = function(req, res) {
  * Add new post
  */
 exports.add = function(req, res) {
+    var config = req.app.get('config');
     if ('post' == req.method.toLowerCase()) {
         var post = new Post({
             title: req.body.title,
@@ -249,6 +283,17 @@ exports.add = function(req, res) {
 
         post.prev_categories = null;
         post.save(function(err) {
+            if (post.status == 'activated') {
+                // Export to PDF as background job
+                var Queue = require(config.root + '/app/queue/queue'),
+                    queue = new Queue();
+                queue.enqueue('exportPdf', '/app/jobs/exportPdf', {
+                    id: id,
+                    url: config.app.url + '/post/preview/' + post.slug,
+                    file: config.jobs.exportPdf.dir + '/' + post.slug + '.pdf'
+                });
+            }
+
             if (req.xhr) {
                 return res.json({
                     result: err ? 'error' : 'ok',
@@ -261,7 +306,6 @@ exports.add = function(req, res) {
             }
         });
     } else {
-        var config = req.app.get('config');
         Category.find({}).sort({ position: 1 }).exec(function(err, categories) {
             res.render('post/add', {
                 title: 'Write new post',
@@ -305,10 +349,16 @@ exports.edit = function(req, res) {
             }
 
             post.save(function(err) {
-                // Export to PDF as background job
-                var Queue = require(config.root + '/app/queue/queue'),
-                    queue = new Queue();
-                queue.enqueue('exportPdf', '/app/jobs/exportPdf', { id: id });
+                if (post.status == 'activated') {
+                    // Export to PDF as background job
+                    var Queue = require(config.root + '/app/queue/queue'),
+                        queue = new Queue();
+                    queue.enqueue('exportPdf', '/app/jobs/exportPdf', {
+                        id: id,
+                        url: config.app.url + '/post/preview/' + post.slug,
+                        file: config.jobs.exportPdf.dir + '/' + post.slug + '.pdf'
+                    });
+                }
 
                 if (req.xhr) {
                     return res.json({ result: err ? 'error' : 'ok' });
