@@ -69,6 +69,13 @@ block content
                             else if ('status' == sortBy && -1 == sortDirection)
                                 | &darr;&nbsp;
                             | Status
+                    th
+                        a(href="#{url(req, { sort: (1 == sortDirection ? '-' : '') + 'pdf_downloads' })}")
+                            if ('pdf_downloads' == sortBy && 1 == sortDirection)
+                                | &uarr;&nbsp;
+                            else if ('pdf_downloads' == sortBy && -1 == sortDirection)
+                                | &darr;&nbsp;
+                            | # PDF downloads
                     th(width="400px") Actions
             tbody#posts
                 for post in posts
@@ -83,6 +90,7 @@ block content
                                 | Not yet published
                             else
                                 | Draft
+                        td #{post.pdf_downloads}
                         td
                             div.btn-group
                                 a.btn.btn-default.btn-sm(href="/admin/post/edit/#{post._id}") EDIT
