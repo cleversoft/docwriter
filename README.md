@@ -32,6 +32,7 @@ Index the collections by the commands:
 ```bash
 > db.category.ensureIndex({ position: 1 });
 > db.category.ensureIndex({ slug: 1 });
+> db.post.ensureIndex({ slug: 1 });
 > db.user.ensureIndex({ email: 1 });
 > db.user.ensureIndex({ username: 1 });
 ```

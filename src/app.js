@@ -54,7 +54,6 @@ io.sockets.on('connection', function(socket) {
             return;
         }
         message = JSON.parse(message);
-        console.log(message);
 
         switch (message.queue) {
             case 'exportPdf':
