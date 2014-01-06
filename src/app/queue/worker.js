@@ -45,7 +45,7 @@ Worker.prototype.process = function(jobData, callback) {
  */
 Worker.prototype.getJob = function(callback) {
     var client = this.queue.getRedisClient();
-    client.lpop('queue:' + this.queueName, function(err, reply) {
+    client.lpop([this.queue.getNamespace(), 'queue', this.queueName].join(':'), function(err, reply) {
         callback(err, reply);
     });
 };

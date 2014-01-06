@@ -8,5 +8,7 @@ var env           = process.env.NODE_ENV || 'development',
     Queue         = require(config.root + '/app/queue/queue'),
     queue         = new Queue();
 
-queue.setRootJobPath(config.root);
+queue
+    .setRootJobPath(config.root)
+    .setNamespace(config.redis.namespace);
 queue.process('exportPdf');

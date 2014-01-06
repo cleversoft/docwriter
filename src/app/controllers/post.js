@@ -295,6 +295,7 @@ exports.activate = function(req, res) {
                     // Export to PDF as background job
                     var Queue = require(config.root + '/app/queue/queue'),
                         queue = new Queue();
+                    queue.setNamespace(config.redis.namespace);
                     queue.enqueue('exportPdf', '/app/jobs/exportPdf', {
                         id: id,
                         url: config.app.url + '/post/preview/' + post.slug,
@@ -337,6 +338,7 @@ exports.add = function(req, res) {
                 // Export to PDF as background job
                 var Queue = require(config.root + '/app/queue/queue'),
                     queue = new Queue();
+                queue.setNamespace(config.redis.namespace);
                 queue.enqueue('exportPdf', '/app/jobs/exportPdf', {
                     id: id,
                     url: config.app.url + '/post/preview/' + post.slug,
@@ -403,6 +405,7 @@ exports.edit = function(req, res) {
                     // Export to PDF as background job
                     var Queue = require(config.root + '/app/queue/queue'),
                         queue = new Queue();
+                    queue.setNamespace(config.redis.namespace);
                     queue.enqueue('exportPdf', '/app/jobs/exportPdf', {
                         id: id,
                         url: config.app.url + '/post/preview/' + post.slug,
