@@ -1,8 +1,13 @@
-var marked   = require('marked'),
+var fs       = require('fs'),
+    marked   = require('marked'),
     moment   = require('moment'),
     mongoose = require('mongoose'),
     Category = mongoose.model('category'),
     Post     = mongoose.model('post');
+
+// -----------------
+// FRONT-END ACTIONS
+// -----------------
 
 /**
  * List posts in given category
@@ -70,6 +75,35 @@ exports.category = function(req, res) {
 };
 
 /**
+ * Download PDF
+ */
+exports.download = function(req, res) {
+    var slug   = req.param('slug'),
+        config = req.app.get('config');
+    Post.findOne({ slug: slug }).exec(function(err, post) {
+        if (err || !post || post.status != 'activated') {
+            return res.send('The guide is not found or has not been published yet', 404);
+        }
+
+        var pdfFile = config.jobs.exportPdf.dir + '/' + post.slug + '.pdf';
+        if (!fs.existsSync(pdfFile)) {
+            return res.send('The PDF is not available at the moment', 403);
+        }
+
+        post.prev_categories = post.categories;
+        post.pdf_downloads++;
+        post.save(function() {
+            res.setHeader('Content-Description', 'Download file');
+            res.setHeader('Content-Type', 'application/octet-stream');
+            res.setHeader('Content-Disposition', 'attachment; filename=' + post.slug + '.pdf');
+
+            var stream = fs.createReadStream(pdfFile);
+            stream.pipe(res);
+        });
+    });
+};
+
+/**
  * Search for posts
  */
 exports.search = function(req, res) {
@@ -129,15 +163,19 @@ exports.search = function(req, res) {
  * View post details
  */
 exports.view = function(req, res) {
-    var slug = req.param('slug');
+    var slug   = req.param('slug'),
+        config = req.app.get('config');
     Post.findOne({ slug: slug }).populate('categories').exec(function(err, post) {
+        var pdfAvailable = fs.existsSync(config.jobs.exportPdf.dir + '/' + post.slug + '.pdf');
+
         res.render('post/view', {
             title: post.title,
+            appUrl: config.app.url || req.protocol + '://' + req.get('host'),
             marked: marked,
             moment: moment,
+            pdfAvailable: pdfAvailable,
             post: post,
-            signedIn: (req.session && req.session.user),
-            siteUrl: req.protocol + '://' + req.get('host')
+            signedIn: (req.session && req.session.user)
         });
     });
 };
@@ -153,14 +191,18 @@ exports.preview = function(req, res) {
         res.render('post/preview', {
             title: post.title,
             appName: config.app.name,
+            appUrl: config.app.url || req.protocol + '://' + req.get('host'),
             marked: marked,
             moment: moment,
             post: post,
-            siteUrl: req.protocol + '://' + req.get('host'),
             year: new Date().getFullYear()
         });
     });
 };
+
+// ----------------
+// BACK-END ACTIONS
+// ----------------
 
 /**
  * List posts

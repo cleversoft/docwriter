@@ -5,9 +5,10 @@ block head
 
 block topnav
     div.nav.navbar-form
-        a.btn.btn-sm.btn-success(href="/post/pdf/#{post.slug}")
-            i.fa.fa-download
-            |  DOWNLOAD PDF
+        if pdfAvailable
+            a.btn.btn-sm.btn-success(href="/post/pdf/#{post.slug}", rel="nofollow")
+                i.fa.fa-download
+                |  DOWNLOAD PDF
 
         if signedIn
             a.btn.btn-sm.btn-info(href="/admin/post/edit/#{post._id}")
@@ -54,9 +55,9 @@ block content
 
                     div.tab-content
                         div#facebookComments.tab-pane.active
-                            div.fb-comments(data-href="#{siteUrl}/post/#{post.slug}")
+                            div.fb-comments(data-href="#{appUrl}/post/#{post.slug}")
                         div#googleComments.tab-pane
-                            div.g-comments(data-first_party_property="BLOGGER", data-view_type="FILTERED_POSTMOD", data-href="#{siteUrl}/post/#{post.slug}")
+                            div.g-comments(data-first_party_property="BLOGGER", data-view_type="FILTERED_POSTMOD", data-href="#{appUrl}/post/#{post.slug}")
 
 block footerScript
     script(type="text/javascript", src="/vendor/tocjs/js/toc.min.js")

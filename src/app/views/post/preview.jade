@@ -17,11 +17,11 @@ html
     body
         section.text-center
             h1
-                a(href="#{siteUrl}/post/#{post.slug}") #{post.title}
+                a(href="#{appUrl}/post/#{post.slug}") #{post.title}
 
             small This guide is updated on #{moment(post.updated_date || post.created_date).format('YYYY-MM-DD HH:mm')}
 
-            p(style="margin-top: 50px;") &copy; #{year} <a href="#{siteUrl}">#{appName}</a>. All rights reserved
+            p(style="margin-top: 50px;") &copy; #{year} <a href="#{appUrl}">#{appName}</a>. All rights reserved
 
         // Create a page breaker elements
         // For generating PDF

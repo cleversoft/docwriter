@@ -13,8 +13,9 @@ module.exports = function(app) {
     // --- Front-end routes ---
     app.get('/', index.index);
     app.get('/category/:slug',     post.category);
-    app.get('/search',             post.search);
+    app.get('/post/pdf/:slug',     post.download);
     app.get('/post/preview/:slug', post.preview);
+    app.get('/search',             post.search);
     app.get('/post/:slug',         post.view);
 
     // --- Back-end routes ---
