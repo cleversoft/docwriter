@@ -50,11 +50,19 @@ io.sockets.on('connection', function(socket) {
     var pubSubChannel = [config.redis.namespace, 'jobs'].join(':');
     redisClient.subscribe(pubSubChannel);
     redisClient.on('message', function(channel, message) {
+        if (channel != pubSubChannel) {
+            return;
+        }
+        message = JSON.parse(message);
         console.log(message);
-//        if (channel == pubSubChannel) {
-//            message = JSON.parse(message);
-//            console.log(message);
-//        }
+
+        switch (message.queue) {
+            case 'exportPdf':
+                socket.emit('job:exportPdf:' + message.id);
+                break;
+            default:
+                break;
+        }
     });
 });
 

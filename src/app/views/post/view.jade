@@ -5,10 +5,9 @@ block head
 
 block topnav
     div.nav.navbar-form
-        if pdfAvailable
-            a#downloadPdfButton.btn.btn-sm.btn-success(href="/post/pdf/#{post.slug}", rel="nofollow", data-placement="bottom", data-title=post.pdf_downloads == 0 ? "This guide has not been downloaded yet! Let's be the first one" : "This guide has been downloaded " + post.pdf_downloads + (post.pdf_downloads == 1 ? " time" : " times"))
-                i.fa.fa-download
-                |  DOWNLOAD PDF
+        a#downloadPdfButton.btn.btn-sm.btn-success(href="/post/pdf/#{post.slug}", class=!pdfAvailable ? 'hide' : '', rel="nofollow", data-placement="bottom", data-title=post.pdf_downloads == 0 ? "This guide has not been downloaded yet! Let's be the first one" : "This guide has been downloaded " + post.pdf_downloads + (post.pdf_downloads == 1 ? " time" : " times"))
+            i.fa.fa-download
+            |  DOWNLOAD PDF
 
         if signedIn
             a.btn.btn-sm.btn-info(href="/admin/post/edit/#{post._id}")
@@ -61,6 +60,7 @@ block content
 
 block footerScript
     script(type="text/javascript", src="/vendor/tocjs/js/toc.min.js")
+    script(type="text/javascript", src="/vendor/socket.io/socket.io.min.js")
     script(type="text/javascript").
         (function(d, s, id){
             var js, fjs = d.getElementsByTagName(s)[0];
@@ -78,6 +78,16 @@ block footerScript
 
         $(document).ready(function() {
             $('#downloadPdfButton').tooltip();
+
+            var socket = io.connect();
+            socket.on('connect', function() {
+                socket.on('job:exportPdf:#{post._id}', function(data) {
+                    $('#downloadPdfButton').removeClass('hide');
+                });
+            });
+            socket.on('error', function(err) {
+                socket.socket.reconnect();
+            });
 
             // Make the comment tabs
             $('.d-post-comments .nav a').click(function(e) {

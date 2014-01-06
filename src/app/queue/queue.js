@@ -3,8 +3,8 @@ var redis  = require('redis'),
 
 module.exports = Queue;
 
-function Queue() {
-    this.redisClient = redis.createClient();
+function Queue(redisHost, redisPort) {
+    this.redisClient = redis.createClient(redisPort || 6379, redisHost || '127.0.0.1');
     this.namespace   = 'q';
 };
 

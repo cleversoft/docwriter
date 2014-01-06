@@ -14,7 +14,8 @@ util.inherits(ExportPdf, Job);
  * @param {String} queueName
  */
 function ExportPdf(queue, queueName) {
-
+    this.queue     = queue;
+    this.queueName = queueName;
 };
 
 ExportPdf.prototype.perform = function(args) {
@@ -26,6 +27,12 @@ ExportPdf.prototype.perform = function(args) {
                         .replace('{pdf_path}',        args.file);
 
     process.exec(command, function(err, stdout, stderr) {
+        var redisClient = that.queue.getRedisClient();
+        redisClient.publish([that.queue.getNamespace(), 'jobs'].join(':'), JSON.stringify({
+            queue: 'exportPdf',
+            id: args.id
+        }));
+
         that.complete();
     });
 };
