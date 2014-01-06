@@ -11,6 +11,15 @@ Queue.prototype.getRedisClient = function() {
     return this.redisClient;
 };
 
+Queue.prototype.setRootJobPath = function(rootJobPath) {
+    this.rootJobPath = rootJobPath;
+    return this;
+};
+
+Queue.prototype.getRootJobPath = function() {
+    return this.rootJobPath;
+};
+
 Queue.prototype.enqueue = function(queueName, cls, args) {
     var id = Date.now();
     // Update queues

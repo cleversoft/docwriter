@@ -8,21 +8,5 @@ var env           = process.env.NODE_ENV || 'development',
     Queue         = require(config.root + '/app/queue/queue'),
     queue         = new Queue();
 
-queue.process('exportPdf', function(job) {
-
-
-    //redisClient.publish(pubSubChannel, JSON.stringify({
-    //    queue: 'exportPdf',
-    //    id: job.data.id
-    //}));
-});
-
-/*
-var process = require('child_process'),
-    cmd     = 'pwd';
-process.exec(cmd, function(err, stdout, stderr) {
-    console.log(err);
-    console.log(stdout);
-    console.log(stderr);
-});
-*/
+queue.setRootJobPath(config.root);
+queue.process('exportPdf');

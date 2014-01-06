@@ -27,12 +27,15 @@ Worker.prototype.work = function(callback) {
 };
 
 Worker.prototype.process = function(jobData, callback) {
-    var that = this,
-        job  = new Job(this, this.queueName, jobData);
-    job.perform(function() {
+    var that        = this,
+        JobClass    = require(this.queue.getRootJobPath() + jobData.cls),
+        jobInstance = new JobClass(this.queue, this.queueName);
+
+    jobInstance.on('complete', function() {
         // Start new job
         that.work(callback);
     });
+    jobInstance.perform(jobData.args);
 };
 
 /**
