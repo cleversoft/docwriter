@@ -21,6 +21,10 @@ exports.category = function(req, res) {
             Category
                 .findOne({ slug: slug })
                 .exec(function(err, category) {
+                    if (err || !category) {
+                        return res.send('The category is not found', 404);
+                    }
+
                     var perPage   = 10,
                         pageRange = 5,
                         page      = req.param('page') || 1,
@@ -166,6 +170,10 @@ exports.view = function(req, res) {
     var slug   = req.param('slug'),
         config = req.app.get('config');
     Post.findOne({ slug: slug }).populate('categories').exec(function(err, post) {
+        if (err || !post || post.status != 'activated') {
+            return res.send('The guide is not found or has not been published yet', 404);
+        }
+
         var pdfAvailable = fs.existsSync(config.jobs.exportPdf.dir + '/' + post.slug + '.pdf');
 
         res.render('post/view', {
