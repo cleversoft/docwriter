@@ -6,7 +6,7 @@ block head
 block topnav
     div.nav.navbar-form
         if pdfAvailable
-            a.btn.btn-sm.btn-success(href="/post/pdf/#{post.slug}", rel="nofollow")
+            a#downloadPdfButton.btn.btn-sm.btn-success(href="/post/pdf/#{post.slug}", rel="nofollow", data-placement="bottom", data-title=post.pdf_downloads == 0 ? "This guide has not been downloaded yet! Let's be the first one" : "This guide has been downloaded " + post.pdf_downloads + (post.pdf_downloads == 1 ? " time" : " times"))
                 i.fa.fa-download
                 |  DOWNLOAD PDF
 
@@ -77,6 +77,8 @@ block footerScript
         })();
 
         $(document).ready(function() {
+            $('#downloadPdfButton').tooltip();
+
             // Make the comment tabs
             $('.d-post-comments .nav a').click(function(e) {
                 e.preventDefault();
