@@ -56,6 +56,9 @@ module.exports = function(app, config) {
         app.use(function(req, res, next) {
             // Set the variable for layout
             app.locals.req = req;
+            if (req.session && req.session.user) {
+                app.locals.sessionUser = req.session.user;
+            }
             next();
         });
 
