@@ -38,12 +38,15 @@ module.exports = function(app, config) {
 
         app.use(express.methodOverride());
 
+        var cookie = {
+            maxAge: config.session.lifetime
+        }
+        if (config.session.domain) {
+            cookie.domain = config.session.domain;
+        }
         app.use(express.session({
             secret: config.session.secret,
-            cookie: {
-                domain: config.session.domain,
-                maxAge: config.session.lifetime
-            },
+            cookie: cookie,
             store: new mongoStore({
                 url: config.db,
                 collection : 'session'
@@ -52,9 +55,7 @@ module.exports = function(app, config) {
 
         app.use(function(req, res, next) {
             // Set the variable for layout
-            if (req.session && req.session.user) {
-                req.app.locals.sessionUser = req.session.user;
-            }
+            app.locals.req = req;
             next();
         });
 

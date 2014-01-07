@@ -34,6 +34,7 @@ require('./config/routes')(app);
 
 // View helpers
 app.locals({
+    authHelper: require('./app/helpers/auth'),
     config: config,
     url: require('./app/helpers/url')
 });

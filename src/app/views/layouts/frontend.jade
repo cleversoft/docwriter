@@ -29,7 +29,7 @@ html
                         a.navbar-brand(href="/") #{config.app.name}
 
                     div#navbar-collapse.collapse.navbar-collapse
-                        if sessionUser
+                        if authHelper(req)
                             ul.nav.navbar-nav.navbar-right
                                 li.dropdown
                                     a.dropdown-toggle(href="#", data-toggle="dropdown")
