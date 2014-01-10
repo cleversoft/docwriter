@@ -40,7 +40,7 @@ Software                                                | Purpose
 [Redis](http://redis.io)                                | Storing jobs queue
 [wkhtmltopdf](https://github.com/antialize/wkhtmltopdf) | Exporting guides to PDF
 
-In details, it uses [Express](http://expressjs.com) framework in the back-end, and [Boostrap 3](http://getbootstrap.com) in the front-end.
+In details, it uses [Express](http://expressjs.com) framework in the back-end, and [Bootstrap 3](http://getbootstrap.com) in the front-end.
 
 ## Installing
 
@@ -127,15 +127,13 @@ You can use free online tool for generating random key, such as [RandomKeyGen](h
 
 ```db```: The MongoDB connection string in the format of ```mongodb://<database server>/<database name>```
 
-```upload.dir```: The path to directory storing uploaded files.
-
-__REMEMBER__ to set this directory writable
+```upload.dir```: The path to directory storing uploaded files. __REMEMBER__ to set this directory writable
 
 ```upload.url```: This will be prefixed to the URL of uploaded files
 
 ```upload.maxSize```: Maximum size of uploaded file in kB.
 
-For example, ```1024 * 1024 * 20``` allows user to upload files up to 20 MB in size.
+For example, 1024 * 1024 * 20 allows user to upload files up to 20 MB in size.
 
 ```redis.host```: The host of Redis server. It will take ```localhost``` by default
 
@@ -145,9 +143,7 @@ For example, ```1024 * 1024 * 20``` allows user to upload files up to 20 MB in s
 
 All the Redis keys are combination of the namespace, keys, and colons (```:```)
 
-```autoSave```: The auto-saving interval time in minutes.
-
-Set it to 0 to disable auto-saving
+```autoSave```: The auto-saving interval time in minutes. Set it to 0 to disable auto-saving
 
 ```app.url```: The root URL
 
@@ -165,6 +161,8 @@ wkhtmltopdf                             // Path to wkhtmltopdf
     {preview_url}                       // URL of previewing guide (DO NOT change this)
     {pdf_path}                          // Path of output PDF      (DO NOT change this)
 ```
+
+Of course, you can use other parameters supported by wkhtmltopdf. Take a look at [this document](http://madalgo.au.dk/~jakobt/wkhtmltoxdoc/wkhtmltopdf_0.10.0_rc2-doc.html) for more details.
 
 ```jobs.exportPdf.dir```: The directory storing PDF files. __REMEMBER__ to set this directory writable
 
