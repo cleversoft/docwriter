@@ -115,37 +115,45 @@ Meanwhile the production site should use the settings in the ```production``` se
 > You can indicate the environment when running the app via ```NODE_ENV``` variable.
 > By default, the app will use the ```development``` settings.
 
-* ```root```: The root path. Please **DO NOT** change this
-* ```session.domain```: The cookie domain
-* ```session.secret```: A secret string to encrypt the session data.
+```root```: The root path. Please **DO NOT** change this
+
+```session.domain```: The cookie domain
+
+```session.secret```: A secret string to encrypt the session data.
 
 You can use free online tool for generating random key, such as [RandomKeyGen](http://randomkeygen.com)
 
-* ```session.lifetime```: The session lifetime in milliseconds
-* ```db```: The MongoDB connection string in the format of ```mongodb://<database server>/<database name>```
-* ```upload.dir```: The path to directory storing uploaded files.
+```session.lifetime```: The session lifetime in milliseconds
+
+```db```: The MongoDB connection string in the format of ```mongodb://<database server>/<database name>```
+
+```upload.dir```: The path to directory storing uploaded files.
 
 __REMEMBER__ to set this directory writable
 
-* ```upload.url```: This will be prefixed to the URL of uploaded files
-* ```upload.maxSize```: Maximum size of uploaded file in kB.
+```upload.url```: This will be prefixed to the URL of uploaded files
+
+```upload.maxSize```: Maximum size of uploaded file in kB.
 
 For example, ```1024 * 1024 * 20``` allows user to upload files up to 20 MB in size.
 
-* ```redis.host```: The host of Redis server. It will take ```localhost``` by default
-* ```redis.port```: The port of Redis server, which is ```6379``` by default
-* ```redis.namespace```: Root namespace.
+```redis.host```: The host of Redis server. It will take ```localhost``` by default
+
+```redis.port```: The port of Redis server, which is ```6379``` by default
+
+```redis.namespace```: Root namespace.
 
 All the Redis keys are combination of the namespace, keys, and colons (```:```)
 
-* ```autoSave```: The auto-saving interval time in minutes.
+```autoSave```: The auto-saving interval time in minutes.
 
 Set it to 0 to disable auto-saving
 
-* ```app.url```: The root URL
-* ```app.name```: The name of application. It is used as homepage title
+```app.url```: The root URL
 
-* ```jobs.exportPdf.command```
+```app.name```: The name of application. It is used as homepage title
+
+```jobs.exportPdf.command```
 
 The command of exporting to PDF:
 
@@ -156,15 +164,13 @@ wkhtmltopdf                             // Path to wkhtmltopdf
     --margin-bottom 30                  // The margin bottom value
     --footer-spacing 10                 // The footer spacing value
     --footer-html {footer_template}     // Path to the footer template
-    {preview_url}                       // URL of previewing guide  - Please do NOT change this
-    {pdf_path}                          // Path of output PDF       - Please do NOT change this
+    {preview_url}                       // URL of previewing guide (DO NOT change this)
+    {pdf_path}                          // Path of output PDF      (DO NOT change this)
 ```
 
-* ```jobs.exportPdf.dir```
+```jobs.exportPdf.dir```: The directory storing PDF files. __REMEMBER__ to set this directory writable
 
-The directory storing PDF files. __REMEMBER__ to set this directory writable
-
-* ```jobs.exportPdf.footerTemplate```
+```jobs.exportPdf.footerTemplate```
 
 The path of PDF footer template. By default, it is placed at ```src/config/template/pdfFooter.html```
 
