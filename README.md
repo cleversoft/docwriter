@@ -6,9 +6,23 @@ A tool for writing software user guides, written in NodeJs, Express and MongoDB.
 It has been using in productions at:
 
 * [ZooTemplate Documents](http://docs.zootemplate.com)
-* [ZooExtensions Documents](http://docs.zooextension.com)
+* [ZooExtension Documents](http://docs.zooextension.com)
 
 ![Front-end screenshot](docs/frontend.png)
+
+## Features
+
+**Front-end**
+    * The guide URLs are friendly (for example, ```http://domain/post/this-is-guide-slug``` instead of ```http://domain/post/52c6613c3320e53e09000003```)
+    * Generate the table of contents of guide automatically
+
+**Back-end**
+    * Organize guides by categories. Each post can belong to one or many categories
+    * Manage users
+    * Guides are formats in Markdown. Administrators can preview the guide right in the back-end
+    * The administrator can publish/unpublish guides or save guides as draft one
+    * The guide is exported to PDF automatically right after saving/publishing it
+    * Auto save guides after given time. This feature can be enabled/disabled
 
 ## Installing
 
@@ -31,9 +45,11 @@ From the MongoDB shell, create the database:
 Then issue the following command to create an administrator account with username as ```administrator```, password as ```admin``` (the password can be changed in the back-end):
 
 ```bash
-> db.user.insert({first_name: 'Administrator', last_name: '', email: 'admin@domain.com',
-hashed_password: '41d4736be7061d0dd826085dd5c5c773c4703e8a', salt: '1000412025288',
-username: 'administrator', role: 'root', locked: false });
+> db.user.insert({
+    first_name: 'Administrator', last_name: '', email: 'admin@domain.com',
+    hashed_password: '41d4736be7061d0dd826085dd5c5c773c4703e8a', salt: '1000412025288',
+    username: 'administrator', role: 'root', locked: false
+});
 ```
 
 Index the collections by the commands:
@@ -59,7 +75,7 @@ Then access the browser at ```http://localhost:3000```
 
 ## License
 
-NodeDesk is written by Nguyen Huu Phuoc (@nghuuphuoc on [Twitter](http://twitter.com/nghuuphuoc), [Github](http://github.com/nghuuphuoc)), and licensed under the MIT license.
+NodeDesk is written by @nghuuphuoc ([Twitter](http://twitter.com/nghuuphuoc) / [Github](http://github.com/nghuuphuoc)), and licensed under the MIT license.
 
 ```
 The MIT License (MIT)
