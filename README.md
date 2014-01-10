@@ -1,7 +1,14 @@
 nodedesk
 ========
 
-A help desk powered by NodeJs, Express and MongoDB
+A tool for writing software user guides, written in NodeJs, Express and MongoDB.
+
+It has been using in productions at:
+
+* [ZooTemplate Documents](http://docs.zootemplate.com)
+* [ZooExtensions Documents](http://docs.zooextension.com)
+
+![Front-end screenshot](docs/frontend.png)
 
 ## Installing
 
@@ -24,7 +31,9 @@ From the MongoDB shell, create the database:
 Then issue the following command to create an administrator account with username as ```administrator```, password as ```admin``` (the password can be changed in the back-end):
 
 ```bash
-> db.user.insert({first_name: 'Administrator', last_name: '', email: 'admin@domain.com', hashed_password: '41d4736be7061d0dd826085dd5c5c773c4703e8a', salt: '1000412025288', username: 'administrator', role: 'root', locked: false });
+> db.user.insert({first_name: 'Administrator', last_name: '', email: 'admin@domain.com',
+hashed_password: '41d4736be7061d0dd826085dd5c5c773c4703e8a', salt: '1000412025288',
+username: 'administrator', role: 'root', locked: false });
 ```
 
 Index the collections by the commands:
@@ -50,6 +59,27 @@ Then access the browser at ```http://localhost:3000```
 
 ## License
 
+NodeDesk is written by Nguyen Huu Phuoc (@nghuuphuoc on [Twitter](http://twitter.com/nghuuphuoc), [Github](http://github.com/nghuuphuoc)), and licensed under the MIT license.
+
+```
+The MIT License (MIT)
+
 Copyright (c) 2013 Nguyen Huu Phuoc
 
-NodeDesk is licensed under the MIT license
+Permission is hereby granted, free of charge, to any person obtaining a copy of
+this software and associated documentation files (the "Software"), to deal in
+the Software without restriction, including without limitation the rights to
+use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
+the Software, and to permit persons to whom the Software is furnished to do so,
+subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
+FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
+COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
+IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+```
