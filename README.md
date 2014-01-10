@@ -115,63 +115,35 @@ Meanwhile the production site should use the settings in the ```production``` se
 > You can indicate the environment when running the app via ```NODE_ENV``` variable.
 > By default, the app will use the ```development``` settings.
 
-* ```root```
-
-The root path. Please **DO NOT** change this
-
-* ```session.domain```
-
-The cookie domain
-
-* ```session.secret```
-
-A secret string to encrypt the session data.
+* ```root```: The root path. Please **DO NOT** change this
+* ```session.domain```: The cookie domain
+* ```session.secret```: A secret string to encrypt the session data.
 
 You can use free online tool for generating random key, such as [RandomKeyGen](http://randomkeygen.com)
 
-* ```session.lifetime```
+* ```session.lifetime```: The session lifetime in milliseconds
+* ```db```: The MongoDB connection string in the format of ```mongodb://<database server>/<database name>```
+* ```upload.dir```: The path to directory storing uploaded files.
 
-The session lifetime in milliseconds
+__REMEMBER__ to set this directory writable
 
-* ```db```
+* ```upload.url```: This will be prefixed to the URL of uploaded files
+* ```upload.maxSize```: Maximum size of uploaded file in kB.
 
-The MongoDB connection string in the format of ```mongodb://<database server>/<database name>```
+For example, ```1024 * 1024 * 20``` allows user to upload files up to 20 MB in size.
 
-* ```upload.dir```
+* ```redis.host```: The host of Redis server. It will take ```localhost``` by default
+* ```redis.port```: The port of Redis server, which is ```6379``` by default
+* ```redis.namespace```: Root namespace.
 
-The path to directory storing uploaded files. __REMEMBER__ to set this directory writable
+All the Redis keys are combination of the namespace, keys, and colons (```:```)
 
-* ```upload.url```
+* ```autoSave```: The auto-saving interval time in minutes.
 
-This will be prefixed to the URL of uploaded files
+Set it to 0 to disable auto-saving
 
-* ```upload.maxSize```
-
-Maximum size of uploaded file in kB. For example, ```1024 * 1024 * 20``` allows user to upload files up to 20 MB in size.
-
-* ```redis.host```
-
-The host of Redis server. It will take ```localhost``` by default
-
-* ```redis.port```
-
-The port of Redis server, which is ```6379``` by default
-
-* ```redis.namespace```
-
-Root namespace. All the Redis keys are combination of the namespace, keys, and colons (```:```)
-
-* ```autoSave```
-
-The auto-saving interval time in minutes. Set it to 0 to disable auto-saving
-
-* ```app.url```
-
-The root URL
-
-* ```app.name```
-
-The name of application. It is used as homepage title
+* ```app.url```: The root URL
+* ```app.name```: The name of application. It is used as homepage title
 
 * ```jobs.exportPdf.command```
 
