@@ -191,9 +191,17 @@ $ node job.js
 
 Then access the browser at ```http://localhost:3000```
 
+## Authors
+
+* Author:
+Nguyen Huu Phuoc ([Twitter](http://twitter.com/nghuuphuoc) / [Github](http://github.com/nghuuphuoc))
+
+* Contributor:
+Nguyen Ta Quang Duc, aka [@ducntq](http://github.com/ducntq)
+
 ## License
 
-NodeDesk is written by @nghuuphuoc ([Twitter](http://twitter.com/nghuuphuoc) / [Github](http://github.com/nghuuphuoc)), and licensed under the MIT license.
+NodeDesk is written by @nghuuphuoc, and licensed under the MIT license.
 
 ```
 The MIT License (MIT)
