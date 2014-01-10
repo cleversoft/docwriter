@@ -28,7 +28,30 @@ It has been using in productions at:
 
 ![Back-end screenshot](docs/backend.png)
 
+## Platform
+
+The application is built on top of the following software:
+
+Software                                                | Purpose
+--------------------------------------------------------|--------
+[MongoDB](http://mongodb.org)                           | Database server
+[NodeJS](http://nodejs.org)                             | NodeJS web server
+[npm](http://npmjs.org)                                 | Installing NodeJS modules
+[Redis](http://redis.io)                                | Storing jobs queue
+[wkhtmltopdf](https://github.com/antialize/wkhtmltopdf) | Exporting guides to PDF
+
+In details, it uses [Express](http://expressjs.com) framework in the back-end, and [Boostrap 3](http://getbootstrap.com) in the front-end.
+
 ## Installing
+
+Before going further to steps below, please ensure that the required software are ready on your machine.
+
+Refer to their documentation to see how to install them:
+
+* [Install MongoDB](http://docs.mongodb.org/manual/installation/)
+* [Install NPM and NodeJS](https://github.com/joyent/node/wiki/Installing-Node.js-via-package-manager)
+* [Install Redis](http://redis.io/topics/quickstart)
+* [Install wkhtmltopdf](https://github.com/pdfkit/pdfkit/wiki/Installing-WKHTMLTOPDF)
 
 ### Installing NodeJS modules
 
@@ -68,12 +91,15 @@ Index the collections by the commands:
 
 ## Running
 
-Run the app:
+From the ```src``` directory, execute the following commands to run the app and jobs queue:
 
 ```bash
-$ cd <SRC_DIRECTORY>
 $ node app.js
+$ node job.js
 ```
+
+> The jobs queue aim to run expensive tasks in the background instead of the browser.
+> In this application, these tasks are exporting guides to PDFs
 
 Then access the browser at ```http://localhost:3000```
 
