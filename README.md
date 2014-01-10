@@ -170,9 +170,9 @@ wkhtmltopdf                             // Path to wkhtmltopdf
 
 ```jobs.exportPdf.dir```: The directory storing PDF files. __REMEMBER__ to set this directory writable
 
-```jobs.exportPdf.footerTemplate```
+```jobs.exportPdf.footerTemplate```: The path of PDF footer template.
 
-The path of PDF footer template. By default, it is placed at ```src/config/template/pdfFooter.html```
+By default, it is placed at ```src/config/template/pdfFooter.html```
 
 Open this file and change the URL defining CSS styles for the footer to the root URL:
 
