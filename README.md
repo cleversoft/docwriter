@@ -153,9 +153,7 @@ Set it to 0 to disable auto-saving
 
 ```app.name```: The name of application. It is used as homepage title
 
-```jobs.exportPdf.command```
-
-The command of exporting to PDF:
+```jobs.exportPdf.command```: The full command of exporting to PDF.
 
 ```bash
 wkhtmltopdf                             // Path to wkhtmltopdf
