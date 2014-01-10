@@ -26,6 +26,8 @@ It has been using in productions at:
 * The guide is exported to PDF automatically right after saving/publishing it
 * Auto save guides after given time. This feature can be enabled/disabled
 
+![Back-end screenshot](docs/backend.png)
+
 ## Installing
 
 ### Installing NodeJS modules
