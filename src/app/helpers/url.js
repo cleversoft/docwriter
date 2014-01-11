@@ -13,11 +13,14 @@ module.exports = function(req, params, excludedParams) {
     }
 
     // Remove empty params
+    var numParams = 0;
     for (k in urlParams) {
+        numParams++;
         if (!urlParams[k]) {
+            numParams--;
             delete urlParams[k];
         }
     }
 
-    return '?' + qs.stringify(urlParams);
+    return (numParams == 0) ? '' : '?' + qs.stringify(urlParams);
 };
