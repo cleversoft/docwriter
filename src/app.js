@@ -40,6 +40,7 @@ app.locals({
 });
 
 var socketConnections = {};
+io.sockets.setMaxListeners(0);
 io.sockets.on('connection', function(socket) {
     socket.on('userName', function(userName) {
         if (userName) {
