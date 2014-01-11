@@ -25,11 +25,14 @@ block content
     include ../partial/flash
 
     form#addForm.form-horizontal(method="post", action="/admin/post/add")
-        div.form-group
-            div.col-sm-6
+        div.row
+            div.col-sm-6.form-group(style="margin-left: 0; margin-right: 0;")
                 input.form-control(name="title", placeholder="Title")
-            div.col-sm-6
+                small.help-block(style="display: none;")
+
+            div.col-sm-6.form-group(style="margin-left: 0; margin-right: 0;")
                 input.form-control(name="slug", placeholder="Slug")
+                small.help-block(style="display: none;")
 
         if categories
             div.form-group
@@ -97,7 +100,9 @@ block content
                             textarea#editor.form-control(name="content", style="height: 100%;")
                     div#previewTab.tab-pane
                         div#previewContainer
-                            div.d-markdown-preview(style="height: 100%;")
+                            div.d-markdown-preview
+
+            span.help-block.col-sm-12(style="display: none;")
 
         div#buttons.form-group
             div.col-sm-12
@@ -107,6 +112,7 @@ block content
 
 block footerScript
     script(type="text/javascript", src="/vendor/autosave/jquery.autosave.min.js")
+    script(type="text/javascript", src="/vendor/bootstrapvalidator/js/bootstrapValidator.min.js")
     script(type="text/javascript", src="/vendor/codemirror/lib/codemirror.js")
     script(type="text/javascript", src="/vendor/codemirror/mode/markdown/markdown.js")
     script(type="text/javascript", src="/vendor/fileupload/js/vendor/jquery.ui.widget.js")
@@ -115,12 +121,6 @@ block footerScript
     script(type="text/javascript", src="/vendor/marked/marked.js")
     script(type="text/javascript").
         $(document).ready(function() {
-            var editorContainerHeight = $(document).height() - $('#buttons').outerHeight(true) - $('footer').outerHeight(true),
-                editorHeight          = editorContainerHeight - $('#editorContainer').offset().top - 20,
-                previewHeight         = editorHeight + $('#editorToolbar').outerHeight(true);
-            $('#editorContainer').height(editorHeight);
-            $('#previewContainer').height(previewHeight);
-
             // Markdown editor
             var editor = CodeMirror.fromTextArea($('#editor').get(0), {
                 mode: 'markdown',
@@ -129,11 +129,10 @@ block footerScript
                 lineWrapping: true,
                 theme: 'default'
             });
-            editor.setSize('100%', editorHeight);
             editor.on('change', function(e) {
                 // To ensure the form pass content for auto-saving
                 var text = e.getValue();
-                $('#editor').val(text).trigger('change');
+                $('#editor').val(text).trigger('change').trigger('keyup');
             });
 
             // Preview the content
@@ -253,14 +252,41 @@ block footerScript
             });
 
             $('#addForm')
+                // Validate form
+                .bootstrapValidator({
+                    fields: {
+                        title: {
+                            validators: {
+                                notEmpty: {
+                                    message: 'The title is required'
+                                }
+                            }
+                        },
+                        slug: {
+                            validators: {
+                                notEmpty: {
+                                    message: 'The slug is required'
+                                }
+                            }
+                        },
+                        content: {
+                            validators: {
+                                notEmpty: {
+                                    message: 'The content is required'
+                                }
+                            }
+                        }
+                    }
+                })
                 // Generate slug based on post's title
                 .find('input[name="title"]')
                     .on('keyup', function() {
                         var title = $(this).val(), $slug = $('#addForm').find('input[name="slug"]')
                         if (title == '') {
-                            $slug.val('');
+                            $slug.val('').trigger('keyup');
                             return;
                         }
+                        $slug.trigger('keyup');
                         $.ajax({
                             type: 'POST',
                             url: '/admin/post/slug',
