@@ -21,32 +21,14 @@ footer {
 
 .d-separator {
   /*border-top: 1px solid #e5e5e5;*/
-  border: none;
-  height: 60px;
-  position: relative;
-  display: block;
+  width: 100%;
   text-align: center;
-  overflow: hidden; }
-  .d-separator div.line {
-    height: 1px;
-    background-color: #e5e5e5;
-    position: absolute;
-    top: 50%;
-    left: 0;
-    right: 0;
-    width: 100%; }
-  .d-separator div.text {
-    position: absolute;
-    left: 0;
-    top: 0;
-    right: 0;
-    bottom: 0;
-    text-align: center;
-    line-height: 56px; }
-    .d-separator div.text span {
-      display: inline-block;
-      padding: 0 5px;
-      background: #ffffff; }
+  border-bottom: 1px solid #e5e5e5;
+  line-height: 0.1em;
+  margin: 10px 0 20px; }
+  .d-separator span {
+    background: #fff;
+    padding: 0 10px; }
 
 .d-post-meta a {
   margin: 0 5px; }
