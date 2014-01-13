@@ -44,3 +44,12 @@ footer {
 
 .d-post-toc.affix {
   top: 60px; }
+
+#scrollup {
+  position: fixed;
+  bottom: -50px;
+  right: 20px;
+  z-index: 1000;
+  font-size: 25px;
+  display: block;
+  padding: 3px; }
