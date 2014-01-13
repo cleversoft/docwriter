@@ -29,16 +29,15 @@ footer {
 
 // Helpers
 .d-separator {
-  /*border-top: 1px solid #e5e5e5;*/
-  width:100%;
-  text-align:center;
   border-bottom: 1px solid #e5e5e5;
-  line-height:0.1em;
-  margin:10px 0 20px;
+  text-align: center;
+  line-height: 0.1em;
+  margin: 30px 0;
+  width: 100%;
 
   span {
-    background:#fff;
-    padding:0 10px;
+    background: #fff;
+    padding: 0 10px;
   }
 }
 

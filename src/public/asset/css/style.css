@@ -20,12 +20,11 @@ footer {
     padding-top: 8px; }
 
 .d-separator {
-  /*border-top: 1px solid #e5e5e5;*/
-  width: 100%;
-  text-align: center;
   border-bottom: 1px solid #e5e5e5;
+  text-align: center;
   line-height: 0.1em;
-  margin: 10px 0 20px; }
+  margin: 30px 0;
+  width: 100%; }
   .d-separator span {
     background: #fff;
     padding: 0 10px; }
