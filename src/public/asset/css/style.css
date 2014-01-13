@@ -20,16 +20,33 @@ footer {
     padding-top: 8px; }
 
 .d-separator {
-  border-top: 1px solid #e5e5e5;
-  border-bottom: none;
-  border-left: none;
-  border-right: none;
+  /*border-top: 1px solid #e5e5e5;*/
+  border: none;
+  height: 60px;
+  position: relative;
   display: block;
-  text-align: center; }
-  .d-separator legend {
-    padding: 5px 10px;
-    border-bottom: none;
-    width: auto; }
+  text-align: center;
+  overflow: hidden; }
+  .d-separator div.line {
+    height: 1px;
+    background-color: #e5e5e5;
+    position: absolute;
+    top: 50%;
+    left: 0;
+    right: 0;
+    width: 100%; }
+  .d-separator div.text {
+    position: absolute;
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    text-align: center;
+    line-height: 56px; }
+    .d-separator div.text span {
+      display: inline-block;
+      padding: 0 5px;
+      background: #ffffff; }
 
 .d-post-meta a {
   margin: 0 5px; }
