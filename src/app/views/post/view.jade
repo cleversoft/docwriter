@@ -19,12 +19,16 @@ block content
         h1
             a(href="/post/#{post.slug}") #{post.title}
         .d-post-meta
-            | Posted by #{post.created_user.username} on #{moment(post.created_date).format('YYYY-MM-DD HH:mm')}
-            if post.categories
-                |  in&nbsp;
-                span
-                    for category in post.categories
-                        a.label.label-info(href="/category/#{category.slug}") #{category.name}
+            .d-post-meta-create
+                | Posted by #{post.created_user.username} on #{moment(post.created_date).format('YYYY-MM-DD HH:mm')}
+                if post.categories
+                    |  in&nbsp;
+                    span
+                        for category in post.categories
+                            a.label.label-info(href="/category/#{category.slug}") #{category.name}
+            .d-post-meta-edit
+                if post.updated_date && post.updated_date !== post.created_date
+                    | Last updated by #{post.updated_user.username} on #{moment(post.updated_date).format('YYYY-MM-DD HH:mm')}
 
         hr
 
