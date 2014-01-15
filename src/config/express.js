@@ -21,6 +21,9 @@ module.exports = function(app, config) {
         app.use(express.logger('dev'));
     }
 
+    // Set correct MIME type for woff files
+    express['static'].mime.define({ 'application/font-woff': ['woff'] });
+
     // Set the views path, template engine, and default layout
     app.set('views', config.root + '/app/views');
     app.set('view engine', 'jade');
