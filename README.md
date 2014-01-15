@@ -117,7 +117,7 @@ Meanwhile the production site should use the settings in the ```production``` se
 
 ```root```: The root path. Please **DO NOT** change this
 
-```session.domain```: The cookie domain
+```session.domain```: The cookie domain. Don't set it (by either adding ```//``` to the beginning of the line or setting it to empty) if you run app under ```http://localhost:3000```
 
 ```session.secret```: A secret string to encrypt the session data.
 
@@ -141,7 +141,7 @@ For example, 1024 * 1024 * 20 allows user to upload files up to 20 MB in size.
 
 ```redis.namespace```: Root namespace.
 
-All the Redis keys are combination of the namespace, keys, and colons (```:```)
+All the Redis keys are combination of the namespace, keys, and colons (```:```). It's used to distinct Redis keys if you run multiple instances of app on the same server, or other websites use the same Redis server.
 
 ```autoSave```: The auto-saving interval time in minutes. Set it to 0 to disable auto-saving
 
@@ -194,7 +194,7 @@ Then access the browser at ```http://localhost:3000```
 ## Authors
 
 * Author:
-Nguyen Huu Phuoc ([Twitter](http://twitter.com/nghuuphuoc) / [Github](http://github.com/nghuuphuoc))
+Nguyen Huu Phuoc, aka @nghuuphuoc ([Twitter](http://twitter.com/nghuuphuoc) / [Github](http://github.com/nghuuphuoc))
 
 * Contributor:
 Nguyen Ta Quang Duc, aka [@ducntq](http://github.com/ducntq)
