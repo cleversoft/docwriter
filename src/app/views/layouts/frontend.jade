@@ -61,6 +61,12 @@ html
             .container
                 p &copy; 2013 #{config.app.name}
 
+        // Scroll to top button
+        a#scrollUp.d-scrollup(href="javascript: void();")
+            span.fa-stack
+                i.fa.fa-square-o.fa-stack-2x
+                i.fa.fa-chevron-up.fa-stack-1x
+
         //if lt IE 9
             script(src="/vendor/jquery/jquery-1.10.2.min.js")
 
@@ -70,6 +76,16 @@ html
 
         script(src="/vendor/bootstrap/js/bootstrap.min.js")
 
-        script(src="/asset/js/frontend.js")
+        script(type="text/javascript").
+            $(document).ready(function() {
+                var $scroll = $('#scrollUp');
+                $(window).on('scroll', function() {
+                    $scroll.stop().animate({ bottom: $(window).scrollTop() >= 200 ? 0 : -50 }, 100);
+                });
+
+                $scroll.click(function() {
+                    $('body,html').stop().animate({ scrollTop: 0 });
+                });
+            });
 
         block footerScript

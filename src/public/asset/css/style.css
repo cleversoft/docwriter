@@ -21,9 +21,9 @@ footer {
 
 .d-separator {
   border-bottom: 1px solid #e5e5e5;
-  text-align: center;
   line-height: 0.1em;
   margin: 30px 0;
+  text-align: center;
   width: 100%; }
   .d-separator span {
     background: #fff;
@@ -43,11 +43,11 @@ footer {
 .d-post-toc.affix {
   top: 60px; }
 
-#scrollup {
-  position: fixed;
+.d-scrollup {
   bottom: -50px;
-  right: 20px;
-  z-index: 1000;
-  font-size: 25px;
   display: block;
-  padding: 3px; }
+  font-size: 25px;
+  padding: 3px;
+  position: fixed;
+  right: 20px;
+  z-index: 1000; }
