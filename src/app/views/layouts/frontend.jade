@@ -59,10 +59,10 @@ html
 
         footer
             .container
-                p &copy; 2013 #{config.app.name}
+                p &copy; #{new Date().getFullYear()} #{config.app.name}
 
         // Scroll to top button
-        a#scrollUp.d-scrollup(href="javascript: void();")
+        a#scrollUp.d-scrollup(href="#")
             span.fa-stack
                 i.fa.fa-square-o.fa-stack-2x
                 i.fa.fa-chevron-up.fa-stack-1x
