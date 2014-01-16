@@ -38,7 +38,7 @@ block content
             | &nbsp;DRAFT
 
     if total > 0
-        table.table#post-list(style="margin-top: 20px;", data-status=req.param("status"))
+        table.table(style="margin-top: 20px;")
             thead
                 tr
                     th
@@ -77,7 +77,7 @@ block content
                                 | &darr;&nbsp;
                             | # PDF downloads
                     th(width="400px") Actions
-            tbody#posts
+            tbody#posts(data-status=criteria.status)
                 for post in posts
                     tr(data-id="#{post._id}")
                         td #{post.title}
@@ -185,8 +185,9 @@ block footerScript
                     }).done(function(response) {
                         $that.removeAttr('disabled');
                         if ('ok' == response.result) {
-                            var $postList = $('#post-list');
-                            if ($postList.length > 0 && $postList.attr('data-status')) $tr.remove();
+                            if ($('#posts').attr('data-status')) {
+                                $tr.remove();
+                            }
                             var status = ('activated' == $that.attr('data-status')) ? 'deactivated' : 'activated';
                             $that
                                 .attr('data-status', status)
