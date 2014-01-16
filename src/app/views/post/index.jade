@@ -38,7 +38,7 @@ block content
             | &nbsp;DRAFT
 
     if total > 0
-        table.table(style="margin-top: 20px;")
+        table.table#post-list(style="margin-top: 20px;", data-status=req.param("status"))
             thead
                 tr
                     th
@@ -185,7 +185,8 @@ block footerScript
                     }).done(function(response) {
                         $that.removeAttr('disabled');
                         if ('ok' == response.result) {
-                            $tr.remove();
+                            var $postList = $('#post-list');
+                            if ($postList.length > 0 && $postList.attr('data-status')) $tr.remove();
                             var status = ('activated' == $that.attr('data-status')) ? 'deactivated' : 'activated';
                             $that
                                 .attr('data-status', status)
