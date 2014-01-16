@@ -2,6 +2,7 @@ extends ../layouts/frontend
 
 block head
     link(rel="stylesheet", href="/vendor/tocjs/css/toc-scroll.min.css")
+    link(rel="stylesheet", href="/vendor/highlight/css/github.css")
 
 block topnav
     div.nav.navbar-form
@@ -64,6 +65,8 @@ block content
 
 block footerScript
     script(type="text/javascript", src="/vendor/tocjs/js/toc.min.js")
+    script(type="text/javascript", src="/vendor/highlight/js/highlight.pack.js")
+
     script(type="text/javascript", src="/vendor/socket.io/socket.io.min.js")
     script(type="text/javascript").
         (function(d, s, id){
@@ -114,8 +117,7 @@ block footerScript
                 .toc({
                     selector: '#content > h2, h3, h4, h5, h6',
                     elementClass: 'toc',
-                    ulClass: 'nav',
-                    heading: 'Table of Contents'
+                    ulClass: 'nav'
                 });
 
             var $window = $(window),
@@ -147,4 +149,7 @@ block footerScript
                     }
                 });
             }, 100);
+
+            hljs.initHighlightingOnLoad();
+
         });
