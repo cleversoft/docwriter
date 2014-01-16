@@ -41,6 +41,7 @@ footer {
   margin: 40px 0; }
 
 .d-post-toc.affix {
+  position: static;
   top: 60px; }
 
 .d-scrollup {
@@ -52,33 +53,19 @@ footer {
   right: 20px;
   z-index: 1000; }
 
-#toc.affix {
-  position: static; }
-
 @media (min-width: 992px) {
-  #toc .nav > .active > ul {
+  .d-post-toc .nav > .active > ul {
     display: block; }
-
-  /* Widen the fixed sidebar */
-  #toc.affix,
-  #toc.affix-bottom {
-    width: 213px; }
-
-  #toc.affix {
+  .d-post-toc.affix {
     position: fixed;
-    /* Undo the static from mobile first approach */
-    top: 80px; }
-
-  #toc.affix-bottom {
+    top: 80px;
+    width: 213px; }
+  .d-post-toc.affix-bottom {
     position: absolute;
-    /* Undo the static from mobile first approach */ }
-
-  #toc.affix-bottom .bs-sidenav,
-  #toc.affix .bs-sidenav {
+    width: 213px; }
+  .d-post-toc.affix-bottom .bs-sidenav, .d-post-toc.affix .bs-sidenav {
     margin-top: 0;
     margin-bottom: 0; } }
 @media (min-width: 1200px) {
-  /* Widen the fixed sidebar again */
-  #toc.affix-bottom,
-  #toc.affix {
+  .d-post-toc.affix, .d-post-toc.affix-bottom {
     width: 263px; } }
