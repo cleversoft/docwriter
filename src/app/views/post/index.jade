@@ -172,7 +172,8 @@ block footerScript
                 // Publishing post handler
                 .on('click', '.publishButton', function() {
                     var $that  = $(this),
-                        id     = $that.parents('tr').attr('data-id');
+                        $tr    = $that.parents('tr'),
+                        id     = $tr.attr('data-id');
                     $that.attr('disabled', 'disabled');
                     $.ajax({
                         type: 'post',
@@ -184,6 +185,7 @@ block footerScript
                     }).done(function(response) {
                         $that.removeAttr('disabled');
                         if ('ok' == response.result) {
+                            $tr.remove();
                             var status = ('activated' == $that.attr('data-status')) ? 'deactivated' : 'activated';
                             $that
                                 .attr('data-status', status)
