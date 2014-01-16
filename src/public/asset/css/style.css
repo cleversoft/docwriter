@@ -51,3 +51,34 @@ footer {
   position: fixed;
   right: 20px;
   z-index: 1000; }
+
+#toc.affix {
+  position: static; }
+
+@media (min-width: 992px) {
+  #toc .nav > .active > ul {
+    display: block; }
+
+  /* Widen the fixed sidebar */
+  #toc.affix,
+  #toc.affix-bottom {
+    width: 213px; }
+
+  #toc.affix {
+    position: fixed;
+    /* Undo the static from mobile first approach */
+    top: 80px; }
+
+  #toc.affix-bottom {
+    position: absolute;
+    /* Undo the static from mobile first approach */ }
+
+  #toc.affix-bottom .bs-sidenav,
+  #toc.affix .bs-sidenav {
+    margin-top: 0;
+    margin-bottom: 0; } }
+@media (min-width: 1200px) {
+  /* Widen the fixed sidebar again */
+  #toc.affix-bottom,
+  #toc.affix {
+    width: 263px; } }
