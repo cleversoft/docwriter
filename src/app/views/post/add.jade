@@ -43,6 +43,80 @@ block content
                             label
                                 input(type="checkbox", name="categories[]", value="#{category._id}")
                                 | #{category.name}
+                .col-sm-6
+                    div.form-horizontal#heading_style
+                        .form-group
+                            label.col-sm-2.control-label(for="heading_styles") Heading style
+                            .col-sm-10
+                                select(name="heading_styles", id="heading_styles")
+                                    option(value="111111") Number prefix (1, 2, 3, ...)
+                                    option(value="AAAAAA") Uppercase alphabetical characters prefix (A, B, C, ...)
+                                    option(value="aaaaaa") Lowercase alphabetical characters (a, b, c, ...)
+                                    option(value="IIIIII") Uppercase Roman numerals (I, II, III, ...)
+                                    option(value="iiiiii") Lowercase Roman numerals (i, ii, iii, ...)
+                                    option(value="custom") Customize
+                        div#custom_heading_styles(style="display:none")
+                            .form-group
+                                label.col-sm-2.control-label(for="heading_style_h1") Heading 1
+                                .col-sm-10
+                                    select(name="heading_style_h1", id="heading_style_h1")
+                                        option(value="1") Number prefix (1, 2, 3, ...)
+                                        option(value="A") Uppercase alphabetical characters prefix (A, B, C, ...)
+                                        option(value="a") Lowercase alphabetical characters (a, b, c, ...)
+                                        option(value="I") Uppercase Roman numerals (I, II, III, ...)
+                                        option(value="i") Lowercase Roman numerals (i, ii, iii, ...)
+                                        option(value=" ") None
+                            .form-group
+                                label.col-sm-2.control-label(for="heading_style_h2") Heading 2
+                                .col-sm-10
+                                    select(name="heading_style_h2", id="heading_style_h2")
+                                        option(value="1") Number prefix (1, 2, 3, ...)
+                                        option(value="A") Uppercase alphabetical characters prefix (A, B, C, ...)
+                                        option(value="a") Lowercase alphabetical characters (a, b, c, ...)
+                                        option(value="I") Uppercase Roman numerals (I, II, III, ...)
+                                        option(value="i") Lowercase Roman numerals (i, ii, iii, ...)
+                                        option(value=" ") None
+                            .form-group
+                                label.col-sm-2.control-label(for="heading_style_h3") Heading 3
+                                .col-sm-10
+                                    select(name="heading_style_h3", id="heading_style_h3")
+                                        option(value="1") Number prefix (1, 2, 3, ...)
+                                        option(value="A") Uppercase alphabetical characters prefix (A, B, C, ...)
+                                        option(value="a") Lowercase alphabetical characters (a, b, c, ...)
+                                        option(value="I") Uppercase Roman numerals (I, II, III, ...)
+                                        option(value="i") Lowercase Roman numerals (i, ii, iii, ...)
+                                        option(value=" ") None
+                            .form-group
+                                label.col-sm-2.control-label(for="heading_style_h4") Heading 4
+                                .col-sm-10
+                                    select(name="heading_style_h4", id="heading_style_h4")
+                                        option(value="1") Number prefix (1, 2, 3, ...)
+                                        option(value="A") Uppercase alphabetical characters prefix (A, B, C, ...)
+                                        option(value="a") Lowercase alphabetical characters (a, b, c, ...)
+                                        option(value="I") Uppercase Roman numerals (I, II, III, ...)
+                                        option(value="i") Lowercase Roman numerals (i, ii, iii, ...)
+                                        option(value=" ") None
+                            .form-group
+                                label.col-sm-2.control-label(for="heading_style_h5") Heading 5
+                                .col-sm-10
+                                    select(name="heading_style_h5", id="heading_style_h5")
+                                        option(value="1") Number prefix (1, 2, 3, ...)
+                                        option(value="A") Uppercase alphabetical characters prefix (A, B, C, ...)
+                                        option(value="a") Lowercase alphabetical characters (a, b, c, ...)
+                                        option(value="I") Uppercase Roman numerals (I, II, III, ...)
+                                        option(value="i") Lowercase Roman numerals (i, ii, iii, ...)
+                                        option(value=" ") None
+                            .form-group
+                                label.col-sm-2.control-label(for="heading_style_h6") Heading 6
+                                .col-sm-10
+                                    select(name="heading_style_h6", id="heading_style_h6")
+                                        option(value="1") Number prefix (1, 2, 3, ...)
+                                        option(value="A") Uppercase alphabetical characters prefix (A, B, C, ...)
+                                        option(value="a") Lowercase alphabetical characters (a, b, c, ...)
+                                        option(value="I") Uppercase Roman numerals (I, II, III, ...)
+                                        option(value="i") Lowercase Roman numerals (i, ii, iii, ...)
+                                        option(value=" ") None
+
 
         div.form-group
             div.col-sm-12
@@ -121,6 +195,13 @@ block footerScript
     script(type="text/javascript", src="/vendor/marked/marked.js")
     script(type="text/javascript").
         $(document).ready(function() {
+            // Custom styles trigger
+            $('#heading_styles').on('change', function() {
+                var $this = $(this);
+                if ($this.val() == 'custom') $('#custom_heading_styles').slideDown(300);
+                else $('#custom_heading_styles').slideUp(300);
+            });
+
             // Markdown editor
             var editor = CodeMirror.fromTextArea($('#editor').get(0), {
                 mode: 'markdown',

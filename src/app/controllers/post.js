@@ -325,6 +325,25 @@ exports.add = function(req, res) {
             categories: req.body.categories || []
         });
 
+        if (req.body.heading_styles !== 'custom') {
+            post.heading_styles = { style: req.body.heading_styles, custom_style: {} };
+        }
+        else {
+            post.heading_styles = {
+                style: 'custom',
+                custom_style: {
+                    h1: req.body.heading_style_h1,
+                    h2: req.body.heading_style_h2,
+                    h3: req.body.heading_style_h3,
+                    h4: req.body.heading_style_h4,
+                    h5: req.body.heading_style_h5,
+                    h6: req.body.heading_style_h6,
+                    format: req.body.heading_style_h1 + req.body.heading_style_h2 + req.body.heading_style_h3 +
+                        req.body.heading_style_h4 + req.body.heading_style_h5 + req.body.heading_style_h6
+                }
+            };
+        }
+
         if (req.body.publish) {
             post.status = 'activated';
         }
@@ -392,6 +411,24 @@ exports.edit = function(req, res) {
                 username: req.session.user.username,
                 full_name: req.session.user.full_name
             };
+            if (req.body.heading_styles !== 'custom') {
+                post.heading_styles = { style: req.body.heading_styles, custom_style: {} };
+            }
+            else {
+                post.heading_styles = {
+                    style: 'custom',
+                    custom_style: {
+                        h1: req.body.heading_style_h1,
+                        h2: req.body.heading_style_h2,
+                        h3: req.body.heading_style_h3,
+                        h4: req.body.heading_style_h4,
+                        h5: req.body.heading_style_h5,
+                        h6: req.body.heading_style_h6,
+                        format: req.body.heading_style_h1 + req.body.heading_style_h2 + req.body.heading_style_h3 +
+                            req.body.heading_style_h4 + req.body.heading_style_h5 + req.body.heading_style_h6
+                    }
+                };
+            }
 
             if (req.body.publish) {
                 post.status = 'activated';
