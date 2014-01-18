@@ -118,7 +118,7 @@ block footerScript
                     selector: '#content > h2, h3, h4, h5, h6',
                     elementClass: 'toc',
                     ulClass: 'nav',
-                    indexingFormats: '#{post.heading_styles.style != "custom" ? post.heading_styles.style : post.heading_styles.custom_style.format }'
+                    indexingFormats: '#{post.heading_styles}'
                 });
 
             var $window = $(window),
