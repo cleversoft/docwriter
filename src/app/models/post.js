@@ -18,7 +18,7 @@ var mongoose   = require('mongoose'),
         categories: [
             { type : Schema.ObjectId, ref: 'category' }
         ],
-        pdf_downloads: { type: Number, default: 0 },
+        pdf_downloads:  { type: Number, default: 0 },
         heading_styles: { type: String, default: '' }
     }),
     slugPlugin = require('./plugins/slug');

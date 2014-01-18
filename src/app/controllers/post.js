@@ -325,13 +325,9 @@ exports.add = function(req, res) {
             categories: req.body.categories || []
         });
 
-        if (req.body.heading_styles !== 'custom') {
-            post.heading_styles = req.body.heading_styles;
-        }
-        else {
-            post.heading_styles = req.body.heading_style_h1 + req.body.heading_style_h2 + req.body.heading_style_h3 +
-                req.body.heading_style_h4 + req.body.heading_style_h5 + req.body.heading_style_h6;
-        }
+        post.heading_styles = req.body.heading_styles == 'custom'
+                            ? [req.body.heading_style_h1, req.body.heading_style_h2, req.body.heading_style_h3, req.body.heading_style_h4, req.body.heading_style_h5, req.body.heading_style_h6].join('')
+                            : req.body.heading_styles;
 
         if (req.body.publish) {
             post.status = 'activated';
@@ -401,13 +397,9 @@ exports.edit = function(req, res) {
                 full_name: req.session.user.full_name
             };
 
-            if (req.body.heading_styles !== 'custom') {
-                post.heading_styles = req.body.heading_styles;
-            }
-            else {
-                post.heading_styles = req.body.heading_style_h1 + req.body.heading_style_h2 + req.body.heading_style_h3 +
-                    req.body.heading_style_h4 + req.body.heading_style_h5 + req.body.heading_style_h6;
-            }
+            post.heading_styles = req.body.heading_styles == 'custom'
+                                ? [req.body.heading_style_h1, req.body.heading_style_h2, req.body.heading_style_h3, req.body.heading_style_h4, req.body.heading_style_h5, req.body.heading_style_h6].join('')
+                                : req.body.heading_styles;
 
             if (req.body.publish) {
                 post.status = 'activated';
@@ -446,7 +438,8 @@ exports.edit = function(req, res) {
                         warning: req.flash('error'),
                         success: req.flash('success')
                     },
-                    post: post
+                    post: post,
+                    customHeadingStyle: ['111111', 'AAAAAA', 'aaaaaa', 'IIIIII', 'iiiiii'].indexOf(post.heading_styles) == -1
                 });
             });
         }
