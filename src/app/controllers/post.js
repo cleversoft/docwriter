@@ -430,6 +430,8 @@ exports.edit = function(req, res) {
             });
         } else {
             Category.find({}).sort({ position: 1 }).exec(function(err, categories) {
+                var customHeadingStyle = post.heading_styles ?
+                    (['111111', 'AAAAAA', 'aaaaaa', 'IIIIII', 'iiiiii', '______'].indexOf(post.heading_styles) == -1) : false;
                 res.render('post/edit', {
                     title: 'Edit post',
                     autoSave: config.autoSave || 0,
@@ -439,7 +441,7 @@ exports.edit = function(req, res) {
                         success: req.flash('success')
                     },
                     post: post,
-                    customHeadingStyle: ['111111', 'AAAAAA', 'aaaaaa', 'IIIIII', 'iiiiii', '______'].indexOf(post.heading_styles) == -1
+                    customHeadingStyle: customHeadingStyle
                 });
             });
         }
