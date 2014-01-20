@@ -439,7 +439,7 @@ exports.edit = function(req, res) {
                         success: req.flash('success')
                     },
                     post: post,
-                    customHeadingStyle: ['111111', 'AAAAAA', 'aaaaaa', 'IIIIII', 'iiiiii'].indexOf(post.heading_styles) == -1
+                    customHeadingStyle: ['111111', 'AAAAAA', 'aaaaaa', 'IIIIII', 'iiiiii', '______'].indexOf(post.heading_styles) == -1
                 });
             });
         }
