@@ -1,6 +1,6 @@
 {
     "name": "nodedesk",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "private": true,
     "dependencies": {
         "connect-flash": "0.1.1",

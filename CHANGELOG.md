@@ -1,5 +1,9 @@
 # Changelog
 
+## v1.0.1 (2014-01-20)
+
+* (#6) Fix 'none' heading style
+
 ## v1.0.0 (2014-01-20)
 
 **Front-end**
