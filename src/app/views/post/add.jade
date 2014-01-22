@@ -151,7 +151,56 @@ block footerScript
     script(type="text/javascript", src="/vendor/fileupload/js/jquery.fileupload.js")
     script(type="text/javascript", src="/vendor/marked/marked.js")
     script(type="text/javascript").
+        var created = false;
         $(document).ready(function() {
+            $('#addForm').on('click', 'button', function(e){
+                var $this = $(this);
+                var $form = $('#addForm');
+                var thisLabel = $this.text();
+                var thisWidth = $this.outerWidth();
+
+                // force width of the button
+                $this.html('<i class="fa fa-spinner fa-spin"></i>').css('width', thisWidth);;
+
+                // serialize and send form data
+                $.post($form.attr('action'), $form.serialize(), function(result) {
+                    // set the width of button back to default
+                    $this.html(thisLabel).css('width', 'auto');
+
+                    // preparing flash message
+                    var $flashContainer = $('<div class="alert"></div>');
+                    var flashClose = '<a class="close" data-dismiss="alert" href="#" aria-hidden="true"> &times;</a>';
+                    if (result.result == 'ok') {
+                        // check if create or update action
+                        var html = '';
+                        if (created) html = 'The post has been updated successfully ' + flashClose;
+                        else {
+                            html = 'The post has been added successfully ' + flashClose;
+                            var newUrl = '/admin/post/edit/' + result.id;
+                            $('#addForm').attr('action', newUrl);
+                        }
+                        $flashContainer.addClass('alert-success').html(html).insertAfter('.breadcrumb');
+                        $('.breadcrumb').find('.active').text('Edit post');
+
+                        $(document).attr('title', 'Edit post');
+                        created = true;
+
+                        // push history state with the url of edit page
+                        if (history && history.pushState && !created) {
+                            // if has the history api
+                            history.pushState(null, 'Edit post', newUrl);
+                        }
+                    }
+                    else {
+                        var html = '';
+                        if (created) html = 'Could not update the post' + flashClose;
+                        else html = 'Could not add the post' + flashClose;
+                        $flashContainer.addClass('alert-error').html(html).insertAfter('.breadcrumb');
+                    }
+                }, 'json');
+                return false;
+            });
+
             // Custom styles trigger
             $('#headingStyles').on('change', function() {
                 ($(this).val() == 'custom') ? $('#customHeadingStyles').slideDown(300) : $('#customHeadingStyles').slideUp(300);

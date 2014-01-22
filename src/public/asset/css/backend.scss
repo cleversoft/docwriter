@@ -113,3 +113,11 @@ footer {
     width: auto;
   }
 }
+
+#addForm, #editForm{
+  button {
+    i.fa {
+      font-size: 16px
+    }
+  }
+}

@@ -82,3 +82,6 @@ footer {
     padding: 5px 10px;
     border-bottom: none;
     width: auto; }
+
+#addForm button i.fa, #editForm button i.fa {
+  font-size: 16px; }
