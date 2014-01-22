@@ -369,15 +369,18 @@ block footerScript
                         }
                     }
                 })
-                .on('click', 'button', function(e) {
+                .on('click', 'button[type="submit"]', function(e) {
                     var $this = $(this);
                     var $form = $('#editForm');
                     var thisLabel = $this.text();
                     var thisWidth = $this.outerWidth();
 
+                    var action = '';
+                    if ($this.attr('name')) action = '&' + $this.attr('name') + '=true';
+
                     $this.html('<i class="fa fa-spinner fa-spin"></i>').css('width', thisWidth);;
 
-                    $.post($form.attr('action'), $form.serialize(), function(result) {
+                    $.post($form.attr('action'), $form.serialize() + action, function(result) {
                         $this.html(thisLabel).css('width', 'auto');
 
                         var $flashContainer = $('<div class="alert"></div>');

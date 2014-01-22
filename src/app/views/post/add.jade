@@ -374,11 +374,14 @@ block footerScript
                     var thisLabel = $this.text();
                     var thisWidth = $this.outerWidth();
 
+                    var action = '';
+                    if ($this.attr('name')) action = '&' + $this.attr('name') + '=true';
+
                     // force width of the button
                     $this.html('<i class="fa fa-spinner fa-spin"></i>').css('width', thisWidth);;
 
                     // serialize and send form data
-                    $.post($form.attr('action'), $form.serialize(), function(result) {
+                    $.post($form.attr('action'), $form.serialize() + action, function(result) {
                         // set the width of button back to default
                         $this.html(thisLabel).css('width', 'auto');
 
