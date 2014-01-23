@@ -317,6 +317,30 @@ block footerScript
                                 }
                             }
                         }
+                    },
+                    submitHandler: function(validator, form) {
+                        var $form = $(form);
+                        var $button = $form.data('triggerSource') ? $form.data('triggerSource') : $form.find('button[type="submit"]:first');
+                        var buttonLabel = $button.text();
+                        var buttonWidth = $button.outerWidth();
+
+                        var action = '';
+                        if ($button.attr('name')) action = '&' + $button.attr('name') + '=true';
+
+                        $button.html('<i class="fa fa-spinner fa-spin"></i>').css('width', buttonWidth);
+
+                        $.post($form.attr('action'), $form.serialize() + action, function(result) {
+                            $button.html(buttonLabel).css('width', 'auto');
+
+                            var $flashContainer = $('<div class="alert"></div>');
+                            var flashClose = '<a class="close" data-dismiss="alert" href="#" aria-hidden="true"> &times;</a>';
+
+                            if (result.result == 'ok') {
+                                $flashContainer.addClass('alert-success').html('The post has been updated successfully ' + flashClose).insertAfter('.breadcrumb');
+                            } else {
+                                $flashContainer.addClass('alert-error').html('Could not update the post' + flashClose).insertAfter('.breadcrumb');
+                            }
+                        }, 'json');
                     }
                 })
                 // Generate slug based on post's title
@@ -372,30 +396,8 @@ block footerScript
                 .on('click', 'button[type="submit"]', function(e) {
                     var $this = $(this);
                     var $form = $('#editForm');
-                    var thisLabel = $this.text();
-                    var thisWidth = $this.outerWidth();
 
-                    var action = '';
-                    if ($this.attr('name')) action = '&' + $this.attr('name') + '=true';
-
-                    $this.html('<i class="fa fa-spinner fa-spin"></i>').css('width', thisWidth);;
-
-                    $.post($form.attr('action'), $form.serialize() + action, function(result) {
-                        $this.html(thisLabel).css('width', 'auto');
-
-                        var $flashContainer = $('<div class="alert"></div>');
-                        var flashClose = '<a class="close" data-dismiss="alert" href="#" aria-hidden="true"> &times;</a>';
-
-                        if (result.result == 'ok') {
-                            $flashContainer.addClass('alert-success').html('The post has been updated successfully ' + flashClose).insertAfter('.breadcrumb');
-                        } else {
-                            $flashContainer.addClass('alert-error').html('Could not update the post' + flashClose).insertAfter('.breadcrumb');
-                        }
-                    }, 'json');
-
-                    return false;
+                    $form.data('triggerSource', $this);
                 });
-
-
         });
 
