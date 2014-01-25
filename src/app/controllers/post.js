@@ -177,7 +177,7 @@ exports.view = function(req, res) {
         var pdfAvailable = fs.existsSync(config.jobs.exportPdf.dir + '/' + post.slug + '.pdf');
 
         // calculate percent for the feedback bar
-        var likePercent = post.dislike != 0 ? post.like / post.dislike : 100;
+        var likePercent = post.dislike != 0 ? ((post.like / (post.dislike + post.like)) * 100) : 100;
         var dislikePercent = 100 - likePercent;
 
         res.render('post/view', {
