@@ -16,6 +16,7 @@ module.exports = function(app) {
     app.get('/post/pdf/:slug',     post.download);
     app.get('/post/preview/:slug', post.preview);
     app.get('/search',             post.search);
+    app.all('/post/feedback',      post.feedback);
     app.get('/post/:slug',         post.view);
 
     // --- Back-end routes ---

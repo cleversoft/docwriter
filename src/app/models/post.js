@@ -19,7 +19,9 @@ var mongoose   = require('mongoose'),
             { type : Schema.ObjectId, ref: 'category' }
         ],
         pdf_downloads:  { type: Number, default: 0 },
-        heading_styles: { type: String, default: '______' }
+        heading_styles: { type: String, default: '______' },
+        like: { type: Number, default: 0 },
+        dislike: { type: Number, default: 0 }
     }),
     slugPlugin = require('./plugins/slug');
 

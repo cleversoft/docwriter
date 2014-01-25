@@ -17,19 +17,31 @@ block topnav
 
 block content
     div.container
-        h1
-            a(href="/post/#{post.slug}") #{post.title}
-        .d-post-meta
-            .d-post-meta-create
-                | Posted by #{post.created_user.username} on #{moment(post.created_date).format('YYYY-MM-DD HH:mm')}
-                if post.categories
-                    |  in&nbsp;
-                    span
-                        for category in post.categories
-                            a.label.label-info(href="/category/#{category.slug}") #{category.name}
-            .d-post-meta-edit
-                if post.updated_date && post.updated_date !== post.created_date
-                    | Last updated by #{post.updated_user.username} on #{moment(post.updated_date).format('YYYY-MM-DD HH:mm')}
+        .row
+            h1.col-sm-12
+                a(href="/post/#{post.slug}") #{post.title}
+            .d-post-meta.col-sm-10
+                .d-post-meta-create
+                    | Posted by #{post.created_user.username} on #{moment(post.created_date).format('YYYY-MM-DD HH:mm')}
+                    if post.categories
+                        |  in&nbsp;
+                        span
+                            for category in post.categories
+                                a.label.label-info(href="/category/#{category.slug}") #{category.name}
+                .d-post-meta-edit
+                    if post.updated_date && post.updated_date !== post.created_date
+                        | Last updated by #{post.updated_user.username} on #{moment(post.updated_date).format('YYYY-MM-DD HH:mm')}
+            .d-post-stats.col-sm-2
+                .d-post-meta-views
+                if (post.like != 0 || post.dislike != 0)
+                    .d-post-meta-feedback-bar
+                        .d-post-meta-bar-like(style="width: #{likePercent}%")
+                        .d-post-meta-bar-dislike(style="width: #{dislikePercent}%")
+                .d-post-meta-feedback
+                    span.d-post-feedback.d-post-feedback-like
+                        i.fa.fa-thumbs-up  #{post.like}
+                    span.d-post-feedback.d-post-feedback-dislike
+                        i.fa.fa-thumbs-down  #{post.dislike}
 
         hr
 
@@ -42,6 +54,19 @@ block content
                 // Post content
                 div#content.d-post-content
                     != marked(post.content)
+
+                // Like and Dislike
+                div.d-post-comments
+                    hr
+                    #post-feedback.pull-right Was this helpful?
+                        form(method="post")
+                            input(type="hidden", name="id", value="#{post._id}", id="post_id")
+                            button.feedback-button.green(name="action", value="like", class="#{userFeedback == 'like' ? 'active' : ''}")
+                                i.fa.fa-thumbs-up
+                                |  Yes
+                            button.feedback-button.red(name="action", value="dislike", class="#{userFeedback == 'dislike' ? 'active' : ''}")
+                                i.fa.fa-thumbs-down
+                                |  No
 
                 // Post comments
                 div#comments.d-post-comments
@@ -153,4 +178,18 @@ block footerScript
 
             hljs.initHighlightingOnLoad();
 
+            $('#post-feedback').on('click', '.feedback-button', function() {
+                var $this = $(this);
+                var postId = $('#post_id').val();
+
+                if ($this.hasClass('active')) return false;
+
+                $('.feedback-button').removeClass('active');
+                $this.addClass('active');
+                var data = { id: postId, action: $this.val() }
+                $.post('/post/feedback', data, function(data) {
+                    //if (data.result == 'ok')
+                }, 'json');
+                return false;
+            });
         });

@@ -76,6 +76,20 @@ block content
                             else if ('pdf_downloads' == sortBy && -1 == sortDirection)
                                 | &darr;&nbsp;
                             | # PDF downloads
+                    th
+                        a(href="#{url(req, { sort: (1 == sortDirection ? '-' : '') + 'like' })}")
+                            if ('like' == sortBy && 1 == sortDirection)
+                                | &uarr;&nbsp;
+                            else if ('like' == sortBy && -1 == sortDirection)
+                                | &darr;&nbsp;
+                            | Like
+                        | &nbsp;/&nbsp;
+                        a(href="#{url(req, { sort: (1 == sortDirection ? '-' : '') + 'dislike' })}")
+                            if ('dislike' == sortBy && 1 == sortDirection)
+                                | &uarr;&nbsp;
+                            else if ('dislike' == sortBy && -1 == sortDirection)
+                                | &darr;&nbsp;
+                            | Dislike
                     th(width="400px") Actions
             tbody#posts(data-status=criteria.status)
                 for post in posts
@@ -91,6 +105,7 @@ block content
                             else
                                 | Draft
                         td #{post.pdf_downloads}
+                        td #{post.like} / #{post.dislike}
                         td
                             div.btn-group
                                 a.btn.btn-default.btn-sm(href="/admin/post/edit/#{post._id}") EDIT

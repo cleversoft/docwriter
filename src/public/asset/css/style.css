@@ -69,3 +69,62 @@ footer {
 @media (min-width: 1200px) {
   .d-post-toc.affix, .d-post-toc.affix-bottom {
     width: 263px; } }
+#post-feedback form {
+  display: inline-block;
+  margin-left: 10px; }
+#post-feedback .feedback-button {
+  color: #ffffff;
+  text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
+  padding: 0 10px;
+  line-height: 24px;
+  display: inline-block;
+  font-size: 13px;
+  border: 1px solid #d5d5d5;
+  vertical-align: middle;
+  cursor: pointer;
+  font-weight: normal;
+  border-radius: 4px;
+  margin-left: 3px; }
+#post-feedback .green {
+  background-color: #60b044;
+  background-image: -moz-linear-gradient(#8ccf75, #60b044);
+  background-image: -webkit-linear-gradient(#8ccf75, #60b044);
+  background-image: linear-gradient(#8ccf75, #60b044);
+  background-repeat: repeat-x;
+  border-color: #5ca941; }
+#post-feedback .green.active, #post-feedback .green:active {
+  background-image: -moz-linear-gradient(#60b044, #8ccf75);
+  background-image: -webkit-linear-gradient(#60b044, #8ccf75);
+  background-image: linear-gradient(#60b044, #8ccf75); }
+#post-feedback .red {
+  background-color: #FF5A5A;
+  background-image: -moz-linear-gradient(#ff5a5a, #be0000);
+  background-image: -webkit-linear-gradient(#ff5a5a, #be0000);
+  background-image: linear-gradient(#ff5a5a, #be0000);
+  background-repeat: repeat-x;
+  border-color: #BE0000; }
+#post-feedback .red.active, #post-feedback .red:active {
+  background-image: -moz-linear-gradient(#be0000, #ff5a5a);
+  background-image: -webkit-linear-gradient(#be0000, #ff5a5a);
+  background-image: linear-gradient(#be0000, #ff5a5a); }
+
+.d-post-stats .d-post-meta-feedback {
+  text-align: right; }
+  .d-post-stats .d-post-meta-feedback span.d-post-feedback {
+    display: inline-block;
+    margin-left: 10px;
+    color: #666666;
+    font-size: 14px; }
+.d-post-stats .d-post-meta-feedback-bar {
+  height: 2px;
+  margin: 4px 0;
+  width: 100%;
+  overflow: hidden; }
+  .d-post-stats .d-post-meta-feedback-bar .d-post-meta-bar-like {
+    height: 2px;
+    background-color: #2793e6;
+    float: left; }
+  .d-post-stats .d-post-meta-feedback-bar .d-post-meta-bar-dislike {
+    height: 2px;
+    background-color: #c7254e;
+    float: left; }

@@ -108,3 +108,86 @@ footer {
     }
   }
 }
+
+// feedback button
+
+
+#post-feedback {
+  form {
+    display: inline-block;
+    margin-left: 10px;
+  }
+  .feedback-button {
+    color: #ffffff;
+    text-shadow: 0 -1px 0 rgba(0,0,0,0.25);
+    padding: 0 10px;
+    line-height: 24px;
+    display: inline-block;
+    font-size: 13px;
+    border: 1px solid #d5d5d5;
+    vertical-align: middle;
+    cursor: pointer;
+    font-weight: normal;
+    border-radius: 4px;
+    margin-left: 3px;
+  }
+  .green {
+    background-color: #60b044;
+    background-image: -moz-linear-gradient(#8CCF75, #60b044);
+    background-image: -webkit-linear-gradient(#8CCF75, #60b044);
+    background-image: linear-gradient(#8CCF75, #60b044);
+    background-repeat: repeat-x;
+    border-color: #5ca941;
+  }
+
+  .green.active, .green:active {
+    background-image: -moz-linear-gradient(#60b044, #8CCF75);
+    background-image: -webkit-linear-gradient(#60b044, #8CCF75);
+    background-image: linear-gradient(#60b044, #8CCF75);
+  }
+  .red {
+    background-color: #FF5A5A;
+    background-image: -moz-linear-gradient(#FF5A5A, #BE0000);
+    background-image: -webkit-linear-gradient(#FF5A5A, #BE0000);
+    background-image: linear-gradient(#FF5A5A, #BE0000);
+    background-repeat: repeat-x;
+    border-color: #BE0000;
+  }
+  .red.active, .red:active {
+    background-image: -moz-linear-gradient(#BE0000, #FF5A5A);
+    background-image: -webkit-linear-gradient(#BE0000, #FF5A5A);
+    background-image: linear-gradient(#BE0000, #FF5A5A);
+  }
+}
+
+.d-post-stats {
+  .d-post-meta-feedback {
+    text-align: right;
+
+    span.d-post-feedback {
+      display: inline-block;
+      margin-left: 10px;
+      color: #666666;
+      font-size: 14px;
+    }
+  }
+
+  .d-post-meta-feedback-bar {
+    height: 2px;
+    margin: 4px 0;
+    width: 100%;
+    overflow: hidden;
+
+    .d-post-meta-bar-like {
+      height: 2px;
+      background-color: #2793e6;
+      float: left
+    }
+
+    .d-post-meta-bar-dislike {
+      height: 2px;
+      background-color: #c7254e;
+      float: left;
+    }
+  }
+}

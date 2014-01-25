@@ -176,6 +176,10 @@ exports.view = function(req, res) {
 
         var pdfAvailable = fs.existsSync(config.jobs.exportPdf.dir + '/' + post.slug + '.pdf');
 
+        // calculate percent for the feedback bar
+        var likePercent = post.dislike != 0 ? post.like / post.dislike : 100;
+        var dislikePercent = 100 - likePercent;
+
         res.render('post/view', {
             title: post.title,
             appUrl: config.app.url || req.protocol + '://' + req.get('host'),
@@ -183,7 +187,10 @@ exports.view = function(req, res) {
             moment: moment,
             pdfAvailable: pdfAvailable,
             post: post,
-            signedIn: (req.session && req.session.user)
+            signedIn: (req.session && req.session.user),
+            userFeedback: ((req.session && req.session.feedback && req.session.feedback[post._id]) ? req.session.feedback[post._id] : ''),
+            likePercent: likePercent,
+            dislikePercent: dislikePercent
         });
     });
 };
@@ -478,4 +485,43 @@ exports.slug = function(req, res) {
     Post.generateSlug(post, function(slug) {
         res.json({ slug: slug });
     });
+};
+
+exports.feedback = function (req, res) {
+    var id = req.body.id;
+    var action = req.body.action;
+
+    if (req.session && req.session.feedback && req.session.feedback[id]) {
+        if (req.session.feedback[id] == action) {
+            // user already has had feedback for this post
+            return res.json({ result: 'error'});
+        }
+        else {
+            // if user had feedback, but now change to like/dislike
+            req.session.feedback = {  };
+            req.session.feedback[id] = action;
+
+            var newData = action == 'like' ?
+                {$inc: { like: 1, dislike: -1 }} :
+                {$inc: { like: -1, dislike: 1 }};
+
+            Post.findByIdAndUpdate(id, newData, function (err, post) {
+                return res.json({ result: err ? 'error' : 'ok' });
+            });
+        }
+    } else {
+        // user does not have feedback for this post
+        if (!req.session.feedback) req.session.feedback = { };
+        req.session.feedback[id] = action;
+
+        if (id) {
+            // update new data
+            Post.findByIdAndUpdate(id, { $inc: (action == 'like' ? { like: 1 } : { dislike: 1 }) }, function (err, post) {
+                return res.json({ result: err ? 'error' : 'ok' });
+            });
+        } else {
+            // no id was found
+            return res.json({ result: 'error' });
+        }
+    }
 };
