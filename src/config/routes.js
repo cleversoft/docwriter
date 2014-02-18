@@ -47,6 +47,7 @@ module.exports = function(app) {
     app.all('/admin/post/edit/:id', authentication.requireAuthentication, post.edit);
     app.post('/admin/post/remove',  authentication.requireAuthentication, post.remove);
     app.post('/admin/post/slug',    authentication.requireAuthentication, post.slug);
+    app.all('/admin/post/duplicate/:id',    authentication.requireAuthentication, post.duplicate);
 
     // Users
     app.get('/admin/user',               adminAuthorization, user.index);

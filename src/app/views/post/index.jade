@@ -115,6 +115,7 @@ block content
                                         | UNPUBLISH
                                     else
                                         | PUBLISH
+                                a.btn.btn-info.btn-sm.duplicateButton(type="button", href="/admin/post/duplicate/#{post._id}") DUPLICATE
 
                             a.btn.btn-sm.btn-link.viewButton(class=post.status != 'activated' ? 'hide' : '', href="/post/#{post.slug}") VIEW
 

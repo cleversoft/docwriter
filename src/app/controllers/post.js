@@ -383,6 +383,43 @@ exports.add = function(req, res) {
     }
 };
 
+
+exports.duplicate = function(req, res) {
+    var id     = req.param('id');
+
+    var post = Post.findOne({_id: id}).exec(function(err, post) {
+        // purge object
+        var postJSON = post.toJSON();
+        delete postJSON._id;
+        delete postJSON.__v;
+        postJSON.created_user = {
+            username: req.session.user.username,
+                full_name: req.session.user.full_name
+        };
+
+        postJSON.created_date = new Date();
+        postJSON.updated_date = new Date();
+
+        var duplicatePost = new Post(postJSON);
+
+        // Generate new Slug
+        Post.generateSlug(duplicatePost, function(slug) {
+            duplicatePost.slug = slug;
+
+            duplicatePost.save(function(err) {
+                if (!err) {
+                    req.flash('success', 'The post has been created successfully');
+                    return res.redirect('/admin/post/edit/' + duplicatePost._id);
+                }
+                else {
+                    req.flash('error', 'Could not save post');
+                    return res.redirect('/admin/post');
+                }
+            });
+        });
+    });
+};
+
 /**
  * Edit post
  */
@@ -404,7 +441,7 @@ exports.edit = function(req, res) {
                 full_name: req.session.user.full_name
             };
 
-            post.heading_styles = req.body.heading_styles == 'custom'
+            post.heading_styles = (req.body.heading_styles != null && req.body.heading_styles == 'custom')
                                 ? [req.body.heading_style_h1, req.body.heading_style_h2, req.body.heading_style_h3, req.body.heading_style_h4, req.body.heading_style_h5, req.body.heading_style_h6].join('')
                                 : req.body.heading_styles;
 
