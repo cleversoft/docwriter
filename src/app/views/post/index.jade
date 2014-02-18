@@ -90,6 +90,13 @@ block content
                             else if ('dislike' == sortBy && -1 == sortDirection)
                                 | &darr;&nbsp;
                             | Dislike
+                    th
+                        a(href="#{url(req, { sort: (1 == sortDirection ? '-' : '') + 'views' })}")
+                            if ('views' == sortBy && 1 == sortDirection)
+                                | &uarr;&nbsp;
+                            else if ('views' == sortBy && -1 == sortDirection)
+                                | &darr;&nbsp;
+                            | Views
                     th(width="400px") Actions
             tbody#posts(data-status=criteria.status)
                 for post in posts
@@ -106,6 +113,7 @@ block content
                                 | Draft
                         td #{post.pdf_downloads}
                         td #{post.like} / #{post.dislike}
+                        td #{post.views ? post.views : 0}
                         td
                             div.btn-group
                                 a.btn.btn-default.btn-sm(href="/admin/post/edit/#{post._id}") EDIT
