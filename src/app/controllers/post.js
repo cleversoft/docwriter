@@ -3,7 +3,8 @@ var fs       = require('fs'),
     moment   = require('moment'),
     mongoose = require('mongoose'),
     Category = mongoose.model('category'),
-    Post     = mongoose.model('post');
+    Post     = mongoose.model('post'),
+    Visit    = mongoose.model('visit');
 
 // -----------------
 // FRONT-END ACTIONS
@@ -180,18 +181,43 @@ exports.view = function(req, res) {
         var likePercent = post.dislike != 0 ? ((post.like / (post.dislike + post.like)) * 100) : 100;
         var dislikePercent = 100 - likePercent;
 
-        res.render('post/view', {
-            title: post.title,
-            appUrl: config.app.url || req.protocol + '://' + req.get('host'),
-            marked: marked,
-            moment: moment,
-            pdfAvailable: pdfAvailable,
-            post: post,
-            signedIn: (req.session && req.session.user),
-            userFeedback: ((req.session && req.session.feedback && req.session.feedback[post._id]) ? req.session.feedback[post._id] : ''),
-            likePercent: likePercent,
-            dislikePercent: dislikePercent
-        });
+        var remoteIp = (req.headers['x-forwarded-for'] || '').split(',')[0]
+            || req.connection.remoteAddress;
+
+        if (remoteIp) {
+            Visit.count({ip: remoteIp, postId: post._id.toString()}, function(err, total) {
+                if (total == 0) {
+                    if (post.views) post.views++;
+                    else post.views = 1;
+
+                    post.save();
+                }
+
+                var visit = new Visit({
+                    ip: remoteIp,
+                    referer: req.headers.referer ? req.headers.referer : '',
+                    userAgent: req.headers['user-agent'] ? req.headers['user-agent'] : '',
+                    postId: post._id.toString()
+                });
+
+                visit.save(function(err) {
+                    // save visit information then render HTML
+                    res.render('post/view', {
+                        title: post.title,
+                        appUrl: config.app.url || req.protocol + '://' + req.get('host'),
+                        marked: marked,
+                        moment: moment,
+                        pdfAvailable: pdfAvailable,
+                        post: post,
+                        signedIn: (req.session && req.session.user),
+                        userFeedback: ((req.session && req.session.feedback && req.session.feedback[post._id]) ? req.session.feedback[post._id] : ''),
+                        likePercent: likePercent,
+                        dislikePercent: dislikePercent
+                    });
+                });
+            });
+        }
+
     });
 };
 
