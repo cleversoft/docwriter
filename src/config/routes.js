@@ -22,8 +22,11 @@ module.exports = function(app) {
     // --- Back-end routes ---
 
     // Auth
-    app.all('/signin',   auth.signin);
-    app.get('/signout',  auth.signout);
+    app.all('/signin',              auth.signin);
+    app.get('/signout',             auth.signout);
+    app.all('/forgot-password',     auth.forgotPassword);
+    app.all('/reset-password/:reset_hash',      auth.resetPassword);
+    app.all('/reset-password',      auth.resetPassword);
     app.all('/admin/password', authentication.requireAuthentication, auth.changePassword);
 
     // Dashboard

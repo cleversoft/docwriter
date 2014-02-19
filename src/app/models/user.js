@@ -9,7 +9,9 @@ var mongoose   = require('mongoose'),
         hashed_password: { type: String,  default: '' },
         salt:            { type: String,  default: '' },
         role:            { type: String,  default: 'admin' },
-        locked:          { type: Boolean, default: false }
+        locked:          { type: Boolean, default: false },
+        reset_hash:      { type: String,  default: ''},
+        reset_expire:    { type: Date,    default: Date.now}
     });
 
 userSchema

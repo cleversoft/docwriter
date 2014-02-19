@@ -31,6 +31,13 @@ module.exports = {
                 dir: '/Volumes/data/projects_workspace/nodedesk/pdf',
                 footerTemplate: rootPath + '/config/template/pdfFooter.html'
             }
+        },
+        mail: {
+            from: 'NodeDesk <nodedesk@nodedesk.com>',
+            transport: 'sendmail',
+            options: {
+
+            }
         }
     },
     test: {
