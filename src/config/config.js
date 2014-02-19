@@ -33,10 +33,14 @@ module.exports = {
             }
         },
         mail: {
-            from: 'NodeDesk <nodedesk@nodedesk.com>',
-            transport: 'sendmail',
+            from: 'NodeDesk <nodedesk@gmail.com>',
+            transport: 'SMTP',
             options: {
-
+                service: "Gmail",
+                auth: {
+                    user: "nodedesk@gmail.com",
+                    pass: "password"
+                }
             }
         }
     },

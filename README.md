@@ -177,6 +177,8 @@ Open this file and change the URL defining CSS styles for the footer to the root
 <link rel="stylesheet" href="http://<change to the root URL>/vendor/font-awesome/css/font-awesome.min.css">
 ```
 
+```mail```: NodeDesk uses [nodemail](https://github.com/andris9/Nodemailer) to send email, please refer to ```nodemailer``` to config your email relay service. The default configuration makes use of Gmail SMTP service, just simply enter your Gmail's address and password.
+
 ## Running
 
 From the ```src``` directory, execute the following commands to run the app and job queues:
