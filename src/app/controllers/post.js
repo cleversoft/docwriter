@@ -431,6 +431,7 @@ exports.duplicate = function(req, res) {
         // Generate new Slug
         Post.generateSlug(duplicatePost, function(slug) {
             duplicatePost.slug = slug;
+            duplicatePost.title = duplicatePost.title + ' copy';
 
             duplicatePost.save(function(err) {
                 if (!err) {
