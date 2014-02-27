@@ -85,6 +85,8 @@ footer {
   font-weight: normal;
   border-radius: 4px;
   margin-left: 3px; }
+#post-feedback .feedback-button[disabled] {
+  cursor: default !important; }
 #post-feedback .green {
   background-color: #60b044;
   background-image: -moz-linear-gradient(#8ccf75, #60b044);

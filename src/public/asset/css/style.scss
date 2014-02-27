@@ -131,6 +131,9 @@ footer {
     border-radius: 4px;
     margin-left: 3px;
   }
+  .feedback-button[disabled] {
+    cursor: default !important;
+  }
   .green {
     background-color: #60b044;
     background-image: -moz-linear-gradient(#8CCF75, #60b044);

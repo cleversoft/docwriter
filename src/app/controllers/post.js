@@ -210,7 +210,7 @@ exports.view = function(req, res) {
                         pdfAvailable: pdfAvailable,
                         post: post,
                         signedIn: (req.session && req.session.user),
-                        userFeedback: ((req.session && req.session.feedback && req.session.feedback[post._id]) ? req.session.feedback[post._id] : ''),
+                        userFeedback: !!(req.session && req.session.feedback && req.session.feedback[post._id]),
                         likePercent: likePercent,
                         dislikePercent: dislikePercent
                     });
