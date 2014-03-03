@@ -1,5 +1,7 @@
 var mongoose = require('mongoose'),
-    User     = mongoose.model('user');
+    User     = mongoose.model('user'),
+    Setting  = mongoose.model('setting'),
+    fs       = require('fs');
 
 /**
  * Add new user
@@ -132,6 +134,21 @@ exports.index = function(req, res) {
         q         = req.param('q') || '',
         criteria  = q ? { username: new RegExp(q, 'i') } : {};
 
+    if (fs.existsSync("./src/public/vendor/fileupload/img/logo.png")) {
+        logo_content = "image";
+    } else {
+        logo_content = "text";
+    }
+    Setting.find().exec(function(err, setting){
+        if ( setting.length == 1 ) {
+            web_title = setting[0].web_title;
+            web_name  = setting[0].web_name;
+        } else {
+            web_title =  config.app.name;
+            web_name  = config.app.name;
+        }
+    });
+
     User.count(criteria, function(err, total) {
         User
             .find(criteria)
@@ -164,7 +181,9 @@ exports.index = function(req, res) {
                     page: page,
                     numPages: numPages,
                     startRange: startRange,
-                    endRange: endRange
+                    endRange: endRange,
+                    logo_content: logo_content,
+                    logo :  web_name
                 });
             });
     });
