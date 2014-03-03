@@ -1,3 +1,22 @@
 extends ../layouts/backend
 
 block content
+    h1 Keywords
+    div.table-responsive
+        table(class='table table-bordered table-striped')
+            thread
+                tr
+                    th #
+                    th keywords
+                    th count
+            tbody
+            - var i=0;
+            each data in listData
+               - i++;
+                tr
+                    th
+                        b #{i}
+                    th
+                        b(class='text-info') #{data.keyword}
+                    th
+                        b(class='text-info') #{data.count}
