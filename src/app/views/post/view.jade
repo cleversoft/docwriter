@@ -23,8 +23,8 @@ block content
             .d-post-meta.col-sm-10
                 .d-post-meta-create
                     | Posted by #{post.created_user.username} on #{moment(post.created_date).format('YYYY-MM-DD HH:mm')}
-                    if post.categories
-                        |  in&nbsp;
+                    if (post.categories != '')
+                        |  in &nbsp;
                         span
                             for category in post.categories
                                 a.label.label-info(href="/category/#{category.slug}") #{category.name}
@@ -61,10 +61,10 @@ block content
                     #post-feedback.pull-right Was this helpful?
                         form(method="post")
                             input(type="hidden", name="id", value="#{post._id}", id="post_id")
-                            button.feedback-button(name="action", value="like", disabled=userFeedback, class=(userFeedback ? "" : "green"))
+                            button.feedback-button.green(name="action", value="like", class="#{userFeedback == 'like' ? 'active' : ''}")
                                 i.fa.fa-thumbs-up
                                 |  Yes
-                            button.feedback-button(name="action", value="dislike", disabled=userFeedback, class=(userFeedback ? "" : "red"))
+                            button.feedback-button.red(name="action", value="dislike", class="#{userFeedback == 'dislike' ? 'active' : ''}")
                                 i.fa.fa-thumbs-down
                                 |  No
 
@@ -183,11 +183,9 @@ block footerScript
                 var postId = $('#post_id').val();
 
                 if ($this.hasClass('active')) return false;
-                if ($this.attr('disabled')) return false;
 
-                $('.feedback-button').removeClass('active green red');
-                $this.attr('disabled', true);
-
+                $('.feedback-button').removeClass('active');
+                $this.addClass('active');
                 var data = { id: postId, action: $this.val() }
                 $.post('/post/feedback', data, function(data) {
                     //if (data.result == 'ok')
