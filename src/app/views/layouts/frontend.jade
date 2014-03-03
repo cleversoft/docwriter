@@ -26,7 +26,12 @@ html
                             span.icon-bar
                             span.icon-bar
                             span.icon-bar
-                        a.navbar-brand(href="/") #{config.app.name}
+
+                        if (logo_content == 'text')
+                            a.navbar-brand(href="/") #{logo}
+                        else
+                            a.navbar-brand(href="/")
+                                img(src='/vendor/fileupload/img/logo.png' height='23px')
 
                     div#navbar-collapse.collapse.navbar-collapse
                         if authHelper(req)

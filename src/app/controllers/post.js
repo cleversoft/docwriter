@@ -4,8 +4,9 @@ var fs       = require('fs'),
     mongoose = require('mongoose'),
     Category = mongoose.model('category'),
     Post     = mongoose.model('post'),
-    Visit    = mongoose.model('visit');
-
+    Visit    = mongoose.model('visit'),
+    Search   = mongoose.model('search'),
+    Setting  = mongoose.model('setting');
 // -----------------
 // FRONT-END ACTIONS
 // -----------------
@@ -14,7 +15,22 @@ var fs       = require('fs'),
  * List posts in given category
  */
 exports.category = function(req, res) {
+    var config = req.app.get('config');
     var slug = req.param('slug');
+    if (fs.existsSync("./src/public/vendor/fileupload/img/logo.png")) {
+        logo_content = "image";
+    } else {
+        logo_content = "text";
+    }
+    Setting.find().exec(function(err, setting){
+        if ( setting.length == 1 ) {
+            web_title = setting[0].web_title;
+            web_name  = setting[0].web_name;
+        } else {
+            web_title =  config.app.name;
+            web_name  = config.app.name;
+        }
+    });
     Category
         .find({})
         .sort({ position: 1 })
@@ -71,7 +87,9 @@ exports.category = function(req, res) {
                                     page: page,
                                     numPages: numPages,
                                     startRange: startRange,
-                                    endRange: endRange
+                                    endRange: endRange,
+                                    logo_content: logo_content,
+                                    logo :  web_name
                                 });
                             });
                     });
@@ -112,7 +130,22 @@ exports.download = function(req, res) {
  * Search for posts
  */
 exports.search = function(req, res) {
+    var config = req.app.get('config');
     var slug = req.param('slug');
+    if (fs.existsSync("./src/public/vendor/fileupload/img/logo.png")) {
+        logo_content = "image";
+    } else {
+        logo_content = "text";
+    }
+    Setting.find().exec(function(err, setting){
+        if ( setting.length == 1 ) {
+            web_title = setting[0].web_title;
+            web_name  = setting[0].web_name;
+        } else {
+            web_title =  config.app.name;
+            web_name  = config.app.name;
+        }
+    });
     Category.find({}).sort({ position: 1 }).exec(function(err, categories) {
         var perPage   = 10,
             pageRange = 5,
@@ -157,9 +190,27 @@ exports.search = function(req, res) {
                         page: page,
                         numPages: numPages,
                         startRange: startRange,
-                        endRange: endRange
+                        endRange: endRange,
+                        logo_content: logo_content,
+                        logo :  web_name
                     });
                 });
+        });
+
+        Search.find().exec(function(err,data){
+           numKeyword = data.length;
+           for ( var i = 0; i < numKeyword; i++) {
+               if ( data[i].keyword == q ) {
+                    var newCount = data[i].count + 1 ;
+                    Search.update({keyword: q},{count: newCount},function(err,list){
+                       console.log(newCount);
+                   });
+                   return;
+               }
+           }
+            new Search({keyword: q, count: 1}).save(function(err,list){
+                console.log('ok2');
+            });
         });
     });
 };
@@ -170,6 +221,20 @@ exports.search = function(req, res) {
 exports.view = function(req, res) {
     var slug   = req.param('slug'),
         config = req.app.get('config');
+    if (fs.existsSync("./src/public/vendor/fileupload/img/logo.png")) {
+        logo_content = "image";
+    } else {
+        logo_content = "text";
+    }
+    Setting.find().exec(function(err, setting){
+        if ( setting.length == 1 ) {
+            web_title = setting[0].web_title;
+            web_name  = setting[0].web_name;
+        } else {
+            web_title =  config.app.name;
+            web_name  = config.app.name;
+        }
+    });
     Post.findOne({ slug: slug }).populate('categories').exec(function(err, post) {
         if (err || !post || post.status != 'activated') {
             return res.send('The guide is not found or has not been published yet', 404);
@@ -210,9 +275,11 @@ exports.view = function(req, res) {
                         pdfAvailable: pdfAvailable,
                         post: post,
                         signedIn: (req.session && req.session.user),
-                        userFeedback: !!(req.session && req.session.feedback && req.session.feedback[post._id]),
+                        userFeedback: ((req.session && req.session.feedback && req.session.feedback[post._id]) ? req.session.feedback[post._id] : ''),
                         likePercent: likePercent,
-                        dislikePercent: dislikePercent
+                        dislikePercent: dislikePercent,
+                        logo_content: logo_content,
+                        logo :  web_name
                     });
                 });
             });
@@ -262,6 +329,21 @@ exports.index = function(req, res) {
     sortBy = '-' == sortBy.substr(0, 1) ? sortBy.substr(1) : sortBy;
     sortCriteria[sortBy] = sortDirection;
 
+    if (fs.existsSync("./src/public/vendor/fileupload/img/logo.png")) {
+        logo_content = "image";
+    } else {
+        logo_content = "text";
+    }
+    Setting.find().exec(function(err, setting){
+        if ( setting.length == 1 ) {
+            web_title = setting[0].web_title;
+            web_name  = setting[0].web_name;
+        } else {
+            web_title =  config.app.name;
+            web_name  = config.app.name;
+        }
+    });
+
     if (status) {
         criteria.status = status;
     }
@@ -302,7 +384,9 @@ exports.index = function(req, res) {
                     page: page,
                     numPages: numPages,
                     startRange: startRange,
-                    endRange: endRange
+                    endRange: endRange,
+                    logo_content: logo_content,
+                    logo :  web_name
                 });
             });
     });
@@ -431,7 +515,6 @@ exports.duplicate = function(req, res) {
         // Generate new Slug
         Post.generateSlug(duplicatePost, function(slug) {
             duplicatePost.slug = slug;
-            duplicatePost.title = duplicatePost.title + ' copy';
 
             duplicatePost.save(function(err) {
                 if (!err) {
