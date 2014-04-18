@@ -8,6 +8,7 @@
 * [#21](https://github.com/nghuuphuoc/nodedesk/issues/21): Add LIKE or DISLIKE action
 * [#22](https://github.com/nghuuphuoc/nodedesk/issues/22): Use Ajax for post forms
 * [#27](https://github.com/nghuuphuoc/nodedesk/issues/27): Show Disqus comments if enabled
+* [#28](https://github.com/nghuuphuoc/nodedesk/issues/28): Generate slug for Vietnamese title
 * [#25](https://github.com/nghuuphuoc/nodedesk/issues/25): Remove "in" from the post meta area if the post doesn't belong to any category
 * [#18](https://github.com/nghuuphuoc/nodedesk/issues/18): Fix the width of TOC container
 

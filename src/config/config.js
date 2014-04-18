@@ -41,10 +41,10 @@ module.exports = {
             from: 'NodeDesk <nodedesk@gmail.com>',
             transport: 'SMTP',
             options: {
-                service: "Gmail",
+                service: 'Gmail',
                 auth: {
-                    user: "nodedesk@gmail.com",
-                    pass: "password"
+                    user: 'nodedesk@gmail.com',
+                    pass: 'password'
                 }
             }
         }
