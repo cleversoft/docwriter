@@ -43,8 +43,8 @@ module.exports = {
             options: {
                 service: 'Gmail',
                 auth: {
-                    user: 'nodedesk@gmail.com',
-                    pass: 'password'
+                    user: 'emailadress@gmail.com',
+                    pass: 'the password'
                 }
             }
         }

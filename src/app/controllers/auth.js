@@ -119,36 +119,54 @@ exports.signout = function(req, res) {
  * Forgot password
  */
 exports.forgotPassword = function(req, res) {
-    var config = req.app.get('config'),
-        nodemailer = require('nodemailer');
+    var config     = req.app.get('config'),
+        nodemailer = require('nodemailer'),
+        messages   = {
+            warning: req.flash('error'),
+            success: req.flash('success')
+        };
+
     if (req.session.user) {
         return res.redirect('/');
     } else {
         if ('post' == req.method.toLowerCase()) {
-            if (req.body.email) {
-                User.findOne({email: req.body.email}, function (err, user) {
-                    var hash = user.createSalt();
-                    user.reset_hash = hash;
-                    user.reset_expire = Date.now() + 43200000; // expire in next 12 hours
-                    user.save(function(err) {
-                        res.render('auth/resetMail', {hash: hash, user: user, config: config}, function(err, html) {
-                            var transport = nodemailer.createTransport(config.mail.transport, config.mail.options);
-                            transport.sendMail({
-                                from: config.mail.from,
-                                to: user.email,
-                                subject: 'NodeDesk password reset',
-                                html: html
-                            }, function() {
-                                return res.redirect('/reset-password');
-                            });
+            if (!req.body.user_name || !req.body.email) {
+                req.flash('error', 'Please enter both username and email address');
+                return res.redirect('/forgot-password');
+            }
+
+            User.findOne({
+                username: req.body.user_name,
+                email: req.body.email
+            }, function(err, user) {
+                if (err || !user) {
+                    req.flash('error', 'Not found user');
+                    return res.redirect('/forgot-password');
+                }
+
+                var hash = user.createSalt();
+                user.reset_hash   = hash;
+                user.reset_expire = Date.now() + 43200000; // expire in next 12 hours
+                user.save(function(err) {
+                    res.render('auth/resetMail', { hash: hash, user: user, config: config }, function(err, html) {
+                        var transport = nodemailer.createTransport(config.mail.transport, config.mail.options);
+                        transport.sendMail({
+                            from: config.mail.from,
+                            to: user.email,
+                            subject: 'NodeDesk password reset',
+                            html: html
+                        }, function() {
+                            req.flash('success', 'Please check your email box to see the reset password');
+                            return res.redirect('/reset-password');
                         });
                     });
                 });
-            } else {
-                return res.render('auth/forgotPassword', {title: 'Forgot password'});
-            }
+            });
         } else {
-            return res.render('auth/forgotPassword', {title: 'Forgot password'});
+            return res.render('auth/forgotPassword', {
+                title: 'Forgot password',
+                messages: messages
+            });
         }
     }
 };
@@ -157,36 +175,42 @@ exports.forgotPassword = function(req, res) {
  * Reset password
  */
 exports.resetPassword = function(req, res) {
-    if (req.session.user) return res.redirect('/');
+    if (req.session.user) {
+        return res.redirect('/');
+    }
 
-    var reset_hash = req.param('reset_hash');
+    var reset_hash = req.param('reset_hash'),
+        messages   = {
+            warning: req.flash('error'),
+            success: req.flash('success')
+        };
 
     if ('post' == req.method.toLowerCase()) {
         if (req.body.email && req.body.reset_key && req.body.password) {
             User.findOne({email: req.body.email, reset_hash: req.body.reset_key}, function (err, user) {
                 if (err || !user) {
                     req.flash('error', 'Email or Reset Key not found');
-                    return res.render('auth/resetPassword', {title: 'Reset password'});
+                    return res.redirect('/reset-password');
                 }
-                else {
-                    user.password = req.body.password;
-                    user.reset_hash = '';
-                    user.reset_expire = Date.now() - 1;
-                    user.save(function(err) {
-                        if (err) {
-                            req.flash('error', 'Could not update the password');
-                            return res.render('auth/resetPassword', {title: 'Reset password', reset_hash: reset_hash ? reset_hash : ''});
-                        } else {
-                            req.flash('success', 'The password is updated successfully');
-                            return res.redirect('/signin');
-                        }
-                    });
-                }
+                user.password     = req.body.password;
+                user.reset_hash   = '';
+                user.reset_expire = Date.now() - 1;
+                user.save(function(err) {
+                    if (err) {
+                        req.flash('error', 'Could not update the password');
+                        return res.redirect('/reset-password');
+                    } else {
+                        req.flash('success', 'The password is updated successfully');
+                        return res.redirect('/signin');
+                    }
+                });
             });
-        } else {
-            return res.render('auth/resetPassword', {title: 'Reset password', reset_hash: reset_hash ? reset_hash : ''});
         }
     } else {
-        return res.render('auth/resetPassword', {title: 'Reset password', reset_hash: reset_hash ? reset_hash : ''});
+        return res.render('auth/resetPassword', {
+            title: 'Reset password',
+            reset_hash: reset_hash ? reset_hash : '',
+            messages: messages
+        });
     }
 };
