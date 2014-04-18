@@ -21,16 +21,15 @@ block content
             h1.col-sm-12
                 a(href="/post/#{post.slug}") #{post.title}
             .d-post-meta.col-sm-10
-                .d-post-meta-create
-                    | Posted by #{post.created_user.username} on #{moment(post.created_date).format('YYYY-MM-DD HH:mm')}
-                    if (post.categories != '')
-                        |  in &nbsp;
+                div
+                    i.fa.fa-user
+                    |  by #{post.created_user.username}, #{moment(post.updated_date || post.created_date).format('YYYY-MM-DD')}
+                if (post.categories != '' && post.categories.length > 0)
+                    div
+                        i.fa.fa-tags
                         span
                             for category in post.categories
                                 a.label.label-info(href="/category/#{category.slug}") #{category.name}
-                .d-post-meta-edit
-                    if post.updated_date && post.updated_date !== post.created_date
-                        | Last updated by #{post.updated_user.username} on #{moment(post.updated_date).format('YYYY-MM-DD HH:mm')}
             .d-post-stats.col-sm-2
                 .d-post-meta-views
                 if (post.like != 0 || post.dislike != 0)
