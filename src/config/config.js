@@ -34,7 +34,7 @@ module.exports = {
         },
         comment: {
             disqus: {
-                shortName: 'bootstrapvalidator'
+                shortName: null
             }
         },
         mail: {
