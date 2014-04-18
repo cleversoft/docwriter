@@ -328,7 +328,6 @@ block footerScript
                         if ($button.attr('name')) action = '&' + $button.attr('name') + '=true';
 
                         $button.html('<i class="fa fa-spinner fa-spin"></i>').css('width', buttonWidth);
-
                         $.post($form.attr('action'), $form.serialize() + action, function(result) {
                             $button.html(buttonLabel).css('width', 'auto');
 

@@ -25,7 +25,7 @@ module.exports = function(app) {
     app.all('/signin',              auth.signin);
     app.get('/signout',             auth.signout);
     app.all('/forgot-password',     auth.forgotPassword);
-    app.all('/reset-password/:reset_hash',      auth.resetPassword);
+    app.all('/reset-password/:reset_hash',  auth.resetPassword);
     app.all('/reset-password',      auth.resetPassword);
     app.all('/admin/password', authentication.requireAuthentication, auth.changePassword);
 

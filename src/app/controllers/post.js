@@ -4,9 +4,8 @@ var fs       = require('fs'),
     mongoose = require('mongoose'),
     Category = mongoose.model('category'),
     Post     = mongoose.model('post'),
-    Visit    = mongoose.model('visit'),
-    Search   = mongoose.model('search'),
-    Setting  = mongoose.model('setting');
+    Visit    = mongoose.model('visit');
+
 // -----------------
 // FRONT-END ACTIONS
 // -----------------
@@ -15,22 +14,7 @@ var fs       = require('fs'),
  * List posts in given category
  */
 exports.category = function(req, res) {
-    var config = req.app.get('config');
     var slug = req.param('slug');
-    if (fs.existsSync("./src/public/vendor/fileupload/img/logo.png")) {
-        logo_content = "image";
-    } else {
-        logo_content = "text";
-    }
-    Setting.find().exec(function(err, setting){
-        if ( setting.length == 1 ) {
-            web_title = setting[0].web_title;
-            web_name  = setting[0].web_name;
-        } else {
-            web_title =  config.app.name;
-            web_name  = config.app.name;
-        }
-    });
     Category
         .find({})
         .sort({ position: 1 })
@@ -87,9 +71,7 @@ exports.category = function(req, res) {
                                     page: page,
                                     numPages: numPages,
                                     startRange: startRange,
-                                    endRange: endRange,
-                                    logo_content: logo_content,
-                                    logo :  web_name
+                                    endRange: endRange
                                 });
                             });
                     });
@@ -130,22 +112,7 @@ exports.download = function(req, res) {
  * Search for posts
  */
 exports.search = function(req, res) {
-    var config = req.app.get('config');
     var slug = req.param('slug');
-    if (fs.existsSync("./src/public/vendor/fileupload/img/logo.png")) {
-        logo_content = "image";
-    } else {
-        logo_content = "text";
-    }
-    Setting.find().exec(function(err, setting){
-        if ( setting.length == 1 ) {
-            web_title = setting[0].web_title;
-            web_name  = setting[0].web_name;
-        } else {
-            web_title =  config.app.name;
-            web_name  = config.app.name;
-        }
-    });
     Category.find({}).sort({ position: 1 }).exec(function(err, categories) {
         var perPage   = 10,
             pageRange = 5,
@@ -190,27 +157,9 @@ exports.search = function(req, res) {
                         page: page,
                         numPages: numPages,
                         startRange: startRange,
-                        endRange: endRange,
-                        logo_content: logo_content,
-                        logo :  web_name
+                        endRange: endRange
                     });
                 });
-        });
-
-        Search.find().exec(function(err,data){
-           numKeyword = data.length;
-           for ( var i = 0; i < numKeyword; i++) {
-               if ( data[i].keyword == q ) {
-                    var newCount = data[i].count + 1 ;
-                    Search.update({keyword: q},{count: newCount},function(err,list){
-                       console.log(newCount);
-                   });
-                   return;
-               }
-           }
-            new Search({keyword: q, count: 1}).save(function(err,list){
-                console.log('ok2');
-            });
         });
     });
 };
@@ -221,20 +170,6 @@ exports.search = function(req, res) {
 exports.view = function(req, res) {
     var slug   = req.param('slug'),
         config = req.app.get('config');
-    if (fs.existsSync("./src/public/vendor/fileupload/img/logo.png")) {
-        logo_content = "image";
-    } else {
-        logo_content = "text";
-    }
-    Setting.find().exec(function(err, setting){
-        if ( setting.length == 1 ) {
-            web_title = setting[0].web_title;
-            web_name  = setting[0].web_name;
-        } else {
-            web_title =  config.app.name;
-            web_name  = config.app.name;
-        }
-    });
     Post.findOne({ slug: slug }).populate('categories').exec(function(err, post) {
         if (err || !post || post.status != 'activated') {
             return res.send('The guide is not found or has not been published yet', 404);
@@ -247,7 +182,7 @@ exports.view = function(req, res) {
         var dislikePercent = 100 - likePercent;
 
         var remoteIp = (req.headers['x-forwarded-for'] || '').split(',')[0]
-            || req.connection.remoteAddress;
+                    || req.connection.remoteAddress;
 
         if (remoteIp) {
             Visit.count({ip: remoteIp, postId: post._id.toString()}, function(err, total) {
@@ -277,14 +212,11 @@ exports.view = function(req, res) {
                         signedIn: (req.session && req.session.user),
                         userFeedback: ((req.session && req.session.feedback && req.session.feedback[post._id]) ? req.session.feedback[post._id] : ''),
                         likePercent: likePercent,
-                        dislikePercent: dislikePercent,
-                        logo_content: logo_content,
-                        logo :  web_name
+                        dislikePercent: dislikePercent
                     });
                 });
             });
         }
-
     });
 };
 
@@ -329,21 +261,6 @@ exports.index = function(req, res) {
     sortBy = '-' == sortBy.substr(0, 1) ? sortBy.substr(1) : sortBy;
     sortCriteria[sortBy] = sortDirection;
 
-    if (fs.existsSync("./src/public/vendor/fileupload/img/logo.png")) {
-        logo_content = "image";
-    } else {
-        logo_content = "text";
-    }
-    Setting.find().exec(function(err, setting){
-        if ( setting.length == 1 ) {
-            web_title = setting[0].web_title;
-            web_name  = setting[0].web_name;
-        } else {
-            web_title =  config.app.name;
-            web_name  = config.app.name;
-        }
-    });
-
     if (status) {
         criteria.status = status;
     }
@@ -384,9 +301,7 @@ exports.index = function(req, res) {
                     page: page,
                     numPages: numPages,
                     startRange: startRange,
-                    endRange: endRange,
-                    logo_content: logo_content,
-                    logo :  web_name
+                    endRange: endRange
                 });
             });
     });
@@ -493,10 +408,11 @@ exports.add = function(req, res) {
     }
 };
 
-
+/**
+ * Duplicate post
+ */
 exports.duplicate = function(req, res) {
-    var id     = req.param('id');
-
+    var id   = req.param('id');
     var post = Post.findOne({_id: id}).exec(function(err, post) {
         // purge object
         var postJSON = post.toJSON();
@@ -504,7 +420,7 @@ exports.duplicate = function(req, res) {
         delete postJSON.__v;
         postJSON.created_user = {
             username: req.session.user.username,
-                full_name: req.session.user.full_name
+            full_name: req.session.user.full_name
         };
 
         postJSON.created_date = new Date();
@@ -635,8 +551,8 @@ exports.slug = function(req, res) {
 };
 
 exports.feedback = function (req, res) {
-    var id = req.body.id;
-    var action = req.body.action;
+    var id     = req.body.id,
+        action = req.body.action;
 
     if (req.session && req.session.feedback && req.session.feedback[id]) {
         if (req.session.feedback[id] == action) {

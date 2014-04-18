@@ -1,6 +1,6 @@
 var mongoose   = require('mongoose'),
     User       = mongoose.model('user'),
-    nodemailer = require("nodemailer");;
+    nodemailer = require("nodemailer");
 
 /**
  * Change the password
@@ -132,8 +132,6 @@ exports.forgotPassword = function(req, res) {
                     user.reset_expire = Date.now() + 43200000; // expire in next 12 hours
                     user.save(function(err) {
                         res.render('auth/resetMail', {hash: hash, user: user, config: config}, function(err, html) {
-                            //req.flash('success', 'The post has been created successfully');
-                            //console.log(html);
                             var transport = nodemailer.createTransport(config.mail.transport, config.mail.options);
                             transport.sendMail({
                                 from: config.mail.from,

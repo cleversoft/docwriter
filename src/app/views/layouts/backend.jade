@@ -26,11 +26,7 @@ html
                         span.icon-bar
                         span.icon-bar
                         span.icon-bar
-                    if (logo_content == 'text')
-                        a.navbar-brand(href="/") #{logo}
-                    else
-                        a.navbar-brand(href="/")
-                            img(src='/vendor/fileupload/img/logo.png' height='23px')
+                    a.navbar-brand(href="/admin") #{config.app.name}
 
 
                 div#navbar-collapse.collapse.navbar-collapse
@@ -63,9 +59,6 @@ html
                         a.list-group-item(href="/admin/user")
                             i.fa.fa-user
                             | Users
-                        a.list-group-item(href="/admin/setting")
-                            i.fa.fa-wrench
-                            | Setting
                 .d-content-wrapper
                     .d-content
                         block content
