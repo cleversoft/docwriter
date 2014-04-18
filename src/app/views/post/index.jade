@@ -116,14 +116,17 @@ block content
                         td #{post.views ? post.views : 0}
                         td
                             div.btn-group
-                                a.btn.btn-default.btn-sm(href="/admin/post/edit/#{post._id}") EDIT
-                                button.btn.btn-warning.btn-sm.removeButton(type="button") DELETE
+                                a.btn.btn-default.btn-sm(href="/admin/post/edit/#{post._id}", title="Edit")
+                                    i.fa.fa-edit
+                                button.btn.btn-warning.btn-sm.removeButton(type="button", title="Delete")
+                                    i.fa.fa-times
                                 button.btn.btn-default.btn-sm.publishButton(type="button", data-status="#{post.status}")
                                     if post.status == 'activated'
-                                        | UNPUBLISH
+                                        i.fa.fa-ban
                                     else
-                                        | PUBLISH
-                                a.btn.btn-info.btn-sm.duplicateButton(type="button", href="/admin/post/duplicate/#{post._id}") DUPLICATE
+                                        i.fa.fa-check
+                                a.btn.btn-info.btn-sm.duplicateButton(type="button", href="/admin/post/duplicate/#{post._id}", title="Duplicate")
+                                    i.fa.fa-copy
 
                             a.btn.btn-sm.btn-link.viewButton(class=post.status != 'activated' ? 'hide' : '', href="/post/#{post.slug}") VIEW
 
@@ -215,7 +218,7 @@ block footerScript
                             var status = ('activated' == $that.attr('data-status')) ? 'deactivated' : 'activated';
                             $that
                                 .attr('data-status', status)
-                                .html('activated' == status ? 'UNPUBLISH' : 'PUBLISH')
+                                .html('activated' == status ? '<i class="fa fa-ban"></i>' : '<i class="fa fa-check"></i>')
                                 .parents('tr')
                                     .find('td')
                                         .eq(3).html('activated' == status ? 'Published' : 'Not yet published')
