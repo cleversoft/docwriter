@@ -2,12 +2,18 @@
 
 ## v1.1.0 (not released yet)
 
-* Show Disqus comments if enabled
-* Add Yes/No feedback box
+* [#11](https://github.com/nghuuphuoc/nodedesk/issues/11): Duplicating post feature
+* [#15](https://github.com/nghuuphuoc/nodedesk/issues/15): Add "Reset password" feature
+* [#19](https://github.com/nghuuphuoc/nodedesk/issues/19): Count the number of post views
+* [#21](https://github.com/nghuuphuoc/nodedesk/issues/21): Add LIKE or DISLIKE action
+* [#22](https://github.com/nghuuphuoc/nodedesk/issues/22): Use Ajax for post forms
+* [#27](https://github.com/nghuuphuoc/nodedesk/issues/27): Show Disqus comments if enabled
+* [#25](https://github.com/nghuuphuoc/nodedesk/issues/25): Remove "in" from the post meta area if the post doesn't belong to any category
+* [#18](https://github.com/nghuuphuoc/nodedesk/issues/18): Fix the width of TOC container
 
 ## v1.0.1 (2014-01-20)
 
-* (#6) Fix 'none' heading style
+* [#6](https://github.com/nghuuphuoc/nodedesk/issues/6): Fix 'none' heading style
 
 ## v1.0.0 (2014-01-20)
 
