@@ -56,58 +56,49 @@ block content
                     != marked(post.content)
 
                 // Like and Dislike
-                div.d-post-comments
-                    hr
-                    #post-feedback.pull-right Was this helpful?
-                        form(method="post")
-                            input(type="hidden", name="id", value="#{post._id}", id="post_id")
-                            button.feedback-button.green(name="action", value="like", class="#{userFeedback == 'like' ? 'active' : ''}")
-                                i.fa.fa-thumbs-up
-                                |  Yes
-                            button.feedback-button.red(name="action", value="dislike", class="#{userFeedback == 'dislike' ? 'active' : ''}")
-                                i.fa.fa-thumbs-down
-                                |  No
+                div.d-post-feedback
+                    #feedback.pull-right
+                        span(style="padding: 0 10px") Was this helpful?
+                        button.btn.btn-sm.btn-success(type="button", name="action", value="like", class="#{userFeedback == 'like' ? 'active' : ''}")
+                            i.fa.fa-thumbs-up
+                            |  Yes
+                        button.btn.btn-sm.btn-warning(type="button", name="action", value="dislike", class="#{userFeedback == 'dislike' ? 'active' : ''}")
+                            i.fa.fa-thumbs-down
+                            |  No
+                    div.clearfix
 
                 // Post comments
-                div#comments.d-post-comments
-                    h2 Let's us know what you think
+                if comment.disqus.shortName
+                    div#comments.d-post-comments
+                        h2 Let's us know what you think
 
-                    hr
+                        hr
 
-                    p Help us improve this document by leaving your comments below. Thank you!
+                        p Help us improve this document by leaving your comments below. Thank you!
 
-                    ul.nav.nav-tabs
-                        li.active
-                            a(href="#facebookComments") Facebook comments
-                        li
-                            a(href="#googleComments") Google+ comments
+                        div#disqus_thread
 
-                    div.tab-content
-                        div#facebookComments.tab-pane.active
-                            div.fb-comments(data-href="#{appUrl}/post/#{post.slug}")
-                        div#googleComments.tab-pane
-                            div.g-comments(data-first_party_property="BLOGGER", data-view_type="FILTERED_POSTMOD", data-href="#{appUrl}/post/#{post.slug}")
 
 block footerScript
     script(type="text/javascript", src="/vendor/tocjs/js/toc.min.js")
     script(type="text/javascript", src="/vendor/highlight/js/highlight.pack.js")
 
     script(type="text/javascript", src="/vendor/socket.io/socket.io.min.js")
+
+    if comment.disqus.shortName
+        script(type="text/javascript").
+            // Disqus comments
+            var disqus_shortname  = '#{comment.disqus.shortName}',
+                disqus_identifier = '#{post._id}',
+                disqus_title      = '#{post.title}',
+                disqus_url        = '#{appUrl}/post/#{post.slug}';
+            (function() {
+                var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+                dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+                (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+            })();
+
     script(type="text/javascript").
-        (function(d, s, id){
-            var js, fjs = d.getElementsByTagName(s)[0];
-            if (d.getElementById(id)) {return;}
-            js = d.createElement(s); js.id = id; js.async = true;
-            js.src = "http://connect.facebook.net/en_US/all.js#xfbml=1";
-            fjs.parentNode.insertBefore(js, fjs);
-        }(document, 'script', 'facebook-jssdk'));
-
-        (function() {
-            var po = document.createElement('script'); po.type = 'text/javascript'; po.async = true;
-            po.src = 'https://apis.google.com/js/plusone.js';
-            var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(po, s);
-        })();
-
         $(document).ready(function() {
             $('#downloadPdfButton').tooltip();
 
@@ -178,18 +169,17 @@ block footerScript
 
             hljs.initHighlightingOnLoad();
 
-            $('#post-feedback').on('click', '.feedback-button', function() {
+            $('#feedback').on('click', 'button', function() {
                 var $this = $(this);
-                var postId = $('#post_id').val();
-
-                if ($this.hasClass('active')) return false;
-
-                $('.feedback-button').removeClass('active');
+                if ($this.hasClass('active')) {
+                    return;
+                }
+                $('#feedback').find('button').removeClass('active');
                 $this.addClass('active');
-                var data = { id: postId, action: $this.val() }
-                $.post('/post/feedback', data, function(data) {
-                    //if (data.result == 'ok')
+                $.post('/post/feedback', {
+                    id: '#{post._id}',
+                    action: $this.val()
+                }, function(data) {
                 }, 'json');
-                return false;
             });
         });

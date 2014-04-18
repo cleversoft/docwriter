@@ -32,6 +32,11 @@ module.exports = {
                 footerTemplate: rootPath + '/config/template/pdfFooter.html'
             }
         },
+        comment: {
+            disqus: {
+                shortName: 'bootstrapvalidator'
+            }
+        },
         mail: {
             from: 'NodeDesk <nodedesk@gmail.com>',
             transport: 'SMTP',

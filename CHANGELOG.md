@@ -1,5 +1,10 @@
 # Changelog
 
+## v1.1.0 (not released yet)
+
+* Show Disqus comments if enabled
+* Add Yes/No feedback box
+
 ## v1.0.1 (2014-01-20)
 
 * (#6) Fix 'none' heading style

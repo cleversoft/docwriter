@@ -37,6 +37,9 @@ footer {
   .d-post-content h2:first-child {
     padding-top: 0; }
 
+.d-post-feedback {
+  margin: 10px 0; }
+
 .d-post-comments {
   margin: 40px 0; }
 
