@@ -339,6 +339,11 @@ block footerScript
                             } else {
                                 $flashContainer.addClass('alert-error').html('Could not update the post' + flashClose).insertAfter('.breadcrumb');
                             }
+
+                            // Auto close the alert messages
+                            setTimeout(function() {
+                                $flashContainer.alert('close');
+                            }, 1000 * 5);
                         }, 'json');
                     }
                 })

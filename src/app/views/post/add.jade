@@ -366,6 +366,11 @@ block footerScript
                                 }
                                 $flashContainer.addClass('alert-error').html(html).insertAfter('.breadcrumb');
                             }
+
+                            // Auto close the alert messages
+                            setTimeout(function() {
+                                $flashContainer.alert('close');
+                            }, 1000 * 5);
                         }, 'json');
                     }
                 })

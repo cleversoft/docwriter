@@ -16,6 +16,13 @@ html
             script(src="/vendor/html5shiv/html5shiv.min.js")
             script(src="/vendor/respond/respond.min.js")
 
+        //if lt IE 9
+            script(src="/vendor/jquery/jquery-1.10.2.min.js")
+
+        //[if gte IE 9]><!
+        script(src="/vendor/jquery/jquery-2.0.3.min.js")
+        //<![endif]
+
         block head
     body
         .d-wrapper
@@ -67,13 +74,6 @@ html
 
         footer
             small &copy; #{new Date().getFullYear()} #{config.app.name}
-
-        //if lt IE 9
-            script(src="/vendor/jquery/jquery-1.10.2.min.js")
-
-        //[if gte IE 9]><!
-        script(src="/vendor/jquery/jquery-2.0.3.min.js")
-        //<![endif]
 
         script(src="/vendor/bootstrap/js/bootstrap.min.js")
         script(type="text/javascript", src="/vendor/socket.io/socket.io.min.js")

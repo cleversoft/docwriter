@@ -11,6 +11,7 @@
 * [#28](https://github.com/nghuuphuoc/nodedesk/issues/28): Generate slug for Vietnamese title
 * [#25](https://github.com/nghuuphuoc/nodedesk/issues/25): Remove "in" from the post meta area if the post doesn't belong to any category
 * [#18](https://github.com/nghuuphuoc/nodedesk/issues/18): Fix the width of TOC container
+* [#29](https://github.com/nghuuphuoc/nodedesk/issues/29): Auto close the alert messages
 
 ## v1.0.1 (2014-01-20)
 

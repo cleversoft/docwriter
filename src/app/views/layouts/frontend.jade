@@ -15,6 +15,13 @@ html
             script(src="/vendor/html5shiv/html5shiv.min.js")
             script(src="/vendor/respond/respond.min.js")
 
+        //if lt IE 9
+            script(src="/vendor/jquery/jquery-1.10.2.min.js")
+
+        //[if gte IE 9]><!
+        script(src="/vendor/jquery/jquery-2.0.3.min.js")
+        //<![endif]
+
         block head
     body
         .d-wrapper
@@ -67,13 +74,6 @@ html
             span.fa-stack
                 i.fa.fa-square-o.fa-stack-2x
                 i.fa.fa-chevron-up.fa-stack-1x
-
-        //if lt IE 9
-            script(src="/vendor/jquery/jquery-1.10.2.min.js")
-
-        //[if gte IE 9]><!
-        script(src="/vendor/jquery/jquery-2.0.3.min.js")
-        //<![endif]
 
         script(src="/vendor/bootstrap/js/bootstrap.min.js")
 

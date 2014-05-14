@@ -10,3 +10,11 @@
                     - for (var i in messages[type])
                     li
                         = messages[type][i]
+
+script(type="text/javascript").
+    $(document).ready(function() {
+        // Auto close the alert messages
+        setTimeout(function() {
+            $('.alert').alert('close');
+        }, 1000 * 5);
+    });
