@@ -14,7 +14,8 @@ var fs       = require('fs'),
  * List posts in given category
  */
 exports.category = function(req, res) {
-    var slug = req.param('slug');
+    var slug   = req.param('slug'),
+        config = req.app.get('config');
     Category
         .find({})
         .sort({ position: 1 })
@@ -56,6 +57,7 @@ exports.category = function(req, res) {
 
                                 res.render('partial/posts', {
                                     title: category.name,
+                                    appUrl: config.app.url || req.protocol + '://' + req.get('host'),
                                     categories: categories,
                                     category: category,
                                     req: req,
@@ -112,7 +114,8 @@ exports.download = function(req, res) {
  * Search for posts
  */
 exports.search = function(req, res) {
-    var slug = req.param('slug');
+    var slug   = req.param('slug'),
+        config = req.app.get('config');
     Category.find({}).sort({ position: 1 }).exec(function(err, categories) {
         var perPage   = 10,
             pageRange = 5,
@@ -143,6 +146,7 @@ exports.search = function(req, res) {
 
                     res.render('partial/posts', {
                         title: 'Search for ' + q,
+                        appUrl: config.app.url || req.protocol + '://' + req.get('host'),
                         categories: categories,
                         req: req,
                         moment: moment,

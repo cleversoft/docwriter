@@ -1,87 +1,70 @@
 extends ../layouts/frontend
 
 block head
-    link(rel="stylesheet", href="/vendor/tocjs/css/toc-scroll.min.css")
     link(rel="stylesheet", href="/vendor/highlight/css/github.css")
 
-block topnav
-    div.nav.navbar-form
-        a#downloadPdfButton.btn.btn-sm.btn-success(href="/post/pdf/#{post.slug}", class=!pdfAvailable ? 'hide' : '', rel="nofollow", data-placement="bottom", data-title=post.pdf_downloads == 0 ? "This guide has not been downloaded yet! Let's be the first one" : "This guide has been downloaded " + post.pdf_downloads + (post.pdf_downloads == 1 ? " time" : " times"))
-            i.fa.fa-download
-            |  DOWNLOAD PDF
-
-        if signedIn
-            a.btn.btn-sm.btn-info(href="/admin/post/edit/#{post._id}")
-                i.fa.fa-edit
-                |  EDIT
-
 block content
-    div.container
-        .row
-            h1.col-sm-12
-                a(href="/post/#{post.slug}") #{post.title}
-            .d-post-meta.col-sm-10
-                div
-                    i.fa.fa-user
-                    |  by #{post.created_user.username}, #{moment(post.updated_date || post.created_date).format('YYYY-MM-DD')}
-                if (post.categories != '' && post.categories.length > 0)
-                    div
+    .post.post-with-toc
+        .post-header
+            a.btn.pull-left.tooltipButton#toggle(data-placement="bottom", data-title="Toogle the table of contents", tabindex="0")
+                i.fa.fa-align-justify
+            a.btn.pull-left.tooltipButton(href="#{appUrl}", data-placement="bottom", data-title="Homepage", tabindex="1")
+                i.fa.fa-home
+
+            // Topics
+            if (post.categories != '' && post.categories.length > 0)
+                div.btn-group.pull-left
+                    a.btn.btn-default.dropdown-toggle(type="button", data-toggle="dropdown", tabindex="2")
                         i.fa.fa-tags
-                        span
-                            for category in post.categories
-                                a.label.label-info(href="/category/#{category.slug}") #{category.name}
-            .d-post-stats.col-sm-2
-                .d-post-meta-views
-                if (post.like != 0 || post.dislike != 0)
-                    .d-post-meta-feedback-bar
-                        .d-post-meta-bar-like(style="width: #{likePercent}%")
-                        .d-post-meta-bar-dislike(style="width: #{dislikePercent}%")
-                .d-post-meta-feedback
-                    span.d-post-feedback.d-post-feedback-like
-                        i.fa.fa-thumbs-up  #{post.like}
-                    span.d-post-feedback.d-post-feedback-dislike
-                        i.fa.fa-thumbs-down  #{post.dislike}
+                    ul.dropdown-menu
+                        for category in post.categories
+                            li
+                                a(href="/category/#{category.slug}") #{category.name}
 
-        hr
+            //a.btn.pull-left.tooltipButton#searchButton(data-placement="bottom", data-title="Search for other guides", tabindex="3")
+            //    i.fa.fa-search
+            //form.pull-left(method="get", action="/search", style="display: none;")
+            //    input.form-control(type="text", name="q", placeholder="Search for guides", tabindex="4")
 
-        div.row
-            div.col-lg-3.col-md-3
-                // Post table of contents
-                div#toc.d-post-toc
+            a.btn.pull-right.tooltipButton(tabindex="7", href="https://plus.google.com/share?url=#{appUrl}/post/#{post.slug}", target="_blank", data-placement="bottom", data-title="Share the guide on Google Plus")
+                i.fa.fa-google-plus
+            a.btn.pull-right.tooltipButton(tabindex="6", href="https://twitter.com/share?url=#{appUrl}/post/#{post.slug}&text=#{post.title}", target="_blank", data-placement="bottom", data-title="Share the guide on Facebook")
+                i.fa.fa-facebook
+            a.btn.pull-right.tooltipButton(tabindex="5", href="http://www.facebook.com/sharer.php?url=#{appUrl}/post/#{post.slug}&title=#{post.title}", target="_blank", data-placement="bottom", data-title="Share the guide on Twitter")
+                i.fa.fa-twitter
+            a.btn.pull-right.tooltipButton#downloadPdfButton(tabindex="4", href="/post/pdf/#{post.slug}", class=!pdfAvailable ? '_hide' : '', rel="nofollow", data-placement="bottom", data-title=post.pdf_downloads == 0 ? "This guide has not been downloaded yet! Let's be the first one" : "This guide has been downloaded " + post.pdf_downloads + (post.pdf_downloads == 1 ? " time" : " times")) PDF
+            if signedIn
+                a.btn.pull-right.tooltipButton(href="/admin/post/edit/#{post._id}", data-placement="bottom", data-title="Edit the post") EDIT
 
-            div.col-lg-9.col-md-9
-                // Post content
-                div#content.d-post-content
-                    != marked(post.content)
+            h1
+                a(href="/post/#{post.slug}") #{post.title}
 
-                // Like and Dislike
-                div.d-post-feedback
-                    #feedback.pull-right
-                        span(style="padding: 0 10px") Was this helpful?
-                        button.btn.btn-sm.btn-success(type="button", name="action", value="like", class="#{userFeedback == 'like' ? 'active' : ''}")
-                            i.fa.fa-thumbs-up
-                            |  Yes
-                        button.btn.btn-sm.btn-warning(type="button", name="action", value="dislike", class="#{userFeedback == 'dislike' ? 'active' : ''}")
-                            i.fa.fa-thumbs-down
-                            |  No
-                    div.clearfix
+        .post-toc
+            .post-meta
+                div
+                    | By #{post.created_user.username}, #{moment(post.updated_date || post.created_date).format('YYYY-MM-DD')}
 
-                // Post comments
-                if comment.disqus.shortName
-                    div#comments.d-post-comments
-                        h2 Let's us know what you think
+            hr
 
-                        hr
+            #toc
 
-                        p Help us improve this document by leaving your comments below. Thank you!
+        .post-body
+            .post-body-inner
+                .container
+                    .post-content
+                        != marked(post.content)
 
-                        div#disqus_thread
-
+                    // Comments
+                    if comment.disqus.shortName
+                        div.post-comments
+                            h2
+                                span Comments
+                            p Help us improve this document by leaving your comments below. Thank you!
+                            div#disqus_thread
 
 block footerScript
     script(type="text/javascript", src="/vendor/tocjs/js/toc.min.js")
     script(type="text/javascript", src="/vendor/highlight/js/highlight.pack.js")
-
     script(type="text/javascript", src="/vendor/socket.io/socket.io.min.js")
 
     if comment.disqus.shortName
@@ -99,7 +82,59 @@ block footerScript
 
     script(type="text/javascript").
         $(document).ready(function() {
-            $('#downloadPdfButton').tooltip();
+            $('.tooltipButton').tooltip({
+                container: 'body'
+            });
+
+            // Toggle the search box
+            $('#searchButton')
+                .on('click', function() {
+                    $(this).hide().next().show();
+                })
+                .next()
+                .on('blur', 'input[name="q"]', function() {
+                    $(this).parent().hide().prev().show();
+                })
+
+            // Toggle the TOC (table of contents)
+            $('#toggle').on('click', function() {
+                $(this).parents('.post').toggleClass('post-with-toc');
+            });
+
+            // Generate TOC
+            $('#toc')
+                .css('max-width', $('#toc').width())
+                .toc({
+                    selector: '.post-content > h2, h3, h4, h5, h6',
+                    elementClass: 'post-toc-inner',
+                    ulClass: 'nav',
+                    prefixLinkClass: 'post-toc-level',
+                    indexingFormats: '#{post.heading_styles}'
+                });
+
+            $('.post-body')
+                // Style the table
+                .find('table')
+                    .addClass('table table-bordered')
+                    .end()
+                // Make the image responsive
+                .find('img')
+                    .addClass('img-responsive img-thumbnail');
+
+            // Activate current heading in TOC based on current position
+            var $window = $(window),
+                $body   = $(document.body);
+            $body.scrollspy({
+                target: '.post-toc',
+                //target: '#toc',
+                offset: 50 // $('.post-toc').css('top')
+            });
+            $window.on('load', function() {
+                $body.scrollspy('refresh');
+            });
+
+            // Highlight the source code
+            hljs.initHighlightingOnLoad();
 
             var socket = io.connect();
             socket.on('connect', function() {
@@ -109,76 +144,5 @@ block footerScript
             });
             socket.on('error', function(err) {
                 socket.socket.reconnect();
-            });
-
-            // Make the comment tabs
-            $('.d-post-comments .nav a').click(function(e) {
-                e.preventDefault();
-                $(this).tab('show');
-            });
-
-            $('#content')
-                // Style the table
-                .find('table')
-                    .addClass('table table-bordered')
-                    .end()
-                // Make the image responsive
-                .find('img')
-                    .addClass('img-responsive img-thumbnail');
-
-            // Generate table of contents
-            $('#toc')
-                .css('max-width', $('#toc').width())
-                .toc({
-                    selector: '#content > h2, h3, h4, h5, h6',
-                    elementClass: 'toc',
-                    ulClass: 'nav',
-                    indexingFormats: '#{post.heading_styles}'
-                });
-
-            var $window = $(window),
-                $body   = $(document.body);
-            $body.scrollspy({
-                target: '#toc',
-                offset: 100
-                //offset: $('#content').offset().top
-                // offset: 0 // $('#navbar').outerHeight(true)
-            });
-
-            $window.on('load', function() {
-                $body.scrollspy('refresh');
-            });
-
-            setTimeout(function() {
-                var $sideBar = $('#toc');
-                $sideBar.affix({
-                    offset: {
-                        top: function() {
-                            var offsetTop      = $sideBar.offset().top,
-                                sideBarMargin  = parseInt($sideBar.children(0).css('margin-top'), 10),
-                                navOuterHeight = $('#navbar').height();
-                            return (this.top = offsetTop - navOuterHeight - sideBarMargin);
-                        },
-                        bottom: function() {
-                            return (this.bottom = $('footer').outerHeight(true));
-                        }
-                    }
-                });
-            }, 100);
-
-            hljs.initHighlightingOnLoad();
-
-            $('#feedback').on('click', 'button', function() {
-                var $this = $(this);
-                if ($this.hasClass('active')) {
-                    return;
-                }
-                $('#feedback').find('button').removeClass('active');
-                $this.addClass('active');
-                $.post('/post/feedback', {
-                    id: '#{post._id}',
-                    action: $this.val()
-                }, function(data) {
-                }, 'json');
             });
         });

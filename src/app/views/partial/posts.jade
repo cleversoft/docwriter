@@ -1,34 +1,52 @@
 extends ../layouts/frontend
 
 block content
+    div.heading
+        div.container
+            div.row
+                h1.text-center
+                    a(href="#{config.app.url}") #{config.app.name}
+
+                div.col-md-6.col-md-offset-3
+                    form(method="get", action="/search")
+                        div.input-group.input-group-lg
+                            input.form-control(type="text", name="q", placeholder="Search for guides")
+                            span.input-group-btn
+                                button.btn.btn-default(type="submit")
+                                    i.fa.fa-search
+
+                // Topics
+                if categories.length
+                    div.col-md-8.col-md-offset-2
+                        .topics
+                            h2
+                                span Topics
+                            ul
+                                for cat in categories
+                                    li &middot;
+                                    li(class=category && category._id.toString() == cat._id.toString() ? "active" : "")
+                                        a(href="/category/#{cat.slug}") #{cat.name}
+
     div.container
         div.row
-            div.col-lg-3
-                h2 Categories
-                div.panel.panel-default
-                    div.list-group
-                        for cat in categories
-                            a.list-group-item(href="/category/#{cat.slug}", class=category && category._id.toString() == cat._id.toString() ? 'active' : '') #{cat.name}
-
-            div.col-lg-9
+            // Latest guides
+            div.col-md-8.col-md-offset-2
                 h2
                     if category
                         a(href="/category/#{category.slug}") #{category.name}
                     else if q
                         | Search Results
                     else
-                        | Latest Guides
-                hr
+                        | Explore the latest guides
 
                 if !posts || posts.length == 0
                     p There are no guides
                 else
-                    ul.list-unstyled
+                    div.list-group
                         for post in posts
-                            li
-                                h3
-                                    a(href="/post/#{post.slug}") #{post.title}
-                                small Posted by #{post.created_user.username} on #{moment(post.created_date).format('YYYY-MM-DD HH:mm')}
+                            a.list-group-item(href="/post/#{post.slug}")
+                                span #{post.title}
+                                span.pull-right #{moment(post.created_date).format('YYYY-MM-DD HH:mm')}
 
                 // Pagination
                 if (numPages > 1)

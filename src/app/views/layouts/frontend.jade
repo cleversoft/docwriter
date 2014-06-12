@@ -1,3 +1,4 @@
+
 doctype html
 html
     head
@@ -7,8 +8,11 @@ html
 
         title #{title}
 
-        link(rel="stylesheet", href="/vendor/bootstrap-theme/css/yeti.css")
+        link(rel="stylesheet", href="/vendor/bootstrap/css/bootstrap.min.css")
         link(rel="stylesheet", href="/vendor/font-awesome/css/font-awesome.min.css")
+        link(rel="stylesheet", href="http://fonts.googleapis.com/css?family=Droid+Serif:400,700&subset=latin,vietnamese")
+        //link(rel="stylesheet", href="http://fonts.googleapis.com/css?family=Open+Sans:400,700,300&subset=latin,vietnamese")
+        //link(rel="stylesheet", href="http://fonts.googleapis.com/css?family=Source+Sans+Pro:400,700,300&subset=latin,vietnamese")
         link(rel="stylesheet", href="/asset/css/style.css")
 
         //if lt IE 9
@@ -24,50 +28,7 @@ html
 
         block head
     body
-        .d-wrapper
-            div#navbar.navbar.navbar-default.navbar-fixed-top
-                div.container
-                    div.navbar-header
-                        button.navbar-toggle(type="button", data-toggle="collapse", data-target="#navbar-collapse")
-                            span.sr-only Toggle navigation
-                            span.icon-bar
-                            span.icon-bar
-                            span.icon-bar
-
-                        a.navbar-brand(href="/") #{config.app.name}
-
-                    div#navbar-collapse.collapse.navbar-collapse
-                        if authHelper(req)
-                            ul.nav.navbar-nav.navbar-right
-                                li.dropdown
-                                    a.dropdown-toggle(href="#", data-toggle="dropdown")
-                                        b.caret
-                                    ul.dropdown-menu
-                                        li
-                                            a(href="/admin") Go to administration
-                                        li
-                                            a(href="/signout") Sign out
-                        else
-                            div.nav.navbar-form.navbar-right
-                                a.btn.btn-sm.btn-success(href="/signin") SIGN IN
-
-                        div.d-topnav.navbar-right
-                            block topnav
-
-                        form.nav.navbar-form.navbar-right(method="get", action="/search")
-                            div.form-group
-                                input.form-control(name="q", placeholder="Search for guides", style="width: 300px", value=q || '')
-                            button.btn.btn-primary.btn-sm(type="submit")
-                                i.fa.fa-search
-
-            .d-main
-                block content
-
-            .d-push
-
-        footer
-            .container
-                p &copy; #{new Date().getFullYear()} #{config.app.name}
+        block content
 
         // Scroll to top button
         a#scrollUp.d-scrollup(href="#")
@@ -79,14 +40,14 @@ html
 
         script(type="text/javascript").
             $(document).ready(function() {
-                var $scroll = $('#scrollUp');
+                /*var $scroll = $('#scrollUp');
                 $(window).on('scroll', function() {
                     $scroll.stop().animate({ bottom: $(window).scrollTop() >= 200 ? 0 : -50 }, 100);
                 });
 
                 $scroll.click(function() {
                     $('body,html').stop().animate({ scrollTop: 0 });
-                });
+                });*/
             });
 
         block footerScript

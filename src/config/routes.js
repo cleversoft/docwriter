@@ -10,6 +10,11 @@ var authentication     = require('./middlewares/authentication'),
     adminAuthorization = [authentication.requireAuthentication, authentication.user.hasAuthorization];
 
 module.exports = function(app) {
+    app.get('/*', function (req, res, next) {
+        res.config = req.app.get('config');
+        next();
+    });
+
     // --- Front-end routes ---
     app.get('/', index.index);
     app.get('/category/:slug',     post.category);

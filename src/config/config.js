@@ -34,7 +34,8 @@ module.exports = {
         },
         comment: {
             disqus: {
-                shortName: null
+                //shortName: null
+                shortName: 'zootemplate'
             }
         },
         mail: {
