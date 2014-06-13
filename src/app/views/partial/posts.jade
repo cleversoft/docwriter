@@ -63,3 +63,5 @@ block content
                                 a(href=page == numPages ? '#' : url(req, { page: parseInt(page) + 1 })) &raquo;
                             li(class=page == numPages ? 'disabled' : '')
                                 a(href=page == numPages ? '#' : url(req, { page: numPages })) &rarr;
+
+                include ../layouts/footer

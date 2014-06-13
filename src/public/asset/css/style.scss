@@ -33,6 +33,13 @@ h1, h2, h3, h4 {
     }
   }
 }
+
+.footer {
+  border-top: 1px solid #eee;
+  margin-top: 50px;
+  padding: 10px 0;
+}
+
 .topics {
   margin-top: 50px;
   text-align: center;
@@ -65,18 +72,18 @@ h1, h2, h3, h4 {
   height: 100%;
 }
 .post-header {
-  position: fixed;
+  background: #2980b9;
+  border-bottom: 1px solid #d7d7d7;
   overflow: visible;
+  position: fixed;
   top: 0;
   right: 0;
   left: 0;
   width: 100%;
   height: $headerHeight + 1;
-  background: #fff;
-  border-bottom: 1px solid #d7d7d7;
   z-index: 1000;
-  a, a:hover {
-    color: #999;
+  a {
+    color: #fff;
   }
   .btn {
     border: none;
@@ -86,7 +93,7 @@ h1, h2, h3, h4 {
     line-height: $headerHeight;
     padding: 0 15px;
     &:hover {
-      background: #e5e5e5;
+      background: #f1c40f;
     }
   }
   h1 {
@@ -95,6 +102,8 @@ h1, h2, h3, h4 {
     margin: 0;
     padding: 0 150px;
     text-align: center;
+    a:hover {
+    }
   }
   form {
     width: 200px;
@@ -252,6 +261,16 @@ h1, h2, h3, h4 {
   }
 }
 
+/* Scroll up */
+.scrollup {
+  bottom: -50px;
+  display: block;
+  font-size: 25px;
+  padding: 3px;
+  position: fixed;
+  right: 20px;
+}
+
 /* Errors */
 .error {
   text-align: center;
@@ -329,17 +348,6 @@ footer {
     position: static;
     top: 60px;
   }
-}
-
-// Scroll up
-.d-scrollup {
-  bottom: -50px;
-  display: block;
-  font-size: 25px;
-  padding: 3px;
-  position: fixed;
-  right: 20px;
-  /*z-index: 1000;*/
 }
 
 @media (min-width: 992px) {

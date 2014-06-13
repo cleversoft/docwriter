@@ -23,7 +23,8 @@ module.exports = {
         autoSave: 0,    // Auto-save interval time in minutes
         app: {
             url: 'http://nodedesk.dev',
-            name: 'ZooTemplate Documents'
+            name: 'ZooTemplate Documents',
+            copyright: "(c) 2014 ZooTemplate. All rights reserved."
         },
         jobs: {
             exportPdf: {

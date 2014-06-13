@@ -31,7 +31,7 @@ html
         block content
 
         // Scroll to top button
-        a#scrollUp.d-scrollup(href="#")
+        a#scrollUp.scrollup(href="javascript: void(0);")
             span.fa-stack
                 i.fa.fa-square-o.fa-stack-2x
                 i.fa.fa-chevron-up.fa-stack-1x
@@ -40,14 +40,14 @@ html
 
         script(type="text/javascript").
             $(document).ready(function() {
-                /*var $scroll = $('#scrollUp');
+                var $scroll = $('#scrollUp');
                 $(window).on('scroll', function() {
                     $scroll.stop().animate({ bottom: $(window).scrollTop() >= 200 ? 0 : -50 }, 100);
                 });
 
                 $scroll.click(function() {
                     $('body,html').stop().animate({ scrollTop: 0 });
-                });*/
+                });
             });
 
         block footerScript

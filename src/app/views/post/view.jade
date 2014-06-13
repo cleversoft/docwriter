@@ -6,15 +6,15 @@ block head
 block content
     .post.post-with-toc
         .post-header
-            a.btn.pull-left.tooltipButton#toggle(data-placement="bottom", data-title="Toogle the table of contents", tabindex="0")
+            a.btn.pull-left.tooltipButton#toggle(data-placement="bottom", data-title="Toogle the table of contents")
                 i.fa.fa-align-justify
-            a.btn.pull-left.tooltipButton(href="#{appUrl}", data-placement="bottom", data-title="Homepage", tabindex="1")
+            a.btn.pull-left.tooltipButton(href="#{appUrl}", data-placement="bottom", data-title="Homepage")
                 i.fa.fa-home
 
             // Topics
             if (post.categories != '' && post.categories.length > 0)
                 div.btn-group.pull-left
-                    a.btn.btn-default.dropdown-toggle(type="button", data-toggle="dropdown", tabindex="2")
+                    a.btn.dropdown-toggle(data-toggle="dropdown")
                         i.fa.fa-tags
                     ul.dropdown-menu
                         for category in post.categories
@@ -24,17 +24,16 @@ block content
             //a.btn.pull-left.tooltipButton#searchButton(data-placement="bottom", data-title="Search for other guides", tabindex="3")
             //    i.fa.fa-search
             //form.pull-left(method="get", action="/search", style="display: none;")
-            //    input.form-control(type="text", name="q", placeholder="Search for guides", tabindex="4")
+            //    input.form-control(type="text", name="q", placeholder="Search for guides")
 
-            a.btn.pull-right.tooltipButton(tabindex="7", href="https://plus.google.com/share?url=#{appUrl}/post/#{post.slug}", target="_blank", data-placement="bottom", data-title="Share the guide on Google Plus")
+            a.btn.pull-right.tooltipButton(href="https://plus.google.com/share?url=#{appUrl}/post/#{post.slug}", target="_blank", data-placement="bottom", data-title="Share the guide on Google Plus")
                 i.fa.fa-google-plus
-            a.btn.pull-right.tooltipButton(tabindex="6", href="https://twitter.com/share?url=#{appUrl}/post/#{post.slug}&text=#{post.title}", target="_blank", data-placement="bottom", data-title="Share the guide on Facebook")
+            a.btn.pull-right.tooltipButton(href="https://twitter.com/share?url=#{appUrl}/post/#{post.slug}&text=#{post.title}", target="_blank", data-placement="bottom", data-title="Share the guide on Facebook")
                 i.fa.fa-facebook
-            a.btn.pull-right.tooltipButton(tabindex="5", href="http://www.facebook.com/sharer.php?url=#{appUrl}/post/#{post.slug}&title=#{post.title}", target="_blank", data-placement="bottom", data-title="Share the guide on Twitter")
+            a.btn.pull-right.tooltipButton(href="http://www.facebook.com/sharer.php?url=#{appUrl}/post/#{post.slug}&title=#{post.title}", target="_blank", data-placement="bottom", data-title="Share the guide on Twitter")
                 i.fa.fa-twitter
-            a.btn.pull-right.tooltipButton#downloadPdfButton(tabindex="4", href="/post/pdf/#{post.slug}", class=!pdfAvailable ? '_hide' : '', rel="nofollow", data-placement="bottom", data-title=post.pdf_downloads == 0 ? "This guide has not been downloaded yet! Let's be the first one" : "This guide has been downloaded " + post.pdf_downloads + (post.pdf_downloads == 1 ? " time" : " times")) PDF
-            if signedIn
-                a.btn.pull-right.tooltipButton(href="/admin/post/edit/#{post._id}", data-placement="bottom", data-title="Edit the post") EDIT
+            a.btn.pull-right.tooltipButton#downloadPdfButton(href="/post/pdf/#{post.slug}", class=!pdfAvailable ? '_hide' : '', rel="nofollow", data-placement="bottom", data-title=post.pdf_downloads == 0 ? "This guide has not been downloaded yet! Let's be the first one" : "This guide has been downloaded " + post.pdf_downloads + (post.pdf_downloads == 1 ? " time" : " times")) PDF
+            a.btn.pull-right.tooltipButton(href="/admin/post/edit/#{post._id}", data-placement="bottom", data-title="Edit the post") EDIT
 
             h1
                 a(href="/post/#{post.slug}") #{post.title}
@@ -61,6 +60,9 @@ block content
                                 span Comments
                             p Help us improve this document by leaving your comments below. Thank you!
                             div#disqus_thread
+
+                    // Footer
+                    include ../layouts/footer
 
 block footerScript
     script(type="text/javascript", src="/vendor/tocjs/js/toc.min.js")
