@@ -186,6 +186,13 @@ h1, h2, h3, h4 {
   .post-comments h2 span {
     background: #fff; }
 
+/* Errors */
+.error {
+  text-align: center; }
+  .error h2 {
+    color: #f1c40f;
+    font-size: 300px; }
+
 @media screen and (min-width: 992px) and (min-height: 700px) {
   .post-toc .nav > .active > ul {
     display: block; } }

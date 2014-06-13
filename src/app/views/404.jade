@@ -1,12 +1,23 @@
-extends layouts/default
+extends layouts/frontend
 
 block content
-    div.d-separator
-        span Not Found
+    div.heading
+        div.container
+            div.row
+                h1.text-center
+                    a(href="#{config.app.url}") #{config.app.name}
 
-    div.row
-        div.col-lg-6.col-lg-offset-3.text-center
-            p Sorry! The page you are looking for is not found
+                div.col-md-6.col-md-offset-3
+                    form(method="get", action="/search")
+                        div.input-group.input-group-lg
+                            input.form-control(type="text", name="q", placeholder="Search for guides")
+                            span.input-group-btn
+                                button.btn.btn-default(type="submit")
+                                    i.fa.fa-search
 
-    div.text-center
-        a.btn.btn-info(href="/") Homepage
+    div.container
+        div.row
+            div.col-md-8.col-md-offset-2
+                div.error
+                    h2 404
+                    p Sorry! The page you are looking for is not found
