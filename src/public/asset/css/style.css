@@ -22,8 +22,10 @@ h1, h2, h3, h4 {
     .heading h1 a {
       color: #fff; }
 
+/* Footer */
 .footer {
   border-top: 1px solid #eee;
+  font-size: 14px;
   margin-top: 50px;
   padding: 10px 0; }
 
