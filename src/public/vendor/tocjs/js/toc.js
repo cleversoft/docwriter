@@ -207,7 +207,7 @@
          * @return {String}
          */
         generateHeadingId: function(heading) {
-            if (!$(heading).attr('id')) {
+            //if (!$(heading).attr('id')) {
                 var id = $(heading)
                     .text()
                     .toLowerCase()
@@ -233,7 +233,7 @@
 
                 $(heading).attr('id', id);
                 return id;
-            }
+            //}
 
             return $(heading).attr('id');
         },
