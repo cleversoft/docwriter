@@ -208,21 +208,27 @@
          */
         generateHeadingId: function(heading) {
             //if (!$(heading).attr('id')) {
-                var id = $(heading)
-                    .text()
-                    .toLowerCase()
-                    .replace(/\s+|\/|\\/g, '-')
-                    .replace(/á|à|ạ|ả|ã|ă|ắ|ằ|ặ|ẳ|ẵ|â|ấ|ầ|ậ|ẩ|ẫ|ä/g, 'a')
-                    .replace(/đ/g, 'd')
-                    .replace(/é|è|ẹ|ẻ|ẽ|ê|ế|ề|ệ|ể|ễ/g, 'e')
-                    .replace(/í|ì|ị|ỉ|ĩ/g, 'i')
-                    .replace(/ó|ò|ọ|ỏ|õ|ô|ố|ồ|ộ|ổ|ỗ|ơ|ớ|ờ|ợ|ở|ỡ/g, 'o')
-                    .replace(/ú|ù|ụ|ủ|ũ|ư|ứ|ừ|ự|ử|ữ/g, 'u')
-                    .replace(/ý|ỳ|ỵ|ỷ|ỹ/g, 'y')
-                    .replace(/[^a-z0-9-]/g, '');
+                var currentId = $(heading).attr('id'),
+                    id        = $(heading)
+                                    .text()
+                                    .toLowerCase()
+                                    .replace(/\s+|\/|\\/g, '-')
+                                    .replace(/á|à|ạ|ả|ã|ă|ắ|ằ|ặ|ẳ|ẵ|â|ấ|ầ|ậ|ẩ|ẫ|ä/g, 'a')
+                                    .replace(/đ/g, 'd')
+                                    .replace(/é|è|ẹ|ẻ|ẽ|ê|ế|ề|ệ|ể|ễ/g, 'e')
+                                    .replace(/í|ì|ị|ỉ|ĩ/g, 'i')
+                                    .replace(/ó|ò|ọ|ỏ|õ|ô|ố|ồ|ộ|ổ|ỗ|ơ|ớ|ờ|ợ|ở|ỡ/g, 'o')
+                                    .replace(/ú|ù|ụ|ủ|ũ|ư|ứ|ừ|ự|ử|ữ/g, 'u')
+                                    .replace(/ý|ỳ|ỵ|ỷ|ỹ/g, 'y')
+                                    .replace(/[^a-z0-9-]/g, '');
+
+                if (currentId === id) {
+                    return id;
+                }
 
                 var found = true, counter = 0;
                 while (found) {
+                    var $found =
                     found = $('#' + id + (counter == 0 ? '' : '-' + counter)).length > 0;
                     if (found) {
                         counter++;
@@ -235,7 +241,7 @@
                 return id;
             //}
 
-            return $(heading).attr('id');
+            //return $(heading).attr('id');
         },
 
         /**
