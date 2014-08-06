@@ -1,0 +1,117 @@
+@sidebar-width: 200px;
+@header-height: 50px;
+
+// Helpers
+.dw-separator {
+  border-bottom: 1px solid #e5e5e5;
+  line-height: 0.1em;
+  margin: 30px 0;
+  text-align: center;
+  width: 100%;
+  span {
+    background: #fff;
+    padding: 0 10px;
+  }
+}
+
+.dw-loading {
+  margin: 0 auto;
+  padding-top: 300px;
+}
+
+.dw-body {
+  background: url('../img/line.png') top left repeat-y;
+  font-family: 'Noto Sans', sans-serif;
+}
+
+.dw-header {
+  border-bottom: 1px solid #ccc;
+  .dw-logo {
+    display: block;
+    float: left;
+    height: @header-height;
+    width: @sidebar-width;
+    background: url('../img/logo.png') center center no-repeat;
+  }
+  .dw-toggle {
+    height: @header-height;
+    line-height: @header-height;
+    font-size: 25px;
+    font-weight: normal;
+    color: #000;
+  }
+  .navbar {
+    background-color: #fff;
+    border-bottom: none;
+    margin-bottom: 0;
+    margin-left: @sidebar-width;
+    padding-left: 15px;
+  }
+  .dropdown-toggle {
+    height: @header-height;
+    line-height: @header-height;
+    padding: 0 15px;
+    span {
+      padding: 5px;
+    }
+  }
+}
+
+.dw-sidebar {
+  position: absolute;
+  top: @header-height;
+  width: @sidebar-width;
+  ul {
+    margin: 0;
+    padding: 0;
+  }
+  li {
+    border-bottom: 1px solid #e7e7e7;
+  }
+}
+
+.dw-content {
+  display: block;
+  margin-left: @sidebar-width;
+  padding-left: 15px;
+  padding-right: 15px;
+  .tab-content {
+    padding-top: 20px;
+  }
+}
+
+.dw-heading {
+  border-bottom: 1px solid #eee;
+  margin-bottom: 20px;
+  h1 {
+    font-size: 25px;
+    font-weight: 700;
+    height: 57px;
+    line-height: 57px;
+    margin: 0;
+    padding: 0;
+  }
+}
+
+.dw-package-thumb {
+  border: 2px dashed #e5e5e5;
+  border-radius: 4px;
+  height: 300px;
+  padding: 5px;
+  margin-bottom: 15px;
+  img {
+    width: 100%;
+  }
+}
+
+.dw-upload-button {
+  overflow: hidden;
+  position: relative;
+  input {
+    position: absolute;
+    top: 0;
+    right: 0;
+    opacity: 0;
+    cursor: pointer;
+  }
+}

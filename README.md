@@ -66,7 +66,7 @@ $ sudo npm install
 From the MongoDB shell, create the database:
 
 ```bash
-> use nodedesk_dev;
+> use docwriter_dev;
 ```
 
 Then issue the following command to create an administrator account with username as ```administrator```, password as ```admin``` (the password can be changed in the back-end):

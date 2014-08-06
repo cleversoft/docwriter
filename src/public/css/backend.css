@@ -1,0 +1,105 @@
+.dw-separator {
+  border-bottom: 1px solid #e5e5e5;
+  line-height: 0.1em;
+  margin: 30px 0;
+  text-align: center;
+  width: 100%;
+}
+.dw-separator span {
+  background: #fff;
+  padding: 0 10px;
+}
+.dw-loading {
+  margin: 0 auto;
+  padding-top: 300px;
+}
+.dw-body {
+  background: url('../img/line.png') top left repeat-y;
+  font-family: 'Noto Sans', sans-serif;
+}
+.dw-header {
+  border-bottom: 1px solid #ccc;
+}
+.dw-header .dw-logo {
+  display: block;
+  float: left;
+  height: 50px;
+  width: 200px;
+  background: url('../img/logo.png') center center no-repeat;
+}
+.dw-header .dw-toggle {
+  height: 50px;
+  line-height: 50px;
+  font-size: 25px;
+  font-weight: normal;
+  color: #000;
+}
+.dw-header .navbar {
+  background-color: #fff;
+  border-bottom: none;
+  margin-bottom: 0;
+  margin-left: 200px;
+  padding-left: 15px;
+}
+.dw-header .dropdown-toggle {
+  height: 50px;
+  line-height: 50px;
+  padding: 0 15px;
+}
+.dw-header .dropdown-toggle span {
+  padding: 5px;
+}
+.dw-sidebar {
+  position: absolute;
+  top: 50px;
+  width: 200px;
+}
+.dw-sidebar ul {
+  margin: 0;
+  padding: 0;
+}
+.dw-sidebar li {
+  border-bottom: 1px solid #e7e7e7;
+}
+.dw-content {
+  display: block;
+  margin-left: 200px;
+  padding-left: 15px;
+  padding-right: 15px;
+}
+.dw-content .tab-content {
+  padding-top: 20px;
+}
+.dw-heading {
+  border-bottom: 1px solid #eee;
+  margin-bottom: 20px;
+}
+.dw-heading h1 {
+  font-size: 25px;
+  font-weight: 700;
+  height: 57px;
+  line-height: 57px;
+  margin: 0;
+  padding: 0;
+}
+.dw-package-thumb {
+  border: 2px dashed #e5e5e5;
+  border-radius: 4px;
+  height: 300px;
+  padding: 5px;
+  margin-bottom: 15px;
+}
+.dw-package-thumb img {
+  width: 100%;
+}
+.dw-upload-button {
+  overflow: hidden;
+  position: relative;
+}
+.dw-upload-button input {
+  position: absolute;
+  top: 0;
+  right: 0;
+  opacity: 0;
+  cursor: pointer;
+}

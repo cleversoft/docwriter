@@ -1,5 +1,9 @@
 # Changelog
 
+## v2.0.0 (not released)
+
+* Move the platform to MEAN stack
+
 ## v1.1.0 (2014-08-06)
 
 * [#11](https://github.com/nghuuphuoc/nodedesk/issues/11): Duplicating post feature
