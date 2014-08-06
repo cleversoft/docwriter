@@ -3,11 +3,6 @@ angular
     .factory('CategoryService', ['$injector', 'API', function($injector, API) {
         var $http;
         return {
-            list: function() {
-                $http = $http || $injector.get('$http');
-                return $http.post(API.baseUrl + '/category');
-            },
-
             add: function(category) {
                 $http = $http || $injector.get('$http');
                 return $http.post(API.baseUrl + '/category/add', category);
@@ -21,6 +16,18 @@ angular
             get: function(id) {
                 $http = $http || $injector.get('$http');
                 return $http.get(API.baseUrl + '/category/get/' + id);
+            },
+
+            list: function() {
+                $http = $http || $injector.get('$http');
+                return $http.post(API.baseUrl + '/category');
+            },
+
+            remove: function(id) {
+                $http = $http || $injector.get('$http');
+                return $http.post(API.baseUrl + '/category/remove', {
+                    id: id
+                });
             },
 
             save: function(category) {

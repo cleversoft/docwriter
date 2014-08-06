@@ -55,21 +55,22 @@ var controller = {
 
 app.route('/admin').get(controller.admin.index);
 
-app.route('/category').post(middleware.auth.requireAuth, controller.category.list);
-app.route('/category/add').post(middleware.auth.requireAuth, controller.category.add);
-app.route('/category/slug').post(middleware.auth.requireAuth, controller.category.slug);
-app.route('/category/get/:id').get(middleware.auth.requireAuth, controller.category.get);
+app.route('/category').post(middleware.auth.requireAuth,          controller.category.list);
+app.route('/category/add').post(middleware.auth.requireAuth,      controller.category.add);
+app.route('/category/get/:id').get(middleware.auth.requireAuth,   controller.category.get);
 app.route('/category/save/:id').post(middleware.auth.requireAuth, controller.category.save);
+app.route('/category/remove').post(middleware.auth.requireAuth,   controller.category.remove);
+app.route('/category/slug').post(middleware.auth.requireAuth,     controller.category.slug);
 
-app.route('/user').post(middleware.auth.requireAuth, controller.user.list);
-app.route('/user/add').post(middleware.auth.requireAuth, controller.user.add);
-app.route('/user/get/:id').get(middleware.auth.requireAuth, controller.user.get);
-app.route('/user/lock').post(middleware.auth.requireAuth, controller.user.lock);
-app.route('/user/me').post(middleware.auth.requireAuth, controller.user.me);
+app.route('/user').post(middleware.auth.requireAuth,          controller.user.list);
+app.route('/user/add').post(middleware.auth.requireAuth,      controller.user.add);
+app.route('/user/get/:id').get(middleware.auth.requireAuth,   controller.user.get);
+app.route('/user/lock').post(middleware.auth.requireAuth,     controller.user.lock);
+app.route('/user/me').post(middleware.auth.requireAuth,       controller.user.me);
 app.route('/user/password').post(middleware.auth.requireAuth, controller.user.password);
 app.route('/user/save/:id').post(middleware.auth.requireAuth, controller.user.save);
 app.route('/user/signin').post(controller.user.signin);
-app.route('/user/signout').post(middleware.auth.requireAuth, controller.user.signout);
+app.route('/user/signout').post(middleware.auth.requireAuth,  controller.user.signout);
 
 app.listen(port);
 console.log('Start on port ' + port);

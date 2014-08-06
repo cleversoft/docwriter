@@ -74,6 +74,27 @@ exports.get = function(req, res) {
 };
 
 /**
+ * Remove category
+ */
+exports.remove = function(req, res) {
+    var id = req.body.id;
+    Category
+        .findOne({ _id: id })
+        .exec(function(err, category) {
+            if (err) {
+                return res.json({ msg: err });
+            }
+            if (!category) {
+                return res.json({ msg: 'The category is not found' });
+            }
+
+            category.remove(function(err) {
+                return res.json({ msg: err || 'ok' });
+            });
+        });
+};
+
+/**
  * Update category
  */
 exports.save = function(req, res) {
@@ -111,23 +132,6 @@ exports.order = function(req, res) {
             }
             Category.updatePosition(category, position, function() {
                 return res.json({ result: 'ok' });
-            });
-        });
-};
-
-/**
- * Remove category
- */
-exports.remove = function(req, res) {
-    var id = req.body.id;
-    Category
-        .findOne({ _id: id })
-        .exec(function(err, category) {
-            if (err || !category) {
-                return res.json({ result: 'error' });
-            }
-            category.remove(function(err) {
-                return res.json({ result: err ? 'error' : 'ok' });
             });
         });
 };

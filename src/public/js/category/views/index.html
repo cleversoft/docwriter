@@ -19,7 +19,22 @@
             <td>{{ category.slug }}</td>
             <td>
                 <a href="#/category/edit/{{ category._id }}" class="btn btn-default">Edit</a>
+                <button ng-click="confirm(category)" class="btn btn-danger">Remove</button>
             </td>
         </tr>
     </tbody>
 </table>
+
+<!-- Confirmation modal -->
+<script type="text/ng-template" id="removeCategoryModal.html">
+    <div class="modal-header">
+        <h3 class="modal-title">Message</h3>
+    </div>
+    <div class="modal-body">
+        <p>Are you sure that you want to remove <strong>{{ selected.name }}</strong> category?</p>
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-danger" ng-click="remove()">Yes</button>
+        <button class="btn btn-default" ng-click="cancel()">No</button>
+    </div>
+</script>
