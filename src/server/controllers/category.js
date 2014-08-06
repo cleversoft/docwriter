@@ -55,26 +55,47 @@ exports.slug = function(req, res) {
     });
 };
 
-// -----------------------------------------------
+/**
+ * Get category details
+ */
+exports.get = function(req, res) {
+    var id = req.param('id');
+    Category
+        .findOne({ _id: id })
+        .exec(function(err, category) {
+            if (err) {
+                return res.json({ msg: err });
+            }
+            if (!category) {
+                return res.json({ msg: 'The category is not found' });
+            }
+            return res.json({ msg: 'ok', category: category });
+        });
+};
 
 /**
  * Update category
  */
-exports.edit = function(req, res) {
-    var id = req.body.id;
+exports.save = function(req, res) {
+    var id = req.param('id');
     Category
         .findOne({ _id: id })
         .exec(function(err, category) {
-            if (err || !category) {
-                return res.json({ result: 'error' });
+            if (err) {
+                return res.json({ msg: err });
+            }
+            if (!category) {
+                return res.json({ msg: 'The category is not found' });
             }
             category.name = req.body.name;
             category.slug = req.body.slug;
             category.save(function(err) {
-                return res.json({ result: err ? 'error' : 'ok' });
+                return res.json({ msg: err || 'ok' });
             });
         });
 };
+
+// -----------------------------------------------
 
 /**
  * Change the category position

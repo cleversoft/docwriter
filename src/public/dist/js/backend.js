@@ -186,21 +186,61 @@ angular
     }]);
 angular
     .module('app.category')
+    .controller('EditCategoryCtrl', ['$scope', '$rootScope', '$routeParams', 'CategoryService', function($scope, $rootScope, $routeParams, CategoryService) {
+        $rootScope.pageTitle = 'Edit the category';
+        $scope.category      = null;
+
+        CategoryService
+            .get($routeParams.id)
+            .success(function(data) {
+                if (data.msg === 'ok') {
+                    $scope.category = data.category;
+                }
+            });
+
+        $scope.save = function() {
+            if (!$scope.category) {
+                $scope.msg = 'Please fill in the form';
+                return;
+            }
+
+            var required = {
+                name: 'The name is required',
+                slug: 'The slug is required'
+            };
+
+            for (var key in required) {
+                if (!$scope.category[key]) {
+                    $scope.msg = required[key];
+                    return;
+                }
+            }
+
+            CategoryService
+                .save($scope.category)
+                .success(function(data) {
+                    $scope.msg = data.msg;
+                });
+        };
+    }]);
+angular
+    .module('app.category')
     .directive('categorySlug', ['CategoryService', function(CategoryService) {
         return {
             restrict: 'A',
             scope: {
-                from: '=',
+                categoryName: '=',
+                categoryId: '=',
                 ngModel: '='
             },
             link: function(scope, ele, attrs) {
-                scope.$watch('from', function(val) {
+                scope.$watch('categoryName', function(val) {
                     if (!val) {
                         scope.ngModel = '';
                         return;
                     }
                     CategoryService
-                        .generateSlug(val)
+                        .generateSlug(val, scope.categoryId)
                         .success(function(data) {
                             scope.ngModel = data.slug;
                         });
@@ -226,6 +266,16 @@ angular
             generateSlug: function(name, id) {
                 $http = $http || $injector.get('$http');
                 return $http.post(API.baseUrl + '/category/slug', { name: name, id: id });
+            },
+
+            get: function(id) {
+                $http = $http || $injector.get('$http');
+                return $http.get(API.baseUrl + '/category/get/' + id);
+            },
+
+            save: function(category) {
+                $http = $http || $injector.get('$http');
+                return $http.post(API.baseUrl + '/category/save/' + category._id, category);
             }
         };
     }]);

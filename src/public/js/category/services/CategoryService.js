@@ -16,6 +16,16 @@ angular
             generateSlug: function(name, id) {
                 $http = $http || $injector.get('$http');
                 return $http.post(API.baseUrl + '/category/slug', { name: name, id: id });
+            },
+
+            get: function(id) {
+                $http = $http || $injector.get('$http');
+                return $http.get(API.baseUrl + '/category/get/' + id);
+            },
+
+            save: function(category) {
+                $http = $http || $injector.get('$http');
+                return $http.post(API.baseUrl + '/category/save/' + category._id, category);
             }
         };
     }]);
