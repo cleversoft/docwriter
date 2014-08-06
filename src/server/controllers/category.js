@@ -23,20 +23,39 @@ exports.add = function(req, res) {
         name: req.body.name,
         slug: req.body.slug
     });
-    if (!category.name || !category.slug) {
-        return res.json({ result: 'error' });
+    if (!category.name) {
+        return res.json({ msg: 'The name is required' });
+    }
+    if (!category.slug) {
+        return res.json({ msg: 'The slug is required' });
     }
     Category.count(function(err, total) {
         category.position = total;
         category.save(function(err) {
-            return res.json({
-                result:   err ? 'error' : 'ok',
-                id:       err ? null    : category._id,
-                position: err ? null    : category.position
-            });
+            return res.json({ msg: err || 'ok' });
         });
     });
 };
+
+/**
+ * Generate slug
+ */
+exports.slug = function(req, res) {
+    var category = new Category({
+        name: req.body.name
+    });
+    if (req.body.id) {
+        category._id = req.body.id;
+    }
+    if (!category.name) {
+        return res.json({ msg: 'The name is required' });
+    }
+    Category.generateSlug(category, function(slug) {
+        res.json({ slug: slug });
+    });
+};
+
+// -----------------------------------------------
 
 /**
  * Update category
@@ -90,19 +109,4 @@ exports.remove = function(req, res) {
                 return res.json({ result: err ? 'error' : 'ok' });
             });
         });
-};
-
-/**
- * Generate slug
- */
-exports.slug = function(req, res) {
-    var category = new Category({
-        name: req.body.name
-    });
-    if (req.body.id) {
-        category._id = req.body.id;
-    }
-    Category.generateSlug(category, function(slug) {
-        res.json({ slug: slug });
-    });
 };

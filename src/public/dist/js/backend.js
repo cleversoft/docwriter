@@ -140,6 +140,40 @@ angular
     }]);
 angular
     .module('app.category')
+    .controller('AddCategoryCtrl', ['$scope', '$rootScope', 'CategoryService', function($scope, $rootScope, CategoryService) {
+        $rootScope.pageTitle = 'Add new category';
+        $scope.category      = null;
+
+        $scope.save = function() {
+            if (!$scope.category) {
+                $scope.msg = 'Please fill in the form';
+                return;
+            }
+
+            var required = {
+                name: 'The name is required',
+                slug: 'The slug is required'
+            };
+
+            for (var key in required) {
+                if (!$scope.category[key]) {
+                    $scope.msg = required[key];
+                    return;
+                }
+            }
+
+            CategoryService
+                .add($scope.category)
+                .success(function(data) {
+                    $scope.msg = data.msg;
+                    if (data.msg === 'ok') {
+                        $scope.category = null;
+                    }
+                });
+        };
+    }]);
+angular
+    .module('app.category')
     .controller('CategoryCtrl', ['$scope', '$rootScope', 'CategoryService', function($scope, $rootScope, CategoryService) {
         $rootScope.pageTitle = 'Categories';
         $scope.categories    = [];
@@ -149,6 +183,30 @@ angular
             .success(function(data) {
                 $scope.categories = data.categories;
             });
+    }]);
+angular
+    .module('app.category')
+    .directive('categorySlug', ['CategoryService', function(CategoryService) {
+        return {
+            restrict: 'A',
+            scope: {
+                from: '=',
+                ngModel: '='
+            },
+            link: function(scope, ele, attrs) {
+                scope.$watch('from', function(val) {
+                    if (!val) {
+                        scope.ngModel = '';
+                        return;
+                    }
+                    CategoryService
+                        .generateSlug(val)
+                        .success(function(data) {
+                            scope.ngModel = data.slug;
+                        });
+                });
+            }
+        };
     }]);
 angular
     .module('app.category')
@@ -163,6 +221,11 @@ angular
             add: function(category) {
                 $http = $http || $injector.get('$http');
                 return $http.post(API.baseUrl + '/category/add', category);
+            },
+
+            generateSlug: function(name, id) {
+                $http = $http || $injector.get('$http');
+                return $http.post(API.baseUrl + '/category/slug', { name: name, id: id });
             }
         };
     }]);
