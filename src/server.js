@@ -58,6 +58,7 @@ app.route('/admin').get(controller.admin.index);
 app.route('/category').post(middleware.auth.requireAuth,          controller.category.list);
 app.route('/category/add').post(middleware.auth.requireAuth,      controller.category.add);
 app.route('/category/get/:id').get(middleware.auth.requireAuth,   controller.category.get);
+app.route('/category/order').post(middleware.auth.requireAuth,    controller.category.order);
 app.route('/category/save/:id').post(middleware.auth.requireAuth, controller.category.save);
 app.route('/category/remove').post(middleware.auth.requireAuth,   controller.category.remove);
 app.route('/category/slug').post(middleware.auth.requireAuth,     controller.category.slug);

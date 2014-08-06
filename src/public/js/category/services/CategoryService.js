@@ -23,6 +23,14 @@ angular
                 return $http.post(API.baseUrl + '/category');
             },
 
+            order: function(id, position) {
+                $http = $http || $injector.get('$http');
+                return $http.post(API.baseUrl + '/category/order', {
+                    id: id,
+                    position: position
+                });
+            },
+
             remove: function(id) {
                 $http = $http || $injector.get('$http');
                 return $http.post(API.baseUrl + '/category/remove', {

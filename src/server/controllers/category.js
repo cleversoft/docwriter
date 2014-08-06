@@ -2,20 +2,6 @@ var mongoose = require('mongoose'),
     Category = mongoose.model('category');
 
 /**
- * List categories
- */
-exports.list = function(req, res) {
-    Category
-        .find({})
-        .sort({ position: 1 })
-        .exec(function(err, categories) {
-            res.json({
-                categories: categories
-            });
-        });
-};
-
-/**
  * Add new category
  */
 exports.add = function(req, res) {
@@ -38,24 +24,6 @@ exports.add = function(req, res) {
 };
 
 /**
- * Generate slug
- */
-exports.slug = function(req, res) {
-    var category = new Category({
-        name: req.body.name
-    });
-    if (req.body.id) {
-        category._id = req.body.id;
-    }
-    if (!category.name) {
-        return res.json({ msg: 'The name is required' });
-    }
-    Category.generateSlug(category, function(slug) {
-        res.json({ slug: slug });
-    });
-};
-
-/**
  * Get category details
  */
 exports.get = function(req, res) {
@@ -70,6 +38,41 @@ exports.get = function(req, res) {
                 return res.json({ msg: 'The category is not found' });
             }
             return res.json({ msg: 'ok', category: category });
+        });
+};
+
+/**
+ * List categories
+ */
+exports.list = function(req, res) {
+    Category
+        .find({})
+        .sort({ position: 1 })
+        .exec(function(err, categories) {
+            res.json({
+                categories: categories
+            });
+        });
+};
+
+/**
+ * Change the category position
+ */
+exports.order = function(req, res) {
+    var id       = req.body.id,
+        position = req.body.position;
+    Category
+        .findOne({ _id: id })
+        .exec(function(err, category) {
+            if (err) {
+                return res.json({ msg: err });
+            }
+            if (!category) {
+                return res.json({ msg: 'The category is not found' });
+            }
+            Category.updatePosition(category, position, function() {
+                return res.json({ msg: 'ok' });
+            });
         });
 };
 
@@ -116,22 +119,20 @@ exports.save = function(req, res) {
         });
 };
 
-// -----------------------------------------------
-
 /**
- * Change the category position
+ * Generate slug
  */
-exports.order = function(req, res) {
-    var id       = req.body.id,
-        position = req.body.position;
-    Category
-        .findOne({ _id: id })
-        .exec(function(err, category) {
-            if (err || !category) {
-                return res.json({ result: 'error' });
-            }
-            Category.updatePosition(category, position, function() {
-                return res.json({ result: 'ok' });
-            });
-        });
+exports.slug = function(req, res) {
+    var category = new Category({
+        name: req.body.name
+    });
+    if (req.body.id) {
+        category._id = req.body.id;
+    }
+    if (!category.name) {
+        return res.json({ msg: 'The name is required' });
+    }
+    Category.generateSlug(category, function(slug) {
+        res.json({ slug: slug });
+    });
 };

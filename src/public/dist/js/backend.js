@@ -98,47 +98,6 @@ angular
     }]);
 
 angular
-    .module('app.admin')
-    .controller('AppCtrl', ['$scope', '$rootScope', '$window', 'AUTH_EVENTS', 'AuthService', function($scope, $rootScope, $window, AUTH_EVENTS, AuthService) {
-        $scope.loadingDone = false;
-        $scope.currentUser = null;
-
-        $scope.$on(AUTH_EVENTS.loginSuccess, function(e, data) {
-            $scope.currentUser = data.user;
-        });
-
-        $scope.signout = function() {
-            $scope.currentUser = null;
-            AuthService
-                .signout()
-                .success(function(data) {
-                    AuthService.isAuthenticated = false;
-                    $scope.$broadcast(AUTH_EVENTS.notAuthenticated);
-                })
-                .error(function(status, data) {
-                });
-        };
-
-        AuthService
-            .me()
-            .success(function(data) {
-                AuthService.isAuthenticated = true;
-                $scope.currentUser = data.user;
-            })
-            .error(function() {
-                AuthService.isAuthenticated = false;
-                $scope.$broadcast(AUTH_EVENTS.notAuthenticated);
-            })
-            .finally(function() {
-                $scope.loadingDone = true;
-            });
-    }]);
-angular
-    .module('app.admin')
-    .controller('DashboardCtrl', ['$scope', '$rootScope', function($scope, $rootScope) {
-        $rootScope.pageTitle = 'Dashboard';
-    }]);
-angular
     .module('app.category')
     .controller('AddCategoryCtrl', ['$scope', '$rootScope', 'CategoryService', function($scope, $rootScope, CategoryService) {
         $rootScope.pageTitle = 'Add new category';
@@ -178,11 +137,16 @@ angular
         $rootScope.pageTitle = 'Categories';
         $scope.categories    = [];
         $scope.selected      = null;
+        $scope.ordering      = false;
 
         CategoryService
             .list()
             .success(function(data) {
-                $scope.categories = data.categories;
+                for (var i = 0; i < data.categories.length; i++) {
+                    var category = data.categories[i];
+                    category.index = i;
+                    $scope.categories.push(category);
+                }
             });
 
         $scope.confirm = function(category) {
@@ -220,9 +184,33 @@ angular
                                 _.remove($scope.categories, function(item) {
                                     return item._id === selected._id;
                                 });
+                                // Update the index
+                                for (var i = 0; i < $scope.categories.length; i++) {
+                                    $scope.categories[i].index = i;
+                                }
                             }
                         });
                 }, function() {
+                });
+        };
+
+        $scope.order = function(category, direction) {
+            $scope.ordering = true;
+
+            var index    = category.index,
+                newIndex = index + (direction === 'up' ? -1 : 1);
+            CategoryService
+                .order(category._id, newIndex)
+                .success(function(data) {
+                    $scope.ordering = false;
+                    if (data.msg === 'ok') {
+                        var c = $scope.categories[newIndex];
+                        $scope.categories[newIndex] = category;
+                        category.index = newIndex;
+
+                        $scope.categories[index] = c;
+                        c.index = index;
+                    }
                 });
         };
     }]);
@@ -267,6 +255,52 @@ angular
     }]);
 angular
     .module('app.category')
+    .factory('CategoryService', ['$injector', 'API', function($injector, API) {
+        var $http;
+        return {
+            add: function(category) {
+                $http = $http || $injector.get('$http');
+                return $http.post(API.baseUrl + '/category/add', category);
+            },
+
+            generateSlug: function(name, id) {
+                $http = $http || $injector.get('$http');
+                return $http.post(API.baseUrl + '/category/slug', { name: name, id: id });
+            },
+
+            get: function(id) {
+                $http = $http || $injector.get('$http');
+                return $http.get(API.baseUrl + '/category/get/' + id);
+            },
+
+            list: function() {
+                $http = $http || $injector.get('$http');
+                return $http.post(API.baseUrl + '/category');
+            },
+
+            order: function(id, position) {
+                $http = $http || $injector.get('$http');
+                return $http.post(API.baseUrl + '/category/order', {
+                    id: id,
+                    position: position
+                });
+            },
+
+            remove: function(id) {
+                $http = $http || $injector.get('$http');
+                return $http.post(API.baseUrl + '/category/remove', {
+                    id: id
+                });
+            },
+
+            save: function(category) {
+                $http = $http || $injector.get('$http');
+                return $http.post(API.baseUrl + '/category/save/' + category._id, category);
+            }
+        };
+    }]);
+angular
+    .module('app.category')
     .directive('categorySlug', ['CategoryService', function(CategoryService) {
         return {
             restrict: 'A',
@@ -291,42 +325,45 @@ angular
         };
     }]);
 angular
-    .module('app.category')
-    .factory('CategoryService', ['$injector', 'API', function($injector, API) {
-        var $http;
-        return {
-            add: function(category) {
-                $http = $http || $injector.get('$http');
-                return $http.post(API.baseUrl + '/category/add', category);
-            },
+    .module('app.admin')
+    .controller('AppCtrl', ['$scope', '$rootScope', '$window', 'AUTH_EVENTS', 'AuthService', function($scope, $rootScope, $window, AUTH_EVENTS, AuthService) {
+        $scope.loadingDone = false;
+        $scope.currentUser = null;
 
-            generateSlug: function(name, id) {
-                $http = $http || $injector.get('$http');
-                return $http.post(API.baseUrl + '/category/slug', { name: name, id: id });
-            },
+        $scope.$on(AUTH_EVENTS.loginSuccess, function(e, data) {
+            $scope.currentUser = data.user;
+        });
 
-            get: function(id) {
-                $http = $http || $injector.get('$http');
-                return $http.get(API.baseUrl + '/category/get/' + id);
-            },
-
-            list: function() {
-                $http = $http || $injector.get('$http');
-                return $http.post(API.baseUrl + '/category');
-            },
-
-            remove: function(id) {
-                $http = $http || $injector.get('$http');
-                return $http.post(API.baseUrl + '/category/remove', {
-                    id: id
+        $scope.signout = function() {
+            $scope.currentUser = null;
+            AuthService
+                .signout()
+                .success(function(data) {
+                    AuthService.isAuthenticated = false;
+                    $scope.$broadcast(AUTH_EVENTS.notAuthenticated);
+                })
+                .error(function(status, data) {
                 });
-            },
-
-            save: function(category) {
-                $http = $http || $injector.get('$http');
-                return $http.post(API.baseUrl + '/category/save/' + category._id, category);
-            }
         };
+
+        AuthService
+            .me()
+            .success(function(data) {
+                AuthService.isAuthenticated = true;
+                $scope.currentUser = data.user;
+            })
+            .error(function() {
+                AuthService.isAuthenticated = false;
+                $scope.$broadcast(AUTH_EVENTS.notAuthenticated);
+            })
+            .finally(function() {
+                $scope.loadingDone = true;
+            });
+    }]);
+angular
+    .module('app.admin')
+    .controller('DashboardCtrl', ['$scope', '$rootScope', function($scope, $rootScope) {
+        $rootScope.pageTitle = 'Dashboard';
     }]);
 angular
     .module('app.user')
