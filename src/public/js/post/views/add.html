@@ -1,0 +1,81 @@
+<div class="dw-heading">
+    <h1><a href="#/post">Posts</a> / Add new post</h1>
+</div>
+
+<form class="form-horizontal">
+    <tabset>
+        <tab>
+            <tab-heading>General</tab-heading>
+
+            <div class="col-md-8 col-md-offset-2">
+                <div class="form-group">
+                    <label class="col-md-4 control-label">Title</label>
+                    <div class="col-md-8">
+                        <input type="text" ng-model="post.title" class="form-control" />
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="col-md-4 control-label">Slug</label>
+                    <div class="col-md-8">
+                        <input type="text" ng-model="post.slug" class="form-control" />
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="col-md-4 control-label">Categories</label>
+                    <div class="col-md-8">
+                        <div class="checkbox" ng-repeat="category in categories">
+                            <label>
+                                <input type="checkbox" value="{{ category._id }}" /> {{ category.name }}
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="col-md-4 control-label">Heading style</label>
+                    <div class="col-md-8">
+                        <div class="btn-group">
+                            <label class="btn btn-default" ng-model="post.heading_styles" btn-radio="">None</label>
+                            <label class="btn btn-default" ng-model="post.heading_styles" btn-radio="'111111'">1, 2, 3</label>
+                            <label class="btn btn-default" ng-model="post.heading_styles" btn-radio="'AAAAAA'">A, B, C</label>
+                            <label class="btn btn-default" ng-model="post.heading_styles" btn-radio="'aaaaaa'">a, b, c</label>
+                            <label class="btn btn-default" ng-model="post.heading_styles" btn-radio="'IIIIII'">I, II, III</label>
+                            <label class="btn btn-default" ng-model="post.heading_styles" btn-radio="'iiiiii'">i, ii, iii</label>
+                            <label class="btn btn-default" ng-model="post.heading_styles" btn-radio="'custom'">Custom</label>
+                        </div>
+                    </div>
+                </div>
+
+                <div ng-show="post.heading_styles === 'custom'">
+                    <div class="form-group" ng-repeat="i in [1, 2, 3, 4, 5, 6]">
+                        <label class="col-md-4 control-label">#{{i}} level heading style</label>
+                        <div class="col-md-8">
+                            <div class="btn-group">
+                                <label class="btn btn-default" ng-model="post['heading_styles_h' + i]" btn-radio="">None</label>
+                                <label class="btn btn-default" ng-model="post['heading_styles_h' + i]" btn-radio="'1'">1, 2, 3</label>
+                                <label class="btn btn-default" ng-model="post['heading_styles_h' + i]" btn-radio="'A'">A, B, C</label>
+                                <label class="btn btn-default" ng-model="post['heading_styles_h' + i]" btn-radio="'a'">a, b, c</label>
+                                <label class="btn btn-default" ng-model="post['heading_styles_h' + i]" btn-radio="'I'">I, II, III</label>
+                                <label class="btn btn-default" ng-model="post['heading_styles_h' + i]" btn-radio="'i'">i, ii, iii</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </tab>
+
+        <tab>
+            <tab-heading>Content</tab-heading>
+
+            <div class="dw-post-editor">
+                <div ui-codemirror ng-model="post.content" ui-codemirror-opts="{ mode: 'markdown', lineNumbers: false, matchBrackets: true, lineWrapping: true, theme: 'default' }"></div>
+            </div>
+        </tab>
+
+        <tab>
+            <tab-heading>Preview</tab-heading>
+        </tab>
+    </tabset>
+</form>

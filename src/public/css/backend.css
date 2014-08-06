@@ -103,3 +103,7 @@
   opacity: 0;
   cursor: pointer;
 }
+.dw-post-editor {
+  border: 1px solid #ddd;
+  height: 500px;
+}

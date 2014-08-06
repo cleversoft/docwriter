@@ -1,9 +1,10 @@
 angular.module('app.admin',    []);
 angular.module('app.category', []);
+angular.module('app.post',     []);
 angular.module('app.user',     []);
 
 angular
-    .module('app', ['ngRoute', 'angularFileUpload', 'ui.bootstrap', 'app.admin', 'app.category', 'app.user'])
+    .module('app', ['ngRoute', 'angularFileUpload', 'ui.bootstrap', 'ui.codemirror', 'app.admin', 'app.category', 'app.post', 'app.user'])
     .constant('API', {
         baseUrl: ''
     })
@@ -47,6 +48,22 @@ angular
             .when('/category/edit/:id', {
                 templateUrl: '/js/category/views/edit.html',
                 controller: 'EditCategoryCtrl',
+                data: {
+                    requiredAuthentication: true
+                }
+            })
+
+            // post module
+            .when('/post', {
+                templateUrl: '/js/post/views/index.html',
+                controller: 'PostCtrl',
+                data: {
+                    requiredAuthentication: true
+                }
+            })
+            .when('/post/add', {
+                templateUrl: '/js/post/views/add.html',
+                controller: 'AddPostCtrl',
                 data: {
                     requiredAuthentication: true
                 }

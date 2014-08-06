@@ -1,9 +1,10 @@
 angular.module('app.admin',    []);
 angular.module('app.category', []);
+angular.module('app.post',     []);
 angular.module('app.user',     []);
 
 angular
-    .module('app', ['ngRoute', 'angularFileUpload', 'ui.bootstrap', 'app.admin', 'app.category', 'app.user'])
+    .module('app', ['ngRoute', 'angularFileUpload', 'ui.bootstrap', 'ui.codemirror', 'app.admin', 'app.category', 'app.post', 'app.user'])
     .constant('API', {
         baseUrl: ''
     })
@@ -47,6 +48,22 @@ angular
             .when('/category/edit/:id', {
                 templateUrl: '/js/category/views/edit.html',
                 controller: 'EditCategoryCtrl',
+                data: {
+                    requiredAuthentication: true
+                }
+            })
+
+            // post module
+            .when('/post', {
+                templateUrl: '/js/post/views/index.html',
+                controller: 'PostCtrl',
+                data: {
+                    requiredAuthentication: true
+                }
+            })
+            .when('/post/add', {
+                templateUrl: '/js/post/views/add.html',
+                controller: 'AddPostCtrl',
                 data: {
                     requiredAuthentication: true
                 }
@@ -97,6 +114,47 @@ angular
         });
     }]);
 
+angular
+    .module('app.admin')
+    .controller('AppCtrl', ['$scope', '$rootScope', '$window', 'AUTH_EVENTS', 'AuthService', function($scope, $rootScope, $window, AUTH_EVENTS, AuthService) {
+        $scope.loadingDone = false;
+        $scope.currentUser = null;
+
+        $scope.$on(AUTH_EVENTS.loginSuccess, function(e, data) {
+            $scope.currentUser = data.user;
+        });
+
+        $scope.signout = function() {
+            $scope.currentUser = null;
+            AuthService
+                .signout()
+                .success(function(data) {
+                    AuthService.isAuthenticated = false;
+                    $scope.$broadcast(AUTH_EVENTS.notAuthenticated);
+                })
+                .error(function(status, data) {
+                });
+        };
+
+        AuthService
+            .me()
+            .success(function(data) {
+                AuthService.isAuthenticated = true;
+                $scope.currentUser = data.user;
+            })
+            .error(function() {
+                AuthService.isAuthenticated = false;
+                $scope.$broadcast(AUTH_EVENTS.notAuthenticated);
+            })
+            .finally(function() {
+                $scope.loadingDone = true;
+            });
+    }]);
+angular
+    .module('app.admin')
+    .controller('DashboardCtrl', ['$scope', '$rootScope', function($scope, $rootScope) {
+        $rootScope.pageTitle = 'Dashboard';
+    }]);
 angular
     .module('app.category')
     .controller('AddCategoryCtrl', ['$scope', '$rootScope', 'CategoryService', function($scope, $rootScope, CategoryService) {
@@ -325,45 +383,24 @@ angular
         };
     }]);
 angular
-    .module('app.admin')
-    .controller('AppCtrl', ['$scope', '$rootScope', '$window', 'AUTH_EVENTS', 'AuthService', function($scope, $rootScope, $window, AUTH_EVENTS, AuthService) {
-        $scope.loadingDone = false;
-        $scope.currentUser = null;
-
-        $scope.$on(AUTH_EVENTS.loginSuccess, function(e, data) {
-            $scope.currentUser = data.user;
-        });
-
-        $scope.signout = function() {
-            $scope.currentUser = null;
-            AuthService
-                .signout()
-                .success(function(data) {
-                    AuthService.isAuthenticated = false;
-                    $scope.$broadcast(AUTH_EVENTS.notAuthenticated);
-                })
-                .error(function(status, data) {
-                });
+    .module('app.post')
+    .controller('AddPostCtrl', ['$scope', '$rootScope', 'CategoryService', function($scope, $rootScope, CategoryService) {
+        $rootScope.pageTitle = 'Add new post';
+        $scope.categories    = [];
+        $scope.post          = {
+            heading_styles: 'none'
         };
 
-        AuthService
-            .me()
+        CategoryService
+            .list()
             .success(function(data) {
-                AuthService.isAuthenticated = true;
-                $scope.currentUser = data.user;
-            })
-            .error(function() {
-                AuthService.isAuthenticated = false;
-                $scope.$broadcast(AUTH_EVENTS.notAuthenticated);
-            })
-            .finally(function() {
-                $scope.loadingDone = true;
+                $scope.categories = data.categories;
             });
     }]);
 angular
-    .module('app.admin')
-    .controller('DashboardCtrl', ['$scope', '$rootScope', function($scope, $rootScope) {
-        $rootScope.pageTitle = 'Dashboard';
+    .module('app.post')
+    .controller('PostCtrl', ['$scope', '$rootScope', function($scope, $rootScope) {
+        $rootScope.pageTitle = 'Posts';
     }]);
 angular
     .module('app.user')
