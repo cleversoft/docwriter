@@ -20,9 +20,9 @@ var mongoose   = require('mongoose'),
         ],
         pdf_downloads:  { type: Number, default: 0 },
         heading_styles: { type: String, default: '______' },
-        like: { type: Number, default: 0 },
-        dislike: { type: Number, default: 0 },
-        views: { type: Number, default: 0 }
+        like:           { type: Number, default: 0 },
+        dislike:        { type: Number, default: 0 },
+        views:          { type: Number, default: 0 }
     }),
     slugPlugin = require('./plugins/slug');
 

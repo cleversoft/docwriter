@@ -1,8 +1,9 @@
-angular.module('app.admin', []);
-angular.module('app.user',  []);
+angular.module('app.admin',    []);
+angular.module('app.category', []);
+angular.module('app.user',     []);
 
 angular
-    .module('app', ['ngRoute', 'angularFileUpload', 'ui.bootstrap', 'app.admin', 'app.user'])
+    .module('app', ['ngRoute', 'angularFileUpload', 'ui.bootstrap', 'app.admin', 'app.category', 'app.user'])
     .constant('API', {
         baseUrl: ''
     })
@@ -23,6 +24,29 @@ angular
             .when('/', {
                 templateUrl: '/js/admin/views/dashboard.html',
                 controller: 'DashboardCtrl',
+                data: {
+                    requiredAuthentication: true
+                }
+            })
+
+            // category module
+            .when('/category', {
+                templateUrl: '/js/category/views/index.html',
+                controller: 'CategoryCtrl',
+                data: {
+                    requiredAuthentication: true
+                }
+            })
+            .when('/category/add', {
+                templateUrl: '/js/category/views/add.html',
+                controller: 'AddCategoryCtrl',
+                data: {
+                    requiredAuthentication: true
+                }
+            })
+            .when('/category/edit/:id', {
+                templateUrl: '/js/category/views/edit.html',
+                controller: 'EditCategoryCtrl',
                 data: {
                     requiredAuthentication: true
                 }

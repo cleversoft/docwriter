@@ -1,0 +1,25 @@
+<div class="dw-heading">
+    <h1>Categories | <a href="#/category/add">Add new category</a></h1>
+</div>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Position</th>
+            <th>Name</th>
+            <th>Slug</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        <tr ng-repeat="category in categories">
+            <td>{{ category.position + 1 }}</td>
+            <td>{{ category.name }}</td>
+            <td>{{ category.slug }}</td>
+            <td>
+                <a href="#/category/edit/{{ category._id }}" class="btn btn-default">Edit</a>
+            </td>
+        </tr>
+    </tbody>
+</table>
