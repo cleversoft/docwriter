@@ -1,6 +1,6 @@
 # Changelog
 
-## v1.1.0 (not released yet)
+## v1.1.0 (2014-08-06)
 
 * [#11](https://github.com/nghuuphuoc/nodedesk/issues/11): Duplicating post feature
 * [#15](https://github.com/nghuuphuoc/nodedesk/issues/15): Add "Reset password" feature
