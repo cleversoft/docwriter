@@ -7,7 +7,9 @@
         "connect-mongo": "latest",
         "express": "latest",
         "express-session": "latest",
+        "formidable": "latest",
         "jade": "latest",
+        "mkdirp": "latest",
         "mongoose": "latest",
         "redis": "latest",
         "socket.io": "latest"

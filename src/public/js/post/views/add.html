@@ -69,8 +69,13 @@
         <tab>
             <tab-heading>Content</tab-heading>
 
+            <div class="btn btn-default dw-upload-button">
+                <span>Upload files</span>
+                <input type="file" ng-file-select="upload($files)" data-multiple="true" />
+            </div>
+
             <div class="dw-post-editor">
-                <div ui-codemirror ng-model="post.content" ui-codemirror-opts="{ mode: 'markdown', lineNumbers: false, matchBrackets: true, lineWrapping: true, theme: 'default' }"></div>
+                <div ui-codemirror="{ onLoad: editorLoaded }" ui-codemirror-opts="editorOptions"></div>
             </div>
         </tab>
 

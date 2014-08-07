@@ -1,5 +1,4 @@
-var
-    fs         = require('fs'),
+var fs         = require('fs'),
     mkdirp     = require('mkdirp'),
     path       = require('path'),
     formidable = require('formidable');

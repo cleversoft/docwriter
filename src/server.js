@@ -47,6 +47,7 @@ app.use(session({
 var controller = {
         admin: require('./server/controllers/admin'),
         category: require('./server/controllers/category'),
+        file: require('./server/controllers/file'),
         user: require('./server/controllers/user')
     },
     middleware = {
@@ -62,6 +63,8 @@ app.route('/category/order').post(middleware.auth.requireAuth,    controller.cat
 app.route('/category/save/:id').post(middleware.auth.requireAuth, controller.category.save);
 app.route('/category/remove').post(middleware.auth.requireAuth,   controller.category.remove);
 app.route('/category/slug').post(middleware.auth.requireAuth,     controller.category.slug);
+
+app.route('/file/upload').post(middleware.auth.requireAuth, controller.file.upload);
 
 app.route('/user').post(middleware.auth.requireAuth,          controller.user.list);
 app.route('/user/add').post(middleware.auth.requireAuth,      controller.user.add);
