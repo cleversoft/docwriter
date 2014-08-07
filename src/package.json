@@ -9,7 +9,9 @@
         "express-session": "latest",
         "formidable": "latest",
         "jade": "latest",
+        "marked": "latest",
         "mkdirp": "latest",
+        "moment": "latest",
         "mongoose": "latest",
         "redis": "latest",
         "socket.io": "latest"

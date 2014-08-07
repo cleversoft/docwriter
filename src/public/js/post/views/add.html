@@ -1,5 +1,5 @@
 <div class="dw-heading">
-    <h1><a href="#/post">Posts</a> / Add new post</h1>
+    <h1><a href="#/post">Posts</a> / Add new post <button class="btn btn-primary" ng-click="save()">SAVE</button></h1>
 </div>
 
 <form class="form-horizontal">
@@ -18,7 +18,7 @@
                 <div class="form-group">
                     <label class="col-md-4 control-label">Slug</label>
                     <div class="col-md-8">
-                        <input type="text" ng-model="post.slug" class="form-control" />
+                        <input type="text" ng-model="post.slug" class="form-control" post-slug post-title="post.title" />
                     </div>
                 </div>
 
@@ -27,7 +27,7 @@
                     <div class="col-md-8">
                         <div class="checkbox" ng-repeat="category in categories">
                             <label>
-                                <input type="checkbox" value="{{ category._id }}" /> {{ category.name }}
+                                <input type="checkbox" value="{{ category._id }}" ng-click="selectCategory(category._id)" /> {{ category.name }}
                             </label>
                         </div>
                     </div>
@@ -53,7 +53,7 @@
                         <label class="col-md-4 control-label">#{{i}} level heading style</label>
                         <div class="col-md-8">
                             <div class="btn-group">
-                                <label class="btn btn-default" ng-model="post['heading_styles_h' + i]" btn-radio="">None</label>
+                                <label class="btn btn-default" ng-model="post['heading_styles_h' + i]" btn-radio="_">None</label>
                                 <label class="btn btn-default" ng-model="post['heading_styles_h' + i]" btn-radio="'1'">1, 2, 3</label>
                                 <label class="btn btn-default" ng-model="post['heading_styles_h' + i]" btn-radio="'A'">A, B, C</label>
                                 <label class="btn btn-default" ng-model="post['heading_styles_h' + i]" btn-radio="'a'">a, b, c</label>

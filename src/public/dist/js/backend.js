@@ -385,10 +385,11 @@ angular
     }]);
 angular
     .module('app.post', ['ngSanitize'])
-    .controller('AddPostCtrl', ['$scope', '$rootScope', 'marked', '$upload', 'API', 'CategoryService', function($scope, $rootScope, marked, $upload, API, CategoryService) {
+    .controller('AddPostCtrl', ['$scope', '$rootScope', '_', 'marked', '$upload', 'API', 'CategoryService', 'PostService', function($scope, $rootScope, _, marked, $upload, API, CategoryService, PostService) {
         $rootScope.pageTitle = 'Add new post';
         $scope.categories    = [];
         $scope.post          = {
+            categories: [],
             heading_styles: 'none'
         };
         $scope.html          = '';
@@ -406,6 +407,13 @@ angular
             .success(function(data) {
                 $scope.categories = data.categories;
             });
+
+        $scope.selectCategory = function(id) {
+            var index = $scope.post.categories.indexOf(id);
+            (index > -1)
+                ? $scope.post.categories.splice(index, 1)
+                : $scope.post.categories.push(id);
+        };
 
         $scope.editorLoaded = function(editor) {
             $scope.editor = editor;
@@ -444,11 +452,85 @@ angular
                 }
             });
         };
+
+        $scope.save = function() {
+            if (!$scope.post.title || !$scope.post.slug || !$scope.post.content) {
+                return;
+            }
+
+            PostService
+                .add($scope.post)
+                .success(function(data) {
+                });
+        };
     }]);
 angular
     .module('app.post')
     .controller('PostCtrl', ['$scope', '$rootScope', function($scope, $rootScope) {
         $rootScope.pageTitle = 'Posts';
+    }]);
+angular
+    .module('app.post')
+    .directive('postSlug', ['PostService', function(PostService) {
+        return {
+            restrict: 'A',
+            scope: {
+                postTitle: '=',
+                postId: '=',
+                ngModel: '='
+            },
+            link: function(scope, ele, attrs) {
+                scope.$watch('postTitle', function(val) {
+                    if (!val) {
+                        scope.ngModel = '';
+                        return;
+                    }
+                    PostService
+                        .generateSlug(val, scope.postId)
+                        .success(function(data) {
+                            scope.ngModel = data.slug;
+                        });
+                });
+            }
+        };
+    }]);
+angular
+    .module('app.post')
+    .factory('PostService', ['$injector', 'API', function($injector, API) {
+        var $http;
+        return {
+            add: function(post) {
+                $http = $http || $injector.get('$http');
+                return $http.post(API.baseUrl + '/post/add', post);
+            },
+
+            generateSlug: function(title, id) {
+                $http = $http || $injector.get('$http');
+                return $http.post(API.baseUrl + '/post/slug', { title: title, id: id });
+            },
+
+            get: function(id) {
+                $http = $http || $injector.get('$http');
+                return $http.get(API.baseUrl + '/post/get/' + id);
+            },
+
+            list: function() {
+                $http = $http || $injector.get('$http');
+                return $http.post(API.baseUrl + '/post');
+            },
+
+            remove: function(id) {
+                $http = $http || $injector.get('$http');
+                return $http.post(API.baseUrl + '/post/remove', {
+                    id: id
+                });
+            },
+
+            save: function(post) {
+                $http = $http || $injector.get('$http');
+                return $http.post(API.baseUrl + '/post/save/' + post._id, post);
+            }
+        };
     }]);
 angular
     .module('app.user')

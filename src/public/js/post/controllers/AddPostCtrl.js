@@ -1,9 +1,10 @@
 angular
     .module('app.post', ['ngSanitize'])
-    .controller('AddPostCtrl', ['$scope', '$rootScope', 'marked', '$upload', 'API', 'CategoryService', function($scope, $rootScope, marked, $upload, API, CategoryService) {
+    .controller('AddPostCtrl', ['$scope', '$rootScope', '_', 'marked', '$upload', 'API', 'CategoryService', 'PostService', function($scope, $rootScope, _, marked, $upload, API, CategoryService, PostService) {
         $rootScope.pageTitle = 'Add new post';
         $scope.categories    = [];
         $scope.post          = {
+            categories: [],
             heading_styles: 'none'
         };
         $scope.html          = '';
@@ -21,6 +22,13 @@ angular
             .success(function(data) {
                 $scope.categories = data.categories;
             });
+
+        $scope.selectCategory = function(id) {
+            var index = $scope.post.categories.indexOf(id);
+            (index > -1)
+                ? $scope.post.categories.splice(index, 1)
+                : $scope.post.categories.push(id);
+        };
 
         $scope.editorLoaded = function(editor) {
             $scope.editor = editor;
@@ -58,5 +66,16 @@ angular
                     $scope.editor.getDoc().replaceSelection(text);
                 }
             });
+        };
+
+        $scope.save = function() {
+            if (!$scope.post.title || !$scope.post.slug || !$scope.post.content) {
+                return;
+            }
+
+            PostService
+                .add($scope.post)
+                .success(function(data) {
+                });
         };
     }]);

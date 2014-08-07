@@ -3,12 +3,73 @@ var fs       = require('fs'),
     moment   = require('moment'),
     mongoose = require('mongoose'),
     Category = mongoose.model('category'),
-    Post     = mongoose.model('post'),
-    Visit    = mongoose.model('visit');
+    Post     = mongoose.model('post');
 
-// -----------------
-// FRONT-END ACTIONS
-// -----------------
+/**
+ * Add new post
+ */
+exports.add = function(req, res) {
+    var config = req.app.get('config');
+    var post = new Post({
+        title: req.body.title,
+        slug: req.body.slug,
+        content: req.body.content,
+        created_user: {
+            username: req.session.user.username,
+            full_name: req.session.user.full_name
+        },
+        categories: req.body.categories || []
+    });
+
+    post.heading_styles = req.body.heading_styles === 'custom'
+                        ? [req.body.heading_style_h1, req.body.heading_style_h2, req.body.heading_style_h3, req.body.heading_style_h4, req.body.heading_style_h5, req.body.heading_style_h6].join('')
+                        : req.body.heading_styles;
+
+    if (req.body.publish) {
+        post.status = 'activated';
+    }
+    if (req.body.draft) {
+        post.status = 'draft';
+    }
+
+    post.prev_categories = null;
+    post.save(function(err) {
+        if (post.status === 'activated') {
+            // Export to PDF as background job
+            var Queue = require(config.root + '/queue/queue'),
+                queue = new Queue(config.redis.host, config.redis.port);
+            queue.setNamespace(config.redis.namespace);
+            queue.enqueue('exportPdf', '/jobs/exportPdf', {
+                id: post._id,
+                url: config.app.url + '/post/preview/' + post.slug,
+                file: config.jobs.exportPdf.dir + '/' + post.slug + '.pdf'
+            });
+        }
+
+        return res.json({
+            msg: err || 'ok',
+            id: err ? null : post._id
+        });
+    });
+};
+
+/**
+ * Generate slug
+ */
+exports.slug = function(req, res) {
+    var post = new Post({
+        title: req.body.title
+    });
+    if (req.body.id) {
+        post._id = req.body.id;
+    }
+    Post.generateSlug(post, function(slug) {
+        res.json({ slug: slug });
+    });
+};
+
+
+// --------------------------------------------------------------------------------------------------------------------
 
 /**
  * List posts in given category
@@ -245,10 +306,6 @@ exports.preview = function(req, res) {
     });
 };
 
-// ----------------
-// BACK-END ACTIONS
-// ----------------
-
 /**
  * List posts
  */
@@ -343,74 +400,6 @@ exports.activate = function(req, res) {
                 return res.json({ result: err ? 'error' : 'ok' });
             });
         });
-};
-
-/**
- * Add new post
- */
-exports.add = function(req, res) {
-    var config = req.app.get('config');
-    if ('post' == req.method.toLowerCase()) {
-        var post = new Post({
-            title: req.body.title,
-            slug: req.body.slug,
-            content: req.body.content,
-            created_user: {
-                username: req.session.user.username,
-                full_name: req.session.user.full_name
-            },
-            categories: req.body.categories || []
-        });
-
-        post.heading_styles = req.body.heading_styles == 'custom'
-                            ? [req.body.heading_style_h1, req.body.heading_style_h2, req.body.heading_style_h3, req.body.heading_style_h4, req.body.heading_style_h5, req.body.heading_style_h6].join('')
-                            : req.body.heading_styles;
-
-        if (req.body.publish) {
-            post.status = 'activated';
-        }
-        if (req.body.draft) {
-            post.status = 'draft';
-        }
-
-        post.prev_categories = null;
-        post.save(function(err) {
-            if (post.status == 'activated') {
-                // Export to PDF as background job
-                var Queue = require(config.root + '/app/queue/queue'),
-                    queue = new Queue(config.redis.host, config.redis.port);
-                queue.setNamespace(config.redis.namespace);
-                queue.enqueue('exportPdf', '/app/jobs/exportPdf', {
-                    id: id,
-                    url: config.app.url + '/post/preview/' + post.slug,
-                    file: config.jobs.exportPdf.dir + '/' + post.slug + '.pdf'
-                });
-            }
-
-            if (req.xhr) {
-                return res.json({
-                    result: err ? 'error' : 'ok',
-                    id: err ? null : post._id
-                });
-            } else {
-                req.flash(err ? 'error'                  : 'success',
-                          err ? 'Could not add the post' : 'The post has been added successfully');
-                return res.redirect(err ? '/admin/post/add' : '/admin/post/edit/' + post._id);
-            }
-        });
-    } else {
-        Category.find({}).sort({ position: 1 }).exec(function(err, categories) {
-            res.render('post/add', {
-                title: 'Write new post',
-                autoSave: config.autoSave || 0,
-                categories: categories,
-                messages: {
-                    warning: req.flash('error'),
-                    success: req.flash('success')
-                }
-            });
-        });
-    }
 };
 
 /**
@@ -538,21 +527,6 @@ exports.remove = function(req, res) {
                 return res.json({ result: err ? 'error' : 'ok' });
             });
         });
-};
-
-/**
- * Generate slug
- */
-exports.slug = function(req, res) {
-    var post = new Post({
-        title: req.body.title
-    });
-    if (req.body.id) {
-        post._id = req.body.id;
-    }
-    Post.generateSlug(post, function(slug) {
-        res.json({ slug: slug });
-    });
 };
 
 exports.feedback = function (req, res) {
