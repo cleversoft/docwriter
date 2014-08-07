@@ -18,6 +18,7 @@ angular
     })
     // Use lodash
     .constant('_', window._)
+    .constant('marked', window.marked)
     .config(['$routeProvider', '$locationProvider', function($routeProvider, $locationProvider) {
         $routeProvider
 
@@ -313,6 +314,31 @@ angular
     }]);
 angular
     .module('app.category')
+    .directive('categorySlug', ['CategoryService', function(CategoryService) {
+        return {
+            restrict: 'A',
+            scope: {
+                categoryName: '=',
+                categoryId: '=',
+                ngModel: '='
+            },
+            link: function(scope, ele, attrs) {
+                scope.$watch('categoryName', function(val) {
+                    if (!val) {
+                        scope.ngModel = '';
+                        return;
+                    }
+                    CategoryService
+                        .generateSlug(val, scope.categoryId)
+                        .success(function(data) {
+                            scope.ngModel = data.slug;
+                        });
+                });
+            }
+        };
+    }]);
+angular
+    .module('app.category')
     .factory('CategoryService', ['$injector', 'API', function($injector, API) {
         var $http;
         return {
@@ -358,33 +384,8 @@ angular
         };
     }]);
 angular
-    .module('app.category')
-    .directive('categorySlug', ['CategoryService', function(CategoryService) {
-        return {
-            restrict: 'A',
-            scope: {
-                categoryName: '=',
-                categoryId: '=',
-                ngModel: '='
-            },
-            link: function(scope, ele, attrs) {
-                scope.$watch('categoryName', function(val) {
-                    if (!val) {
-                        scope.ngModel = '';
-                        return;
-                    }
-                    CategoryService
-                        .generateSlug(val, scope.categoryId)
-                        .success(function(data) {
-                            scope.ngModel = data.slug;
-                        });
-                });
-            }
-        };
-    }]);
-angular
-    .module('app.post')
-    .controller('AddPostCtrl', ['$scope', '$rootScope', 'CategoryService', function($scope, $rootScope, CategoryService) {
+    .module('app.post', ['ngSanitize'])
+    .controller('AddPostCtrl', ['$scope', '$rootScope', 'marked', 'CategoryService', function($scope, $rootScope, marked, CategoryService) {
         $rootScope.pageTitle = 'Add new post';
         $scope.categories    = [];
         $scope.post          = {
@@ -396,6 +397,17 @@ angular
             .success(function(data) {
                 $scope.categories = data.categories;
             });
+
+        $scope.preview = function() {
+            $scope.html = marked($scope.post.content || '', {
+                renderer: new marked.Renderer({
+                    heading: function(text, level) {
+                        // I don't want to include an auto-generated ID of heading
+                        return '<h' + level + '>' + text + '</h' + level + '>';
+                    }
+                })
+            });
+        };
     }]);
 angular
     .module('app.post')

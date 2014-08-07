@@ -18,6 +18,7 @@ angular
     })
     // Use lodash
     .constant('_', window._)
+    .constant('marked', window.marked)
     .config(['$routeProvider', '$locationProvider', function($routeProvider, $locationProvider) {
         $routeProvider
 

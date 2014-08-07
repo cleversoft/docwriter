@@ -1,5 +1,5 @@
-nodedesk
-========
+DocWriter
+=========
 
 A tool for writing software user guides, written in NodeJs, Express and MongoDB.
 

@@ -105,5 +105,8 @@
 }
 .dw-post-editor {
   border: 1px solid #ddd;
+}
+.dw-post-editor .CodeMirror {
+  font-family: 'Noto Sans', sans-serif;
   height: 500px;
 }
