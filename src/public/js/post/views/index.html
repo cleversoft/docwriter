@@ -1,3 +1,31 @@
 <div class="dw-heading">
     <h1>Posts <a href="#/post/add" class="btn btn-default btn-sm"><i class="fa fa-plus"></i> Add new post</a></h1>
 </div>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Title</th>
+            <th>Slug</th>
+            <th>Created date</th>
+            <th>Status</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        <tr ng-repeat="post in posts">
+            <td>{{ post.title }}</td>
+            <td>{{ post.slug }}</td>
+            <td>{{ post.created_date }}</td>
+            <td ng-switch="post.status">
+                <span ng-switch-when="deactivated">Not publish yet</span>
+                <span ng-switch-when="activated">Published</span>
+                <span ng-switch-when="draft">Draft</span>
+            </td>
+            <td>
+                <a href="#/post/edit/{{ post._id }}" class="btn btn-default">Edit</a>
+            </td>
+        </tr>
+    </tbody>
+</table>

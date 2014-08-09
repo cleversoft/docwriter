@@ -54,6 +54,66 @@ exports.add = function(req, res) {
 };
 
 /**
+ * List posts
+ */
+exports.list = function(req, res) {
+    var perPage       = 10,
+        pageRange     = 5,
+        page          = req.param('page') || 1,
+        status        = req.param('status'),
+        q             = req.param('q') || '',
+        sortBy        = req.param('sort') || '-created_date',
+        criteria      = q ? { title: new RegExp(q, 'i') } : {},
+        sortCriteria  = {},
+        sortDirection = ('-' == sortBy.substr(0, 1)) ? -1 : 1;
+
+    sortBy = '-' == sortBy.substr(0, 1) ? sortBy.substr(1) : sortBy;
+    sortCriteria[sortBy] = sortDirection;
+
+    if (status) {
+        criteria.status = status;
+    }
+
+    Post.count(criteria, function(err, total) {
+        Post
+            .find(criteria)
+            .sort(sortCriteria)
+            .skip((page - 1) * perPage)
+            .limit(perPage)
+            .exec(function(err, posts) {
+                if (err) {
+                    posts = [];
+                }
+
+                var numPages   = Math.ceil(total / perPage),
+                    startRange = (page == 1) ? 1 : pageRange * Math.floor((page - 1) / pageRange) + 1,
+                    endRange   = startRange + pageRange;
+
+                if (endRange > numPages) {
+                    endRange = numPages;
+                }
+
+                res.json({
+                    total: total,
+                    posts: posts,
+
+                    // Criteria
+                    q: q,
+                    criteria: criteria,
+                    sortBy: sortBy,
+                    sortDirection: sortDirection,
+
+                    // Pagination
+                    page: page,
+                    numPages: numPages,
+                    startRange: startRange,
+                    endRange: endRange
+                });
+            });
+    });
+};
+
+/**
  * Generate slug
  */
 exports.slug = function(req, res) {
@@ -67,7 +127,6 @@ exports.slug = function(req, res) {
         res.json({ slug: slug });
     });
 };
-
 
 // --------------------------------------------------------------------------------------------------------------------
 
@@ -303,69 +362,6 @@ exports.preview = function(req, res) {
             post: post,
             year: new Date().getFullYear()
         });
-    });
-};
-
-/**
- * List posts
- */
-exports.index = function(req, res) {
-    var perPage       = 10,
-        pageRange     = 5,
-        page          = req.param('page') || 1,
-        status        = req.param('status'),
-        q             = req.param('q') || '',
-        sortBy        = req.param('sort') || '-created_date',
-        criteria      = q ? { title: new RegExp(q, 'i') } : {},
-        sortCriteria  = {},
-        sortDirection = ('-' == sortBy.substr(0, 1)) ? -1 : 1;
-
-    sortBy = '-' == sortBy.substr(0, 1) ? sortBy.substr(1) : sortBy;
-    sortCriteria[sortBy] = sortDirection;
-
-    if (status) {
-        criteria.status = status;
-    }
-
-    Post.count(criteria, function(err, total) {
-        Post
-            .find(criteria)
-            .sort(sortCriteria)
-            .skip((page - 1) * perPage)
-            .limit(perPage)
-            .exec(function(err, posts) {
-                if (err) {
-                    posts = [];
-                }
-
-                var numPages   = Math.ceil(total / perPage),
-                    startRange = (page == 1) ? 1 : pageRange * Math.floor((page - 1) / pageRange) + 1,
-                    endRange   = startRange + pageRange;
-
-                if (endRange > numPages) {
-                    endRange = numPages;
-                }
-
-                res.render('post/index', {
-                    title: 'Posts',
-                    req: req,
-                    moment: moment,
-                    total: total,
-                    posts: posts,
-
-                    // Criteria
-                    q: q,
-                    criteria: criteria,
-                    sortBy: sortBy,
-                    sortDirection: sortDirection,
-
-                    // Pagination
-                    page: page,
-                    numPages: numPages,
-                    startRange: startRange,
-                    endRange: endRange
-                });
-            });
     });
 };
 

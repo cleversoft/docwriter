@@ -67,6 +67,7 @@ app.route('/category/slug').post(middleware.auth.requireAuth,     controller.cat
 
 app.route('/file/upload').post(middleware.auth.requireAuth, controller.file.upload);
 
+app.route('/post').post(middleware.auth.requireAuth,      controller.post.list);
 app.route('/post/add').post(middleware.auth.requireAuth,  controller.post.add);
 app.route('/post/slug').post(middleware.auth.requireAuth, controller.post.slug);
 

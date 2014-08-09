@@ -2,30 +2,28 @@
     <h1>Users <a href="#/user/add" class="btn btn-default btn-sm"><i class="fa fa-plus"></i> Add new user</a></h1>
 </div>
 
-<div>
-    <table class="table table-striped">
-        <thead>
-            <tr>
-                <th>Username</th>
-                <th>Full name</th>
-                <th>Email</th>
-                <th>Role</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Username</th>
+            <th>Full name</th>
+            <th>Email</th>
+            <th>Role</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
 
-        <tbody>
-            <tr ng-repeat="user in users">
-                <td>{{ user.username }}</td>
-                <td>{{ user.first_name + ' ' + user.last_name }}</td>
-                <td>{{ user.email }}</td>
-                <td>{{ user.role }}</td>
-                <td>
-                    <a href="#/user/edit/{{ user._id }}" class="btn btn-default">Edit</a>
-                    <button class="btn btn-default" ng-if="user.username !== currentUser.username" ng-click="lock(user)">{{ user.locked ? 'Unlock' : 'Lock' }}</button>
-                    <span ng-if="user.username === currentUser.username">It's you</span>
-                </td>
-            </tr>
-        </tbody>
-    </table>
-</div>
+    <tbody>
+        <tr ng-repeat="user in users">
+            <td>{{ user.username }}</td>
+            <td>{{ user.first_name + ' ' + user.last_name }}</td>
+            <td>{{ user.email }}</td>
+            <td>{{ user.role }}</td>
+            <td>
+                <a href="#/user/edit/{{ user._id }}" class="btn btn-default">Edit</a>
+                <button class="btn btn-default" ng-if="user.username !== currentUser.username" ng-click="lock(user)">{{ user.locked ? 'Unlock' : 'Lock' }}</button>
+                <span ng-if="user.username === currentUser.username">It's you</span>
+            </td>
+        </tr>
+    </tbody>
+</table>
