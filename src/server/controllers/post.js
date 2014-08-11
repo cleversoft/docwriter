@@ -22,7 +22,7 @@ exports.add = function(req, res) {
     });
 
     post.heading_styles = req.body.heading_styles === 'custom'
-                        ? [req.body.heading_style_h1, req.body.heading_style_h2, req.body.heading_style_h3, req.body.heading_style_h4, req.body.heading_style_h5, req.body.heading_style_h6].join('')
+                        ? [req.body.heading_style_h1 || '_', req.body.heading_style_h2 || '_', req.body.heading_style_h3 || '_', req.body.heading_style_h4 || '_', req.body.heading_style_h5 || '_', req.body.heading_style_h6 || '_'].join('')
                         : req.body.heading_styles;
 
     if (req.body.publish) {
@@ -51,6 +51,24 @@ exports.add = function(req, res) {
             id: err ? null : post._id
         });
     });
+};
+
+/**
+ * Get post details
+ */
+exports.get = function(req, res) {
+    var id = req.param('id');
+    Post
+        .findOne({ _id: id })
+        .exec(function(err, post) {
+            if (err) {
+                return res.json({ msg: err });
+            }
+            if (!post) {
+                return res.json({ msg: 'The post is not found' });
+            }
+            return res.json({ msg: 'ok', post: post });
+        });
 };
 
 /**
@@ -110,6 +128,62 @@ exports.list = function(req, res) {
                     endRange: endRange
                 });
             });
+    });
+};
+
+/**
+ * Save the post
+ */
+exports.save = function(req, res) {
+    var id     = req.param('id'),
+        config = req.app.get('config');
+    Post.findOne({ _id: id }).exec(function(err, post) {
+        if (err) {
+            return res.json({ msg: err });
+        }
+        if (!post) {
+            return res.json({ msg: 'The post is not found' });
+        }
+
+        // Backup current categories
+        post.prev_categories = post.categories;
+
+        post.title           = req.body.title;
+        post.slug            = req.body.slug;
+        post.content         = req.body.content;
+        post.categories      = req.body.categories || [];
+        post.updated_date    = new Date();
+        post.updated_user    = {
+            username: req.session.user.username,
+            full_name: req.session.user.full_name
+        };
+
+        post.heading_styles = req.body.heading_styles === 'custom'
+                            ? [req.body.heading_style_h1 || '_', req.body.heading_style_h2 || '_', req.body.heading_style_h3 || '_', req.body.heading_style_h4 || '_', req.body.heading_style_h5 || '_', req.body.heading_style_h6 || '_'].join('')
+                            : req.body.heading_styles;
+
+        if (req.body.publish) {
+            post.status = 'activated';
+        }
+        if (req.body.draft) {
+            post.status = 'draft';
+        }
+
+        post.save(function(err) {
+            if (post.status === 'activated') {
+                // Export to PDF as background job
+                var Queue = require(config.root + '/app/queue/queue'),
+                    queue = new Queue(config.redis.host, config.redis.port);
+                queue.setNamespace(config.redis.namespace);
+                queue.enqueue('exportPdf', '/app/jobs/exportPdf', {
+                    id: id,
+                    url: config.app.url + '/post/preview/' + post.slug,
+                    file: config.jobs.exportPdf.dir + '/' + post.slug + '.pdf'
+                });
+            }
+
+            return res.json({ msg: err || 'ok' });
+        });
     });
 };
 
@@ -433,78 +507,6 @@ exports.duplicate = function(req, res) {
                 }
             });
         });
-    });
-};
-
-/**
- * Edit post
- */
-exports.edit = function(req, res) {
-    var id     = req.param('id'),
-        config = req.app.get('config');
-    Post.findOne({ _id: id }).exec(function(err, post) {
-        if ('post' == req.method.toLowerCase()) {
-            // Backup current categories
-            post.prev_categories = post.categories;
-
-            post.title           = req.body.title;
-            post.slug            = req.body.slug;
-            post.content         = req.body.content;
-            post.categories      = req.body.categories || [];
-            post.updated_date    = new Date();
-            post.updated_user    = {
-                username: req.session.user.username,
-                full_name: req.session.user.full_name
-            };
-
-            post.heading_styles = (req.body.heading_styles != null && req.body.heading_styles == 'custom')
-                                ? [req.body.heading_style_h1, req.body.heading_style_h2, req.body.heading_style_h3, req.body.heading_style_h4, req.body.heading_style_h5, req.body.heading_style_h6].join('')
-                                : req.body.heading_styles;
-
-            if (req.body.publish) {
-                post.status = 'activated';
-            }
-            if (req.body.draft) {
-                post.status = 'draft';
-            }
-
-            post.save(function(err) {
-                if (post.status == 'activated') {
-                    // Export to PDF as background job
-                    var Queue = require(config.root + '/app/queue/queue'),
-                        queue = new Queue(config.redis.host, config.redis.port);
-                    queue.setNamespace(config.redis.namespace);
-                    queue.enqueue('exportPdf', '/app/jobs/exportPdf', {
-                        id: id,
-                        url: config.app.url + '/post/preview/' + post.slug,
-                        file: config.jobs.exportPdf.dir + '/' + post.slug + '.pdf'
-                    });
-                }
-
-                if (req.xhr) {
-                    return res.json({ result: err ? 'error' : 'ok' });
-                }
-                req.flash(err ? 'error'                     : 'success',
-                          err ? 'Could not update the post' : 'The post has been updated successfully');
-                return res.redirect('/admin/post/edit/' + id);
-            });
-        } else {
-            Category.find({}).sort({ position: 1 }).exec(function(err, categories) {
-                var customHeadingStyle = post.heading_styles ?
-                    (['111111', 'AAAAAA', 'aaaaaa', 'IIIIII', 'iiiiii', '______'].indexOf(post.heading_styles) == -1) : false;
-                res.render('post/edit', {
-                    title: 'Edit post',
-                    autoSave: config.autoSave || 0,
-                    categories: categories,
-                    messages: {
-                        warning: req.flash('error'),
-                        success: req.flash('success')
-                    },
-                    post: post,
-                    customHeadingStyle: customHeadingStyle
-                });
-            });
-        }
     });
 };
 

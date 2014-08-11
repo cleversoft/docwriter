@@ -69,6 +69,13 @@ angular
                     requiredAuthentication: true
                 }
             })
+            .when('/post/edit/:id', {
+                templateUrl: '/js/post/views/edit.html',
+                controller: 'EditPostCtrl',
+                data: {
+                    requiredAuthentication: true
+                }
+            })
 
             // user module
             .when('/user', {

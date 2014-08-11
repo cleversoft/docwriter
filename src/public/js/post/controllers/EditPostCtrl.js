@@ -1,7 +1,7 @@
 angular
     .module('app.post', ['ngSanitize'])
-    .controller('AddPostCtrl', ['$scope', '$rootScope', 'marked', '$upload', 'API', 'CategoryService', 'PostService', function($scope, $rootScope, marked, $upload, API, CategoryService, PostService) {
-        $rootScope.pageTitle = 'Add new post';
+    .controller('EditPostCtrl', ['$scope', '$rootScope', '$routeParams', 'marked', '$upload', 'API', 'CategoryService', 'PostService', function($scope, $rootScope, $routeParams, marked, $upload, API, CategoryService, PostService) {
+        $rootScope.pageTitle = 'Edit post';
         $scope.categories    = [];
         $scope.post          = {
             categories: [],
@@ -17,10 +17,39 @@ angular
             theme: 'default'
         };
 
-        CategoryService
-            .list()
+        $scope.activeContentTab = true;
+
+        PostService
+            .get($routeParams.id)
             .success(function(data) {
-                $scope.categories = data.categories;
+                if (data.msg === 'ok') {
+                    $scope.post = data.post;
+                    if ($scope.editor) {
+                        $scope.editor.getDoc().setValue($scope.post.content);
+                    }
+
+                    if (['______', '111111', 'AAAAAA', 'aaaaaa', 'IIIIII', 'iiiiii'].indexOf($scope.post.heading_styles) === -1) {
+                        for (var i = 0; i < 6; i++) {
+                            $scope.post['heading_style_h' + String(i + 1)] = $scope.post.heading_styles.charAt(i);
+                        }
+                        $scope.post.heading_styles = 'custom';
+                    }
+
+                }
+            })
+            .then(function() {
+                return CategoryService.list();
+            })
+            .then(function(response) {
+                if ($scope.post.categories) {
+                    $scope.categories = response.data.categories;
+
+                    for (var i = 0; i < $scope.categories.length; i++) {
+                        if ($scope.post.categories.indexOf($scope.categories[i]._id) > -1) {
+                            $scope.categories[i].selected = true;
+                        }
+                    }
+                }
             });
 
         $scope.selectCategory = function(id) {
@@ -74,7 +103,7 @@ angular
             }
 
             PostService
-                .add($scope.post)
+                .save($scope.post)
                 .success(function(data) {
                 });
         };
