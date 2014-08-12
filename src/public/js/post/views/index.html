@@ -17,7 +17,7 @@
         <tr ng-repeat="post in posts">
             <td>{{ post.title }}</td>
             <td>{{ post.slug }}</td>
-            <td>{{ post.created_date }}</td>
+            <td><span am-time-ago="post.created_date"></span></td>
             <td ng-switch="post.status">
                 <span ng-switch-when="deactivated">Not publish yet</span>
                 <span ng-switch-when="activated">Published</span>

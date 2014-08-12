@@ -4,7 +4,7 @@ angular.module('app.post',     ['ngSanitize']);
 angular.module('app.user',     []);
 
 angular
-    .module('app', ['ngRoute', 'angularFileUpload', 'ui.bootstrap', 'ui.codemirror', 'app.admin', 'app.category', 'app.post', 'app.user'])
+    .module('app', ['ngRoute', 'angularFileUpload', 'angularMoment', 'ui.bootstrap', 'ui.codemirror', 'app.admin', 'app.category', 'app.post', 'app.user'])
     .constant('API', {
         baseUrl: ''
     })
