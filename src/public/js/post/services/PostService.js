@@ -3,6 +3,11 @@ angular
     .factory('PostService', ['$injector', 'API', function($injector, API) {
         var $http;
         return {
+            activate: function(id) {
+                $http = $http || $injector.get('$http');
+                return $http.post(API.baseUrl + '/post/activate/' + id);
+            },
+
             add: function(post) {
                 $http = $http || $injector.get('$http');
                 return $http.post(API.baseUrl + '/post/add', post);

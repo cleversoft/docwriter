@@ -50,4 +50,14 @@ angular
                 }, function() {
                 });
         };
+
+        $scope.publish = function(post) {
+            PostService
+                .activate(post._id)
+                .success(function(data) {
+                    if (data.msg === 'ok') {
+                        post.status = (post.status === 'activated') ? 'deactivated' : 'activated';
+                    }
+                });
+        };
     }]);

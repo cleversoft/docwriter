@@ -651,6 +651,16 @@ angular
                 }, function() {
                 });
         };
+
+        $scope.publish = function(post) {
+            PostService
+                .activate(post._id)
+                .success(function(data) {
+                    if (data.msg === 'ok') {
+                        post.status = (post.status === 'activated') ? 'deactivated' : 'activated';
+                    }
+                });
+        };
     }]);
 angular
     .module('app.post')
@@ -682,6 +692,11 @@ angular
     .factory('PostService', ['$injector', 'API', function($injector, API) {
         var $http;
         return {
+            activate: function(id) {
+                $http = $http || $injector.get('$http');
+                return $http.post(API.baseUrl + '/post/activate/' + id);
+            },
+
             add: function(post) {
                 $http = $http || $injector.get('$http');
                 return $http.post(API.baseUrl + '/post/add', post);

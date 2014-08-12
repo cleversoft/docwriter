@@ -6,6 +6,39 @@ var fs       = require('fs'),
     Post     = mongoose.model('post');
 
 /**
+ * Activate/deactivate post
+ */
+exports.activate = function(req, res) {
+    var id     = req.param('id'),
+        config = req.app.get('config');
+    Post
+        .findOne({ _id: id })
+        .exec(function(err, post) {
+            if (err || !post) {
+                return res.json({ msg: 'error' });
+            }
+
+            post.status          = (post.status === 'activated') ? 'deactivated' : 'activated';
+            post.prev_categories = post.categories;
+            post.save(function(err) {
+                if (post.status === 'activated') {
+                    // Export to PDF as background job
+                    var Queue = require(config.root + '/queue/queue'),
+                        queue = new Queue(config.redis.host, config.redis.port);
+                    queue.setNamespace(config.redis.namespace);
+                    queue.enqueue('exportPdf', '/jobs/exportPdf', {
+                        id: id,
+                        url: config.app.url + '/post/preview/' + post.slug,
+                        file: config.jobs.exportPdf.dir + '/' + post.slug + '.pdf'
+                    });
+                }
+
+                return res.json({ msg: err || 'ok' });
+            });
+        });
+};
+
+/**
  * Add new post
  */
 exports.add = function(req, res) {
@@ -451,39 +484,6 @@ exports.preview = function(req, res) {
             year: new Date().getFullYear()
         });
     });
-};
-
-/**
- * Activate/deactivate post
- */
-exports.activate = function(req, res) {
-    var id     = req.body.id,
-        config = req.app.get('config');
-
-    Post
-        .findOne({ _id: id })
-        .exec(function(err, post) {
-            if (err || !post) {
-                return res.json({ result: 'error'});
-            }
-            post.status          = (post.status == 'activated') ? 'deactivated' : 'activated';
-            post.prev_categories = post.categories;
-            post.save(function(err) {
-                if (post.status == 'activated') {
-                    // Export to PDF as background job
-                    var Queue = require(config.root + '/app/queue/queue'),
-                        queue = new Queue(config.redis.host, config.redis.port);
-                    queue.setNamespace(config.redis.namespace);
-                    queue.enqueue('exportPdf', '/app/jobs/exportPdf', {
-                        id: id,
-                        url: config.app.url + '/post/preview/' + post.slug,
-                        file: config.jobs.exportPdf.dir + '/' + post.slug + '.pdf'
-                    });
-                }
-
-                return res.json({ result: err ? 'error' : 'ok' });
-            });
-        });
 };
 
 /**

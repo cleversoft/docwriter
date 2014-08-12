@@ -24,8 +24,9 @@
                 <span ng-switch-when="draft">Draft</span>
             </td>
             <td>
-                <a href="#/post/edit/{{ post._id }}" class="btn btn-default">Edit</a>
                 <button ng-click="confirm(post)" class="btn btn-danger">Remove</button>
+                <a href="#/post/edit/{{ post._id }}" class="btn btn-default">Edit</a>
+                <button ng-click="publish(post)" class="btn btn-default">{{ post.status === 'activated' ? 'Unpublish' : 'Publish' }}</button>
             </td>
         </tr>
     </tbody>
