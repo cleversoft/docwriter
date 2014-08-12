@@ -132,6 +132,26 @@ exports.list = function(req, res) {
 };
 
 /**
+ * Remove post
+ */
+exports.remove = function(req, res) {
+    var id = req.body.id;
+    Post
+        .findOne({ _id: id })
+        .exec(function(err, post) {
+            if (err) {
+                return res.json({ msg: err });
+            }
+            if (!post) {
+                return res.json({ msg: 'The post is not found' });
+            }
+            post.remove(function(err) {
+                return res.json({ msg: err || 'ok' });
+            });
+        });
+};
+
+/**
  * Save the post
  */
 exports.save = function(req, res) {
@@ -508,23 +528,6 @@ exports.duplicate = function(req, res) {
             });
         });
     });
-};
-
-/**
- * Remove post
- */
-exports.remove = function(req, res) {
-    var id = req.body.id;
-    Post
-        .findOne({ _id: id })
-        .exec(function(err, post) {
-            if (err || !post) {
-                return res.json({ result: 'error'});
-            }
-            post.remove(function(err) {
-                return res.json({ result: err ? 'error' : 'ok' });
-            });
-        });
 };
 
 exports.feedback = function (req, res) {
