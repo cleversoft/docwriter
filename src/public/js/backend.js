@@ -1,6 +1,6 @@
 angular.module('app.admin',    []);
 angular.module('app.category', []);
-angular.module('app.post',     []);
+angular.module('app.post',     ['ngSanitize']);
 angular.module('app.user',     []);
 
 angular
@@ -62,16 +62,16 @@ angular
                     requiredAuthentication: true
                 }
             })
-            .when('/post/add', {
-                templateUrl: '/js/post/views/add.html',
-                controller: 'AddPostCtrl',
+            .when('/post/edit/:id', {
+                templateUrl: '/js/post/views/edit.html',
+                controller: 'EditPostCtrl',
                 data: {
                     requiredAuthentication: true
                 }
             })
-            .when('/post/edit/:id', {
-                templateUrl: '/js/post/views/edit.html',
-                controller: 'EditPostCtrl',
+            .when('/post/add', {
+                templateUrl: '/js/post/views/add.html',
+                controller: 'AddPostCtrl',
                 data: {
                     requiredAuthentication: true
                 }

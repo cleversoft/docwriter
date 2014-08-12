@@ -1,5 +1,5 @@
 angular
-    .module('app.post', ['ngSanitize'])
+    .module('app.post')
     .controller('EditPostCtrl', ['$scope', '$rootScope', '$routeParams', 'marked', '$upload', 'API', 'CategoryService', 'PostService', function($scope, $rootScope, $routeParams, marked, $upload, API, CategoryService, PostService) {
         $rootScope.pageTitle = 'Edit post';
         $scope.categories    = [];
@@ -97,9 +97,12 @@ angular
             });
         };
 
-        $scope.save = function() {
+        $scope.save = function(status) {
             if (!$scope.post.title || !$scope.post.slug || !$scope.post.content) {
                 return;
+            }
+            if (status) {
+                $scope.post.status = status;
             }
 
             PostService

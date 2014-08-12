@@ -1,5 +1,12 @@
 <div class="dw-heading">
-    <h1><a href="#/post">Posts</a> / Add new post <button class="btn btn-primary" ng-click="save()">SAVE</button></h1>
+    <h1>
+        <a href="#/post">Posts</a> / <span ng-switch="mode"><span ng-switch-when="add">Add new post</span><span ng-switch-when="edit">Edit post</span></span>
+        <span class="btn-group">
+            <button class="btn btn-primary" ng-click="save()">Save</button>
+            <button class="btn btn-default" ng-click="save('activated')">Save and Publish</button>
+            <button class="btn btn-default" ng-click="save('draft')">Save as draft</button>
+        </span>
+    </h1>
 </div>
 
 <form class="form-horizontal">
@@ -18,7 +25,7 @@
                 <div class="form-group">
                     <label class="col-md-4 control-label">Slug</label>
                     <div class="col-md-8">
-                        <input type="text" ng-model="post.slug" class="form-control" post-slug post-title="post.title" />
+                        <input type="text" ng-model="post.slug" class="form-control" post-slug post-title="post.title" post-id="post._id" />
                     </div>
                 </div>
 

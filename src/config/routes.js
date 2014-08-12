@@ -23,15 +23,7 @@ module.exports = function(app) {
 
     // --- Back-end routes ---
 
-    // File
-    app.post('/admin/file/upload', authentication.requireAuthentication, file.upload);
-
     // Posts
-    app.get('/admin/post',          authentication.requireAuthentication, post.index);
     app.all('/admin/post/activate', authentication.requireAuthentication, post.activate);
-    app.all('/admin/post/add',      authentication.requireAuthentication, post.add);
-    app.all('/admin/post/edit/:id', authentication.requireAuthentication, post.edit);
-    app.post('/admin/post/remove',  authentication.requireAuthentication, post.remove);
-    app.post('/admin/post/slug',    authentication.requireAuthentication, post.slug);
     app.all('/admin/post/duplicate/:id',    authentication.requireAuthentication, post.duplicate);
 };
