@@ -1,6 +1,6 @@
 angular
     .module('app.post')
-    .controller('PostCtrl', ['$scope', '$rootScope', '$location', '_', '$modal', 'PostService', function($scope, $rootScope, $location, _, $modal, PostService) {
+    .controller('PostCtrl', ['$scope', '$rootScope', '$location', '_', 'growlNotifications', '$modal', 'PostService', function($scope, $rootScope, $location, _, growlNotifications, $modal, PostService) {
         $rootScope.pageTitle = 'Posts';
         $scope.posts         = [];
 
@@ -52,6 +52,7 @@ angular
                 .success(function(data) {
                     if (data.msg === 'ok') {
                         $scope.posts.push(data.post);
+                        growlNotifications.add('<strong>' + post.title + '</strong> is duplicated', 'success');
                     }
                 });
         };
@@ -91,6 +92,8 @@ angular
                                 _.remove($scope.posts, function(item) {
                                     return item._id === selected._id;
                                 });
+
+                                growlNotifications.add('<strong>' + selected.title + '</strong> is removed', 'success');
                             }
                         });
                 }, function() {
@@ -103,6 +106,7 @@ angular
                 .success(function(data) {
                     if (data.msg === 'ok') {
                         post.status = (post.status === 'activated') ? 'deactivated' : 'activated';
+                        growlNotifications.add('<strong>' + post.title + '</strong> is ' + (post.status === 'deactivated' ? 'unpublished' : 'published'), 'success');
                     }
                 });
         };

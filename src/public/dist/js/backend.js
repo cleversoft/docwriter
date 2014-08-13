@@ -4,7 +4,7 @@ angular.module('app.post',     ['ngSanitize']);
 angular.module('app.user',     []);
 
 angular
-    .module('app', ['ngRoute', 'angularFileUpload', 'angularMoment', 'ui.bootstrap', 'ui.codemirror', 'app.admin', 'app.category', 'app.post', 'app.user'])
+    .module('app', ['ngRoute', 'angularFileUpload', 'angularMoment', 'growlNotifications', 'ui.bootstrap', 'ui.codemirror', 'app.admin', 'app.category', 'app.post', 'app.user'])
     .constant('API', {
         baseUrl: ''
     })
@@ -426,418 +426,6 @@ angular
         };
     }]);
 angular
-    .module('app.post')
-    .controller('AddPostCtrl', ['$scope', '$rootScope', 'marked', '$upload', 'API', 'CategoryService', 'PostService', function($scope, $rootScope, marked, $upload, API, CategoryService, PostService) {
-        $rootScope.pageTitle = 'Add new post';
-        $scope.categories    = [];
-        $scope.post          = {
-            id: null,
-            categories: [],
-            heading_styles: 'none'
-        };
-        $scope.mode          = 'add';
-        $scope.html          = '';
-        $scope.editor        = null;
-        $scope.editorOptions = {
-            mode: 'markdown',
-            lineNumbers: true,
-            matchBrackets: true,
-            lineWrapping: true,
-            theme: 'default'
-        };
-
-        CategoryService
-            .list()
-            .success(function(data) {
-                $scope.categories = data.categories;
-            });
-
-        $scope.selectCategory = function(id) {
-            var index = $scope.post.categories.indexOf(id);
-            (index > -1)
-                ? $scope.post.categories.splice(index, 1)
-                : $scope.post.categories.push(id);
-        };
-
-        $scope.editorLoaded = function(editor) {
-            $scope.editor = editor;
-
-            editor.on('change', function(instance) {
-                // Simple hack to set the content
-                // If I set ng-model="post.content" for the editor, I can't insert data to it
-                // via $scope.editor.getDoc().replaceSelection(...);
-                $scope.post.content = instance.getValue();
-            });
-        };
-
-        $scope.preview = function() {
-            $scope.html = marked($scope.post.content || '', {
-                renderer: new marked.Renderer({
-                    heading: function(text, level) {
-                        // I don't want to include an auto-generated ID of heading
-                        return '<h' + level + '>' + text + '</h' + level + '>';
-                    }
-                })
-            });
-        };
-
-        $scope.upload = function($files) {
-            $upload.upload({
-                url: API.baseUrl + '/file/upload',
-                file: $files
-            }).success(function(data, status, headers, config) {
-                var files = data.files;
-                for (var i = 0; i < files.length; i++) {
-                    var text = ['[', files[i].title, '](', files[i].url, ')'].join('');
-                    if (['bmp', 'gif', 'jpeg', 'jpg', 'png'].indexOf(files[i].extension.toLowerCase()) != -1) {
-                        text = '!' + text;
-                    }
-                    $scope.editor.getDoc().replaceSelection(text);
-                }
-            });
-        };
-
-        $scope.save = function(status) {
-            if (!$scope.post.title || !$scope.post.slug || !$scope.post.content) {
-                return;
-            }
-            if (status) {
-                $scope.post.status = status;
-            }
-
-            $scope.post._id
-                ? PostService
-                    .save($scope.post)
-                    .success(function(data) {
-                        $scope.mode = 'edit';
-                    })
-                : PostService
-                    .add($scope.post)
-                    .success(function(data) {
-                        if (data.msg === 'ok') {
-                            $scope.mode = 'edit';
-                            $scope.post._id = data.id;
-                        }
-                    });
-        };
-    }]);
-angular
-    .module('app.post')
-    .controller('EditPostCtrl', ['$scope', '$rootScope', '$compile', '$routeParams', 'marked', '$upload', 'API', 'CategoryService', 'PostService', function($scope, $rootScope, $compile, $routeParams, marked, $upload, API, CategoryService, PostService) {
-        $rootScope.pageTitle = 'Edit post';
-        $scope.categories    = [];
-        $scope.post          = {
-            categories: [],
-            heading_styles: 'none'
-        };
-        $scope.html          = '';
-        $scope.editor        = null;
-        $scope.editorOptions = {
-            mode: 'markdown',
-            lineNumbers: true,
-            matchBrackets: true,
-            lineWrapping: true,
-            theme: 'default'
-        };
-
-        $scope.activeContentTab = true;
-
-        PostService
-            .get($routeParams.id)
-            .success(function(data) {
-                if (data.msg === 'ok') {
-                    $scope.post = data.post;
-                    if ($scope.editor) {
-                        $scope.editor.getDoc().setValue($scope.post.content);
-                    }
-
-                    if (['______', '111111', 'AAAAAA', 'aaaaaa', 'IIIIII', 'iiiiii'].indexOf($scope.post.heading_styles) === -1) {
-                        for (var i = 0; i < 6; i++) {
-                            $scope.post['heading_style_h' + String(i + 1)] = $scope.post.heading_styles.charAt(i);
-                        }
-                        $scope.post.heading_styles = 'custom';
-                    }
-
-                }
-            })
-            .then(function() {
-                return CategoryService.list();
-            })
-            .then(function(response) {
-                if ($scope.post.categories) {
-                    $scope.categories = response.data.categories;
-
-                    for (var i = 0; i < $scope.categories.length; i++) {
-                        if ($scope.post.categories.indexOf($scope.categories[i]._id) > -1) {
-                            $scope.categories[i].selected = true;
-                        }
-                    }
-                }
-            });
-
-        $scope.selectCategory = function(id) {
-            var index = $scope.post.categories.indexOf(id);
-            (index > -1)
-                ? $scope.post.categories.splice(index, 1)
-                : $scope.post.categories.push(id);
-        };
-
-        $scope.editorLoaded = function(editor) {
-            $scope.editor = editor;
-
-            editor.on('change', function(instance) {
-                // Simple hack to set the content
-                // If I set ng-model="post.content" for the editor, I can't insert data to it
-                // via $scope.editor.getDoc().replaceSelection(...);
-                $scope.post.content = instance.getValue();
-            });
-        };
-
-        var renderer = new marked.Renderer();
-        renderer.heading = function(text, level) {
-            // I don't want to include an auto-generated ID of heading
-            return '<h' + level + '>' + text + '</h' + level + '>';
-        };
-        renderer.image = function(href, title, text) {
-            var out = '<img note-image src="' + href + '" alt="' + text + '"';
-            if (title) {
-                out += ' title="' + title + '"';
-            }
-            out += '/>';
-            return out;
-        };
-
-        $scope.preview = function() {
-            $scope.html = marked($scope.post.content || '', {
-                renderer: renderer
-            });
-
-            $compile($scope.html)($scope);
-        };
-
-        $scope.upload = function($files) {
-            $upload.upload({
-                url: API.baseUrl + '/file/upload',
-                file: $files
-            }).success(function(data, status, headers, config) {
-                var files = data.files;
-                for (var i = 0; i < files.length; i++) {
-                    var text = ['[', files[i].title, '](', files[i].url, ')'].join('');
-                    if (['bmp', 'gif', 'jpeg', 'jpg', 'png'].indexOf(files[i].extension.toLowerCase()) != -1) {
-                        text = '!' + text;
-                    }
-                    $scope.editor.getDoc().replaceSelection(text);
-                }
-            });
-        };
-
-        $scope.save = function(status) {
-            if (!$scope.post.title || !$scope.post.slug || !$scope.post.content) {
-                return;
-            }
-            if (status) {
-                $scope.post.status = status;
-            }
-
-            PostService
-                .save($scope.post)
-                .success(function(data) {
-                });
-        };
-    }]);
-angular
-    .module('app.post')
-    .controller('PostCtrl', ['$scope', '$rootScope', '$location', '_', '$modal', 'PostService', function($scope, $rootScope, $location, _, $modal, PostService) {
-        $rootScope.pageTitle = 'Posts';
-        $scope.posts         = [];
-
-        var qs = $location.search();
-        $scope.criteria = {
-            page: qs.page || 1,
-            keyword: qs.q || null,
-            status: qs.status || null
-        };
-
-        $scope.pagination = {
-            total_items: 0,
-            per_page: 10,
-            current_page: 1,
-            num_pages: 1
-        };
-
-        PostService
-            .list($scope.criteria)
-            .success(function(data) {
-                $scope.posts      = data.posts;
-                $scope.pagination = data.pagination;
-            });
-
-        $scope.search = function() {
-            $location.search({
-                q: $scope.criteria.keyword
-            });
-        };
-
-        $scope.filter = function(status) {
-            $location.search('page', 1);
-            $location.search('status', status || null);
-        };
-
-        /**
-         * Go to other page
-         */
-        $scope.jump = function() {
-            $location.search('page', $scope.pagination.current_page);
-        };
-
-        /**
-         * Duplicate post
-         */
-        $scope.duplicate = function(post) {
-            PostService
-                .duplicate(post._id)
-                .success(function(data) {
-                    if (data.msg === 'ok') {
-                        $scope.posts.push(data.post);
-                    }
-                });
-        };
-
-        $scope.confirm = function(post) {
-            $scope.selected = post;
-
-            // Show the modal
-            $modal
-                .open({
-                    templateUrl: 'removePostModal.html',
-                    size: 'sm',
-                    controller: function($scope, $modalInstance, selected) {
-                        $scope.selected = selected;
-
-                        $scope.remove = function() {
-                            $modalInstance.close($scope.selected);
-                        };
-
-                        $scope.cancel = function() {
-                            $modalInstance.dismiss('cancel');
-                        };
-                    },
-                    resolve: {
-                        selected: function() {
-                            return post;
-                        }
-                    }
-                })
-                .result
-                .then(function(selected) {
-                    PostService
-                        .remove(selected._id)
-                        .success(function(data) {
-                            if (data.msg === 'ok') {
-                                // Remove from the collections
-                                _.remove($scope.posts, function(item) {
-                                    return item._id === selected._id;
-                                });
-                            }
-                        });
-                }, function() {
-                });
-        };
-
-        $scope.publish = function(post) {
-            PostService
-                .activate(post._id)
-                .success(function(data) {
-                    if (data.msg === 'ok') {
-                        post.status = (post.status === 'activated') ? 'deactivated' : 'activated';
-                    }
-                });
-        };
-    }]);
-angular
-    .module('app.post')
-    .directive('noteImage', function() {
-        return {
-            restrict: 'A',
-            link: function(scope, ele, attrs) {
-
-            }
-        };
-    });
-angular
-    .module('app.post')
-    .directive('postSlug', ['PostService', function(PostService) {
-        return {
-            restrict: 'A',
-            scope: {
-                postTitle: '=',
-                postId: '=',
-                ngModel: '='
-            },
-            link: function(scope, ele, attrs) {
-                scope.$watch('postTitle', function(val) {
-                    if (!val) {
-                        scope.ngModel = '';
-                        return;
-                    }
-                    PostService
-                        .generateSlug(val, scope.postId)
-                        .success(function(data) {
-                            scope.ngModel = data.slug;
-                        });
-                });
-            }
-        };
-    }]);
-angular
-    .module('app.post')
-    .factory('PostService', ['$injector', 'API', function($injector, API) {
-        var $http;
-        return {
-            activate: function(id) {
-                $http = $http || $injector.get('$http');
-                return $http.post(API.baseUrl + '/post/activate/' + id);
-            },
-
-            add: function(post) {
-                $http = $http || $injector.get('$http');
-                return $http.post(API.baseUrl + '/post/add', post);
-            },
-
-            duplicate: function(id) {
-                $http = $http || $injector.get('$http');
-                return $http.post(API.baseUrl + '/post/duplicate/' + id);
-            },
-
-            generateSlug: function(title, id) {
-                $http = $http || $injector.get('$http');
-                return $http.post(API.baseUrl + '/post/slug', { title: title, id: id });
-            },
-
-            get: function(id) {
-                $http = $http || $injector.get('$http');
-                return $http.get(API.baseUrl + '/post/get/' + id);
-            },
-
-            list: function(criteria) {
-                $http = $http || $injector.get('$http');
-                return $http.post(API.baseUrl + '/post', criteria);
-            },
-
-            remove: function(id) {
-                $http = $http || $injector.get('$http');
-                return $http.post(API.baseUrl + '/post/remove', {
-                    id: id
-                });
-            },
-
-            save: function(post) {
-                $http = $http || $injector.get('$http');
-                return $http.post(API.baseUrl + '/post/save/' + post._id, post);
-            }
-        };
-    }]);
-angular
     .module('app.user')
     .controller('AddUserCtrl', ['$scope', '$rootScope', 'UserService', function($scope, $rootScope, UserService) {
         $rootScope.pageTitle = 'Add new user';
@@ -1095,6 +683,422 @@ angular
             add: function(user) {
                 $http = $http || $injector.get('$http');
                 return $http.post(API.baseUrl + '/user/add', user);
+            }
+        };
+    }]);
+angular
+    .module('app.post')
+    .controller('AddPostCtrl', ['$scope', '$rootScope', 'marked', '$upload', 'API', 'CategoryService', 'PostService', function($scope, $rootScope, marked, $upload, API, CategoryService, PostService) {
+        $rootScope.pageTitle = 'Add new post';
+        $scope.categories    = [];
+        $scope.post          = {
+            id: null,
+            categories: [],
+            heading_styles: 'none'
+        };
+        $scope.mode          = 'add';
+        $scope.html          = '';
+        $scope.editor        = null;
+        $scope.editorOptions = {
+            mode: 'markdown',
+            lineNumbers: true,
+            matchBrackets: true,
+            lineWrapping: true,
+            theme: 'default'
+        };
+
+        CategoryService
+            .list()
+            .success(function(data) {
+                $scope.categories = data.categories;
+            });
+
+        $scope.selectCategory = function(id) {
+            var index = $scope.post.categories.indexOf(id);
+            (index > -1)
+                ? $scope.post.categories.splice(index, 1)
+                : $scope.post.categories.push(id);
+        };
+
+        $scope.editorLoaded = function(editor) {
+            $scope.editor = editor;
+
+            editor.on('change', function(instance) {
+                // Simple hack to set the content
+                // If I set ng-model="post.content" for the editor, I can't insert data to it
+                // via $scope.editor.getDoc().replaceSelection(...);
+                $scope.post.content = instance.getValue();
+            });
+        };
+
+        $scope.preview = function() {
+            $scope.html = marked($scope.post.content || '', {
+                renderer: new marked.Renderer({
+                    heading: function(text, level) {
+                        // I don't want to include an auto-generated ID of heading
+                        return '<h' + level + '>' + text + '</h' + level + '>';
+                    }
+                })
+            });
+        };
+
+        $scope.upload = function($files) {
+            $upload.upload({
+                url: API.baseUrl + '/file/upload',
+                file: $files
+            }).success(function(data, status, headers, config) {
+                var files = data.files;
+                for (var i = 0; i < files.length; i++) {
+                    var text = ['[', files[i].title, '](', files[i].url, ')'].join('');
+                    if (['bmp', 'gif', 'jpeg', 'jpg', 'png'].indexOf(files[i].extension.toLowerCase()) != -1) {
+                        text = '!' + text;
+                    }
+                    $scope.editor.getDoc().replaceSelection(text);
+                }
+            });
+        };
+
+        $scope.save = function(status) {
+            if (!$scope.post.title || !$scope.post.slug || !$scope.post.content) {
+                return;
+            }
+            if (status) {
+                $scope.post.status = status;
+            }
+
+            $scope.post._id
+                ? PostService
+                    .save($scope.post)
+                    .success(function(data) {
+                        $scope.mode = 'edit';
+                    })
+                : PostService
+                    .add($scope.post)
+                    .success(function(data) {
+                        if (data.msg === 'ok') {
+                            $scope.mode = 'edit';
+                            $scope.post._id = data.id;
+                        }
+                    });
+        };
+    }]);
+angular
+    .module('app.post')
+    .controller('EditPostCtrl', ['$scope', '$rootScope', '$compile', '$routeParams', 'marked', '$upload', 'API', 'CategoryService', 'PostService', function($scope, $rootScope, $compile, $routeParams, marked, $upload, API, CategoryService, PostService) {
+        $rootScope.pageTitle = 'Edit post';
+        $scope.categories    = [];
+        $scope.post          = {
+            categories: [],
+            heading_styles: 'none'
+        };
+        $scope.html          = '';
+        $scope.editor        = null;
+        $scope.editorOptions = {
+            mode: 'markdown',
+            lineNumbers: true,
+            matchBrackets: true,
+            lineWrapping: true,
+            theme: 'default'
+        };
+
+        $scope.activeContentTab = true;
+
+        PostService
+            .get($routeParams.id)
+            .success(function(data) {
+                if (data.msg === 'ok') {
+                    $scope.post = data.post;
+                    if ($scope.editor) {
+                        $scope.editor.getDoc().setValue($scope.post.content);
+                    }
+
+                    if (['______', '111111', 'AAAAAA', 'aaaaaa', 'IIIIII', 'iiiiii'].indexOf($scope.post.heading_styles) === -1) {
+                        for (var i = 0; i < 6; i++) {
+                            $scope.post['heading_style_h' + String(i + 1)] = $scope.post.heading_styles.charAt(i);
+                        }
+                        $scope.post.heading_styles = 'custom';
+                    }
+
+                }
+            })
+            .then(function() {
+                return CategoryService.list();
+            })
+            .then(function(response) {
+                if ($scope.post.categories) {
+                    $scope.categories = response.data.categories;
+
+                    for (var i = 0; i < $scope.categories.length; i++) {
+                        if ($scope.post.categories.indexOf($scope.categories[i]._id) > -1) {
+                            $scope.categories[i].selected = true;
+                        }
+                    }
+                }
+            });
+
+        $scope.selectCategory = function(id) {
+            var index = $scope.post.categories.indexOf(id);
+            (index > -1)
+                ? $scope.post.categories.splice(index, 1)
+                : $scope.post.categories.push(id);
+        };
+
+        $scope.editorLoaded = function(editor) {
+            $scope.editor = editor;
+
+            editor.on('change', function(instance) {
+                // Simple hack to set the content
+                // If I set ng-model="post.content" for the editor, I can't insert data to it
+                // via $scope.editor.getDoc().replaceSelection(...);
+                $scope.post.content = instance.getValue();
+            });
+        };
+
+        var renderer = new marked.Renderer();
+        renderer.heading = function(text, level) {
+            // I don't want to include an auto-generated ID of heading
+            return '<h' + level + '>' + text + '</h' + level + '>';
+        };
+        renderer.image = function(href, title, text) {
+            var out = '<img note-image src="' + href + '" alt="' + text + '"';
+            if (title) {
+                out += ' title="' + title + '"';
+            }
+            out += '/>';
+            return out;
+        };
+
+        $scope.preview = function() {
+            $scope.html = marked($scope.post.content || '', {
+                renderer: renderer
+            });
+
+            $compile($scope.html)($scope);
+        };
+
+        $scope.upload = function($files) {
+            $upload.upload({
+                url: API.baseUrl + '/file/upload',
+                file: $files
+            }).success(function(data, status, headers, config) {
+                var files = data.files;
+                for (var i = 0; i < files.length; i++) {
+                    var text = ['[', files[i].title, '](', files[i].url, ')'].join('');
+                    if (['bmp', 'gif', 'jpeg', 'jpg', 'png'].indexOf(files[i].extension.toLowerCase()) != -1) {
+                        text = '!' + text;
+                    }
+                    $scope.editor.getDoc().replaceSelection(text);
+                }
+            });
+        };
+
+        $scope.save = function(status) {
+            if (!$scope.post.title || !$scope.post.slug || !$scope.post.content) {
+                return;
+            }
+            if (status) {
+                $scope.post.status = status;
+            }
+
+            PostService
+                .save($scope.post)
+                .success(function(data) {
+                });
+        };
+    }]);
+angular
+    .module('app.post')
+    .controller('PostCtrl', ['$scope', '$rootScope', '$location', '_', 'growlNotifications', '$modal', 'PostService', function($scope, $rootScope, $location, _, growlNotifications, $modal, PostService) {
+        $rootScope.pageTitle = 'Posts';
+        $scope.posts         = [];
+
+        var qs = $location.search();
+        $scope.criteria = {
+            page: qs.page || 1,
+            keyword: qs.q || null,
+            status: qs.status || null
+        };
+
+        $scope.pagination = {
+            total_items: 0,
+            per_page: 10,
+            current_page: 1,
+            num_pages: 1
+        };
+
+        PostService
+            .list($scope.criteria)
+            .success(function(data) {
+                $scope.posts      = data.posts;
+                $scope.pagination = data.pagination;
+            });
+
+        $scope.search = function() {
+            $location.search({
+                q: $scope.criteria.keyword
+            });
+        };
+
+        $scope.filter = function(status) {
+            $location.search('page', 1);
+            $location.search('status', status || null);
+        };
+
+        /**
+         * Go to other page
+         */
+        $scope.jump = function() {
+            $location.search('page', $scope.pagination.current_page);
+        };
+
+        /**
+         * Duplicate post
+         */
+        $scope.duplicate = function(post) {
+            PostService
+                .duplicate(post._id)
+                .success(function(data) {
+                    if (data.msg === 'ok') {
+                        $scope.posts.push(data.post);
+                        growlNotifications.add('<strong>' + post.title + '</strong> is duplicated', 'success');
+                    }
+                });
+        };
+
+        $scope.confirm = function(post) {
+            $scope.selected = post;
+
+            // Show the modal
+            $modal
+                .open({
+                    templateUrl: 'removePostModal.html',
+                    size: 'sm',
+                    controller: function($scope, $modalInstance, selected) {
+                        $scope.selected = selected;
+
+                        $scope.remove = function() {
+                            $modalInstance.close($scope.selected);
+                        };
+
+                        $scope.cancel = function() {
+                            $modalInstance.dismiss('cancel');
+                        };
+                    },
+                    resolve: {
+                        selected: function() {
+                            return post;
+                        }
+                    }
+                })
+                .result
+                .then(function(selected) {
+                    PostService
+                        .remove(selected._id)
+                        .success(function(data) {
+                            if (data.msg === 'ok') {
+                                // Remove from the collections
+                                _.remove($scope.posts, function(item) {
+                                    return item._id === selected._id;
+                                });
+
+                                growlNotifications.add('<strong>' + selected.title + '</strong> is removed', 'success');
+                            }
+                        });
+                }, function() {
+                });
+        };
+
+        $scope.publish = function(post) {
+            PostService
+                .activate(post._id)
+                .success(function(data) {
+                    if (data.msg === 'ok') {
+                        post.status = (post.status === 'activated') ? 'deactivated' : 'activated';
+                        growlNotifications.add('<strong>' + post.title + '</strong> is ' + (post.status === 'deactivated' ? 'unpublished' : 'published'), 'success');
+                    }
+                });
+        };
+    }]);
+angular
+    .module('app.post')
+    .directive('noteImage', function() {
+        return {
+            restrict: 'A',
+            link: function(scope, ele, attrs) {
+
+            }
+        };
+    });
+angular
+    .module('app.post')
+    .directive('postSlug', ['PostService', function(PostService) {
+        return {
+            restrict: 'A',
+            scope: {
+                postTitle: '=',
+                postId: '=',
+                ngModel: '='
+            },
+            link: function(scope, ele, attrs) {
+                scope.$watch('postTitle', function(val) {
+                    if (!val) {
+                        scope.ngModel = '';
+                        return;
+                    }
+                    PostService
+                        .generateSlug(val, scope.postId)
+                        .success(function(data) {
+                            scope.ngModel = data.slug;
+                        });
+                });
+            }
+        };
+    }]);
+angular
+    .module('app.post')
+    .factory('PostService', ['$injector', 'API', function($injector, API) {
+        var $http;
+        return {
+            activate: function(id) {
+                $http = $http || $injector.get('$http');
+                return $http.post(API.baseUrl + '/post/activate/' + id);
+            },
+
+            add: function(post) {
+                $http = $http || $injector.get('$http');
+                return $http.post(API.baseUrl + '/post/add', post);
+            },
+
+            duplicate: function(id) {
+                $http = $http || $injector.get('$http');
+                return $http.post(API.baseUrl + '/post/duplicate/' + id);
+            },
+
+            generateSlug: function(title, id) {
+                $http = $http || $injector.get('$http');
+                return $http.post(API.baseUrl + '/post/slug', { title: title, id: id });
+            },
+
+            get: function(id) {
+                $http = $http || $injector.get('$http');
+                return $http.get(API.baseUrl + '/post/get/' + id);
+            },
+
+            list: function(criteria) {
+                $http = $http || $injector.get('$http');
+                return $http.post(API.baseUrl + '/post', criteria);
+            },
+
+            remove: function(id) {
+                $http = $http || $injector.get('$http');
+                return $http.post(API.baseUrl + '/post/remove', {
+                    id: id
+                });
+            },
+
+            save: function(post) {
+                $http = $http || $injector.get('$http');
+                return $http.post(API.baseUrl + '/post/save/' + post._id, post);
             }
         };
     }]);
