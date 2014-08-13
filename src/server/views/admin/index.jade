@@ -40,7 +40,7 @@ html(ng-app="app")
                                 i.fa.fa-caret-down
                             ul.dropdown-menu
                                 li
-                                    a(href="#/user/password") Change password
+                                    a(href="/admin/user/password") Change password
                                 li.divider
                                 li
                                     a(href="javascript: void(0);", ng-click="signout()") Signout
@@ -49,25 +49,25 @@ html(ng-app="app")
                 div.dw-sidebar
                     ul.nav
                         li
-                            a(href="#/", title="Dashboard")
+                            a(href="/admin", title="Dashboard")
                                 span.fa-stack.fa-lg
                                     i.fa.fa-circle.fa-stack-2x
                                     i.fa.fa-dashboard.fa-stack-1x.fa-inverse
                                 |  Dashboard
                         li
-                            a(href="#/category", title="Categories")
+                            a(href="/admin/category", title="Categories")
                                 span.fa-stack.fa-lg
                                     i.fa.fa-circle.fa-stack-2x
                                     i.fa.fa-tags.fa-stack-1x.fa-inverse
                                 |  Categories
                         li
-                            a(href="#/post", title="Posts")
+                            a(href="/admin/post", title="Posts")
                                 span.fa-stack.fa-lg
                                     i.fa.fa-circle.fa-stack-2x
                                     i.fa.fa-edit.fa-stack-1x.fa-inverse
                                 |  Posts
                         li
-                            a(href="#/user", title="Users")
+                            a(href="/admin/user", title="Users")
                                 span.fa-stack.fa-lg
                                     i.fa.fa-circle.fa-stack-2x
                                     i.fa.fa-users.fa-stack-1x.fa-inverse

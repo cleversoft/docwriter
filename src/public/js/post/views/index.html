@@ -1,5 +1,27 @@
 <div class="dw-heading">
-    <h1>Posts <a href="#/post/add" class="btn btn-default btn-sm"><i class="fa fa-plus"></i> Add new post</a></h1>
+    <div class="row">
+    <div class="col-md-6">
+        <a href="/admin/post">Posts</a> <a href="/admin/post/add" class="btn btn-default"><i class="fa fa-plus"></i> Add new post</a>
+    </div>
+
+    <div class="col-md-3">
+        <span class="input-group">
+            <input type="text" class="form-control" ng-model="criteria.keyword" ng-keypress="($event.which === 13 && criteria.keyword) ? search() : angular.noop()" />
+            <span class="input-group-btn">
+                <button class="btn btn-default" type="button" title="Search" ng-click="search()"><i class="fa fa-search"></i></button>
+            </span>
+        </span>
+    </div>
+
+    <div class="col-md-3 text-right">
+        <div class="btn-group">
+            <a class="btn btn-default" ng-class="{ 'active': !criteria.status }" href="{{ '/admin/post' | urlBuilder:{page: 1}:['status'] }}">All</a>
+            <a class="btn btn-default" ng-class="{ 'active': criteria.status === 'activated' }" href="{{ '/admin/post' | urlBuilder:{page: 1, status: 'activated'} }}">Published</a>
+            <a class="btn btn-default" ng-class="{ 'active': criteria.status === 'deactivated' }" href="{{ '/admin/post' | urlBuilder:{page: 1, status: 'deactivated'} }}">Not publish yet</a>
+            <a class="btn btn-default" ng-class="{ 'active': criteria.status === 'draft' }" href="{{ '/admin/post' | urlBuilder:{page: 1, status: 'draft'} }}">Draft</a>
+        </div>
+    </div>
+    </div>
 </div>
 
 <table class="table table-striped">
@@ -25,7 +47,7 @@
             </td>
             <td>
                 <button ng-click="confirm(post)" class="btn btn-danger">Remove</button>
-                <a href="#/post/edit/{{ post._id }}" class="btn btn-default">Edit</a>
+                <a href="/admin/post/edit/{{ post._id }}" class="btn btn-default">Edit</a>
                 <button ng-click="publish(post)" class="btn btn-default">{{ post.status === 'activated' ? 'Unpublish' : 'Publish' }}</button>
             </td>
         </tr>

@@ -23,7 +23,7 @@ angular
         $routeProvider
 
             // admin module
-            .when('/', {
+            .when('/admin', {
                 templateUrl: '/js/admin/views/dashboard.html',
                 controller: 'DashboardCtrl',
                 data: {
@@ -32,21 +32,21 @@ angular
             })
 
             // category module
-            .when('/category', {
+            .when('/admin/category', {
                 templateUrl: '/js/category/views/index.html',
                 controller: 'CategoryCtrl',
                 data: {
                     requiredAuthentication: true
                 }
             })
-            .when('/category/add', {
+            .when('/admin/category/add', {
                 templateUrl: '/js/category/views/add.html',
                 controller: 'AddCategoryCtrl',
                 data: {
                     requiredAuthentication: true
                 }
             })
-            .when('/category/edit/:id', {
+            .when('/admin/category/edit/:id', {
                 templateUrl: '/js/category/views/edit.html',
                 controller: 'EditCategoryCtrl',
                 data: {
@@ -55,21 +55,21 @@ angular
             })
 
             // post module
-            .when('/post', {
+            .when('/admin/post', {
                 templateUrl: '/js/post/views/index.html',
                 controller: 'PostCtrl',
                 data: {
                     requiredAuthentication: true
                 }
             })
-            .when('/post/edit/:id', {
+            .when('/admin/post/edit/:id', {
                 templateUrl: '/js/post/views/edit.html',
                 controller: 'EditPostCtrl',
                 data: {
                     requiredAuthentication: true
                 }
             })
-            .when('/post/add', {
+            .when('/admin/post/add', {
                 templateUrl: '/js/post/views/add.html',
                 controller: 'AddPostCtrl',
                 data: {
@@ -78,28 +78,28 @@ angular
             })
 
             // user module
-            .when('/user', {
+            .when('/admin/user', {
                 templateUrl: '/js/user/views/index.html',
                 controller: 'UserCtrl',
                 data: {
                     requiredAuthentication: true
                 }
             })
-            .when('/user/password', {
+            .when('/admin/user/password', {
                 templateUrl: '/js/user/views/password.html',
                 controller: 'UserPasswordCtrl',
                 data: {
                     requiredAuthentication: true
                 }
             })
-            .when('/user/add', {
+            .when('/admin/user/add', {
                 templateUrl: '/js/user/views/add.html',
                 controller: 'AddUserCtrl',
                 data: {
                     requiredAuthentication: true
                 }
             })
-            .when('/user/edit/:id', {
+            .when('/admin/user/edit/:id', {
                 templateUrl: '/js/user/views/edit.html',
                 controller: 'EditUserCtrl',
                 data: {
@@ -107,7 +107,7 @@ angular
                 }
             });
 
-        //$locationProvider.html5Mode(true);
+        $locationProvider.html5Mode(true);
     }])
     .config(['$httpProvider', function($httpProvider) {
         $httpProvider.interceptors.push('TokenInterceptor');

@@ -23,9 +23,9 @@ angular
                 return $http.get(API.baseUrl + '/post/get/' + id);
             },
 
-            list: function() {
+            list: function(criteria) {
                 $http = $http || $injector.get('$http');
-                return $http.post(API.baseUrl + '/post');
+                return $http.post(API.baseUrl + '/post', criteria);
             },
 
             remove: function(id) {

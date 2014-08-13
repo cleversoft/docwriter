@@ -1,12 +1,10 @@
 <div class="dw-heading">
-    <h1>
-        <a href="#/post">Posts</a> / <span ng-switch="mode"><span ng-switch-when="add">Add new post</span><span ng-switch-when="edit">Edit post</span></span>
-        <span class="btn-group">
-            <button class="btn btn-primary" ng-click="save()">Save</button>
-            <button class="btn btn-default" ng-click="save('activated')">Save and Publish</button>
-            <button class="btn btn-default" ng-click="save('draft')">Save as draft</button>
-        </span>
-    </h1>
+    <a href="/admin/post">Posts</a> / <span ng-switch="mode"><span ng-switch-when="add">Add new post</span><span ng-switch-when="edit">Edit post</span></span>
+    <span class="btn-group">
+        <button class="btn btn-primary" ng-click="save()">Save</button>
+        <button class="btn btn-default" ng-click="save('activated')">Save and Publish</button>
+        <button class="btn btn-default" ng-click="save('draft')">Save as draft</button>
+    </span>
 </div>
 
 <form class="form-horizontal">
@@ -88,7 +86,7 @@
 
         <tab select="preview()">
             <tab-heading>Preview</tab-heading>
-            <div ng-bind-html="html"></div>
+            <div ng-bind-html="html" class="dw-post-preview"></div>
         </tab>
     </tabset>
 </form>

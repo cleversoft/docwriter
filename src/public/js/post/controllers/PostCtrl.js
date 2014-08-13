@@ -1,14 +1,27 @@
 angular
     .module('app.post')
-    .controller('PostCtrl', ['$scope', '$rootScope', '_', '$modal', 'PostService', function($scope, $rootScope, _, $modal, PostService) {
+    .controller('PostCtrl', ['$scope', '$rootScope', '$location', '_', '$modal', 'PostService', function($scope, $rootScope, $location, _, $modal, PostService) {
         $rootScope.pageTitle = 'Posts';
         $scope.posts         = [];
 
+        var qs = $location.search();
+        $scope.criteria = {
+            page: qs.page || 1,
+            keyword: qs.q || null,
+            status: qs.status || null
+        };
+
         PostService
-            .list()
+            .list($scope.criteria)
             .success(function(data) {
                 $scope.posts = data.posts;
             });
+
+        $scope.search = function() {
+            $location.search({
+                q: $scope.criteria.keyword
+            });
+        };
 
         $scope.confirm = function(post) {
             $scope.selected = post;

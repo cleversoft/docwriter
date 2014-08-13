@@ -1,6 +1,6 @@
 angular
     .module('app.post')
-    .controller('EditPostCtrl', ['$scope', '$rootScope', '$routeParams', 'marked', '$upload', 'API', 'CategoryService', 'PostService', function($scope, $rootScope, $routeParams, marked, $upload, API, CategoryService, PostService) {
+    .controller('EditPostCtrl', ['$scope', '$rootScope', '$compile', '$routeParams', 'marked', '$upload', 'API', 'CategoryService', 'PostService', function($scope, $rootScope, $compile, $routeParams, marked, $upload, API, CategoryService, PostService) {
         $rootScope.pageTitle = 'Edit post';
         $scope.categories    = [];
         $scope.post          = {
@@ -70,15 +70,26 @@ angular
             });
         };
 
+        var renderer = new marked.Renderer();
+        renderer.heading = function(text, level) {
+            // I don't want to include an auto-generated ID of heading
+            return '<h' + level + '>' + text + '</h' + level + '>';
+        };
+        renderer.image = function(href, title, text) {
+            var out = '<img note-image src="' + href + '" alt="' + text + '"';
+            if (title) {
+                out += ' title="' + title + '"';
+            }
+            out += '/>';
+            return out;
+        };
+
         $scope.preview = function() {
             $scope.html = marked($scope.post.content || '', {
-                renderer: new marked.Renderer({
-                    heading: function(text, level) {
-                        // I don't want to include an auto-generated ID of heading
-                        return '<h' + level + '>' + text + '</h' + level + '>';
-                    }
-                })
+                renderer: renderer
             });
+
+            $compile($scope.html)($scope);
         };
 
         $scope.upload = function($files) {

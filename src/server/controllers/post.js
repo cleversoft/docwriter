@@ -107,10 +107,10 @@ exports.get = function(req, res) {
 exports.list = function(req, res) {
     var perPage       = 10,
         pageRange     = 5,
-        page          = req.param('page') || 1,
-        status        = req.param('status'),
-        q             = req.param('q') || '',
-        sortBy        = req.param('sort') || '-created_date',
+        page          = req.body.page    || 1,
+        status        = req.body.status,
+        q             = req.body.keyword || '',
+        sortBy        = req.body.sort    || '-created_date',
         criteria      = q ? { title: new RegExp(q, 'i') } : {},
         sortCriteria  = {},
         sortDirection = ('-' == sortBy.substr(0, 1)) ? -1 : 1;

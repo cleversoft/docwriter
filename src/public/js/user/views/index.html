@@ -1,5 +1,5 @@
 <div class="dw-heading">
-    <h1>Users <a href="#/user/add" class="btn btn-default btn-sm"><i class="fa fa-plus"></i> Add new user</a></h1>
+    Users <a href="/admin/user/add" class="btn btn-default btn-sm"><i class="fa fa-plus"></i> Add new user</a>
 </div>
 
 <table class="table table-striped">
@@ -20,7 +20,7 @@
             <td>{{ user.email }}</td>
             <td>{{ user.role }}</td>
             <td>
-                <a href="#/user/edit/{{ user._id }}" class="btn btn-default">Edit</a>
+                <a href="/admin/user/edit/{{ user._id }}" class="btn btn-default">Edit</a>
                 <button class="btn btn-default" ng-if="user.username !== currentUser.username" ng-click="lock(user)">{{ user.locked ? 'Unlock' : 'Lock' }}</button>
                 <span ng-if="user.username === currentUser.username">It's you</span>
             </td>
