@@ -13,6 +13,11 @@ angular
                 return $http.post(API.baseUrl + '/post/add', post);
             },
 
+            duplicate: function(id) {
+                $http = $http || $injector.get('$http');
+                return $http.post(API.baseUrl + '/post/duplicate/' + id);
+            },
+
             generateSlug: function(title, id) {
                 $http = $http || $injector.get('$http');
                 return $http.post(API.baseUrl + '/post/slug', { title: title, id: id });

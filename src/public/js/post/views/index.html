@@ -46,9 +46,10 @@
                 <span ng-switch-when="draft">Draft</span>
             </td>
             <td>
-                <button ng-click="confirm(post)" class="btn btn-danger">Remove</button>
+                <button type="button" class="btn btn-danger" ng-click="confirm(post)" >Remove</button>
                 <a href="/admin/post/edit/{{ post._id }}" class="btn btn-default">Edit</a>
-                <button ng-click="publish(post)" class="btn btn-default">{{ post.status === 'activated' ? 'Unpublish' : 'Publish' }}</button>
+                <button type="button" class="btn btn-default" ng-click="duplicate(post)">Duplicate</button>
+                <button type="button" class="btn btn-default" ng-click="publish(post)">{{ post.status === 'activated' ? 'Unpublish' : 'Publish' }}</button>
             </td>
         </tr>
     </tbody>

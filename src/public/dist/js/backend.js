@@ -690,6 +690,19 @@ angular
             $location.search('page', $scope.pagination.current_page);
         };
 
+        /**
+         * Duplicate post
+         */
+        $scope.duplicate = function(post) {
+            PostService
+                .duplicate(post._id)
+                .success(function(data) {
+                    if (data.msg === 'ok') {
+                        $scope.posts.push(data.post);
+                    }
+                });
+        };
+
         $scope.confirm = function(post) {
             $scope.selected = post;
 
@@ -789,6 +802,11 @@ angular
             add: function(post) {
                 $http = $http || $injector.get('$http');
                 return $http.post(API.baseUrl + '/post/add', post);
+            },
+
+            duplicate: function(id) {
+                $http = $http || $injector.get('$http');
+                return $http.post(API.baseUrl + '/post/duplicate/' + id);
             },
 
             generateSlug: function(title, id) {

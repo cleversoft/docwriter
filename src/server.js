@@ -67,13 +67,14 @@ app.route('/category/slug').post(middleware.auth.requireAuth,     controller.cat
 
 app.route('/file/upload').post(middleware.auth.requireAuth, controller.file.upload);
 
-app.route('/post').post(middleware.auth.requireAuth,              controller.post.list);
-app.route('/post/activate/:id').post(middleware.auth.requireAuth, controller.post.activate);
-app.route('/post/add').post(middleware.auth.requireAuth,          controller.post.add);
-app.route('/post/get/:id').get(middleware.auth.requireAuth,       controller.post.get);
-app.route('/post/remove').post(middleware.auth.requireAuth,       controller.post.remove);
-app.route('/post/save/:id').post(middleware.auth.requireAuth,     controller.post.save);
-app.route('/post/slug').post(middleware.auth.requireAuth,         controller.post.slug);
+app.route('/post').post(middleware.auth.requireAuth,               controller.post.list);
+app.route('/post/activate/:id').post(middleware.auth.requireAuth,  controller.post.activate);
+app.route('/post/add').post(middleware.auth.requireAuth,           controller.post.add);
+app.route('/post/duplicate/:id').post(middleware.auth.requireAuth, controller.post.duplicate);
+app.route('/post/get/:id').get(middleware.auth.requireAuth,        controller.post.get);
+app.route('/post/remove').post(middleware.auth.requireAuth,        controller.post.remove);
+app.route('/post/save/:id').post(middleware.auth.requireAuth,      controller.post.save);
+app.route('/post/slug').post(middleware.auth.requireAuth,          controller.post.slug);
 
 app.route('/user').post(middleware.auth.requireAuth,          controller.user.list);
 app.route('/user/add').post(middleware.auth.requireAuth,      controller.user.add);

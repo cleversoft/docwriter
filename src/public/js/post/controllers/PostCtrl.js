@@ -43,6 +43,19 @@ angular
             $location.search('page', $scope.pagination.current_page);
         };
 
+        /**
+         * Duplicate post
+         */
+        $scope.duplicate = function(post) {
+            PostService
+                .duplicate(post._id)
+                .success(function(data) {
+                    if (data.msg === 'ok') {
+                        $scope.posts.push(data.post);
+                    }
+                });
+        };
+
         $scope.confirm = function(post) {
             $scope.selected = post;
 
