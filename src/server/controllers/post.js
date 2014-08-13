@@ -106,7 +106,6 @@ exports.get = function(req, res) {
  */
 exports.list = function(req, res) {
     var perPage       = 10,
-        pageRange     = 5,
         page          = req.body.page    || 1,
         status        = req.body.status,
         q             = req.body.keyword || '',
@@ -133,29 +132,15 @@ exports.list = function(req, res) {
                     posts = [];
                 }
 
-                var numPages   = Math.ceil(total / perPage),
-                    startRange = (page == 1) ? 1 : pageRange * Math.floor((page - 1) / pageRange) + 1,
-                    endRange   = startRange + pageRange;
-
-                if (endRange > numPages) {
-                    endRange = numPages;
-                }
-
+                var numPages = Math.ceil(total / perPage);
                 res.json({
-                    total: total,
                     posts: posts,
-
-                    // Criteria
-                    q: q,
-                    criteria: criteria,
-                    sortBy: sortBy,
-                    sortDirection: sortDirection,
-
-                    // Pagination
-                    page: page,
-                    numPages: numPages,
-                    startRange: startRange,
-                    endRange: endRange
+                    pagination: {
+                        total_items: total,
+                        per_page: perPage,
+                        current_page: page,
+                        num_pages: numPages
+                    }
                 });
             });
     });

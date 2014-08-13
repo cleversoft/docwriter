@@ -658,16 +658,36 @@ angular
             status: qs.status || null
         };
 
+        $scope.pagination = {
+            total_items: 0,
+            per_page: 10,
+            current_page: 1,
+            num_pages: 1
+        };
+
         PostService
             .list($scope.criteria)
             .success(function(data) {
-                $scope.posts = data.posts;
+                $scope.posts      = data.posts;
+                $scope.pagination = data.pagination;
             });
 
         $scope.search = function() {
             $location.search({
                 q: $scope.criteria.keyword
             });
+        };
+
+        $scope.filter = function(status) {
+            $location.search('page', 1);
+            $location.search('status', status || null);
+        };
+
+        /**
+         * Go to other page
+         */
+        $scope.jump = function() {
+            $location.search('page', $scope.pagination.current_page);
         };
 
         $scope.confirm = function(post) {

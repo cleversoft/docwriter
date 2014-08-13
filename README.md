@@ -61,6 +61,50 @@ From the ```src``` directory, execute the command below to install NodeJS module
 $ sudo npm install
 ```
 
+### Setting Nginx
+
+```
+upstream docwriter {
+    server 127.0.0.1:3000;
+}
+
+server {
+    listen      80;
+    server_name docwriter.dev;
+    error_log   /opt/local/var/log/nginx/docwriter.dev.log;
+    access_log  off;
+
+    location = /favicon.ico { access_log off; log_not_found off; }
+    location = /robots.txt { access_log off; log_not_found off; }
+
+    location / {
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header Host $http_host;
+        proxy_set_header X-NginX-Proxy true;
+
+        proxy_pass http://docwriter/;
+        proxy_redirect off;
+        proxy_buffering off;
+
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection "upgrade";
+    }
+
+    location /admin/ {
+        try_files $uri $uri/ /admin;
+    }
+
+    location /upload {
+        root /Volumes/data/projects_workspace/docwriter;
+    }
+    location /data {
+       root /Volumes/data/projects_workspace/docwriter;
+    }
+}
+```
+
 ### Preparing the database
 
 From the MongoDB shell, create the database:
@@ -195,15 +239,11 @@ Then access the browser at ```http://localhost:3000```
 
 ## Authors
 
-* Author:
 Nguyen Huu Phuoc, aka @nghuuphuoc ([Twitter](http://twitter.com/nghuuphuoc) / [Github](http://github.com/nghuuphuoc))
-
-* Contributor:
-Nguyen Ta Quang Duc, aka [@ducntq](http://github.com/ducntq)
 
 ## License
 
-NodeDesk is written by @nghuuphuoc, and licensed under the MIT license.
+DocWriter is written by @nghuuphuoc, and licensed under the MIT license.
 
 ```
 The MIT License (MIT)
