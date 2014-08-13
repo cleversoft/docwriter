@@ -53,12 +53,11 @@ Refer to their documentation to see how to install them:
 * [Install Redis](http://redis.io/topics/quickstart)
 * [Install wkhtmltopdf](https://github.com/pdfkit/pdfkit/wiki/Installing-WKHTMLTOPDF)
 
-### Installing NodeJS modules
-
-From the ```src``` directory, execute the command below to install NodeJS modules defined in ```package.json```:
+### Installing NodeJS modules and Bower components
 
 ```bash
 $ sudo npm install
+$ sudo bower install
 ```
 
 ### Setting Nginx

@@ -1,0 +1,25 @@
+{
+    "name": "nodedesk",
+    "version": "2.0.0-dev",
+    "private": true,
+    "dependencies": {
+        "angular": "latest",
+        "angular-moment": "latest",
+        "angular-growl-notifications": "latest",
+        "angular-route": "latest",
+        "angular-sanitize": "latest",
+        "angular-ui-bootstrap-bower": "latest",
+        "angular-ui-codemirror": "latest",
+        "bootstrap": "latest",
+        "codemirror": "latest",
+        "fontawesome": "latest",
+        "html5shiv": "latest",
+        "jquery": "latest",
+        "lodash": "latest",
+        "marked": "latest",
+        "moment": "latest",
+        "ng-file-upload": "latest",
+        "respond": "latest",
+        "tocjs": "latest"
+    }
+}
