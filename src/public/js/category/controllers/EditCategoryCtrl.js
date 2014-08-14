@@ -1,8 +1,9 @@
 angular
     .module('app.category')
-    .controller('EditCategoryCtrl', ['$scope', '$rootScope', '$routeParams', 'CategoryService', function($scope, $rootScope, $routeParams, CategoryService) {
+    .controller('EditCategoryCtrl', ['$scope', '$rootScope', '$routeParams', 'growlNotifications', 'CategoryService', function($scope, $rootScope, $routeParams, growlNotifications, CategoryService) {
         $rootScope.pageTitle = 'Edit the category';
         $scope.category      = null;
+        $scope.msg           = null;
 
         CategoryService
             .get($routeParams.id)
@@ -33,7 +34,10 @@ angular
             CategoryService
                 .save($scope.category)
                 .success(function(data) {
-                    $scope.msg = data.msg;
+                    $scope.msg = data.msg === 'ok' ? null : data.msg;
+                    if (data.msg === 'ok') {
+                        growlNotifications.add('<strong>' + $scope.category.name + '</strong> is updated', 'success');
+                    }
                 });
         };
     }]);

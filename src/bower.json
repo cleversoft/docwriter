@@ -4,8 +4,9 @@
     "private": true,
     "dependencies": {
         "angular": "latest",
-        "angular-moment": "latest",
         "angular-growl-notifications": "latest",
+        "angular-loading-bar": "latest",
+        "angular-moment": "latest",
         "angular-route": "latest",
         "angular-sanitize": "latest",
         "angular-ui-bootstrap-bower": "latest",

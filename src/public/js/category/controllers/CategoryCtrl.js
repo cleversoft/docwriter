@@ -1,6 +1,6 @@
 angular
     .module('app.category')
-    .controller('CategoryCtrl', ['$scope', '$rootScope', '_', '$modal', 'CategoryService', function($scope, $rootScope, _, $modal, CategoryService) {
+    .controller('CategoryCtrl', ['$scope', '$rootScope', '_', 'growlNotifications', '$modal', 'CategoryService', function($scope, $rootScope, _, growlNotifications, $modal, CategoryService) {
         $rootScope.pageTitle = 'Categories';
         $scope.categories    = [];
         $scope.selected      = null;
@@ -55,6 +55,7 @@ angular
                                 for (var i = 0; i < $scope.categories.length; i++) {
                                     $scope.categories[i].index = i;
                                 }
+                                growlNotifications.add('<strong>' + selected.name + '</strong> is removed', 'success');
                             }
                         });
                 }, function() {

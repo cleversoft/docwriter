@@ -1,8 +1,9 @@
 angular
     .module('app.category')
-    .controller('AddCategoryCtrl', ['$scope', '$rootScope', 'CategoryService', function($scope, $rootScope, CategoryService) {
+    .controller('AddCategoryCtrl', ['$scope', '$rootScope', 'growlNotifications', 'CategoryService', function($scope, $rootScope, growlNotifications, CategoryService) {
         $rootScope.pageTitle = 'Add new category';
         $scope.category      = null;
+        $scope.msg           = null;
 
         $scope.save = function() {
             if (!$scope.category) {
@@ -25,8 +26,9 @@ angular
             CategoryService
                 .add($scope.category)
                 .success(function(data) {
-                    $scope.msg = data.msg;
+                    $scope.msg = data.msg === 'ok' ? null : data.msg;
                     if (data.msg === 'ok') {
+                        growlNotifications.add('<strong>' + $scope.category.name + '</strong> is added', 'success');
                         $scope.category = null;
                     }
                 });

@@ -4,7 +4,7 @@ angular.module('app.post',     ['ngSanitize']);
 angular.module('app.user',     []);
 
 angular
-    .module('app', ['ngRoute', 'angularFileUpload', 'angularMoment', 'growlNotifications', 'ui.bootstrap', 'ui.codemirror', 'app.admin', 'app.category', 'app.post', 'app.user'])
+    .module('app', ['ngRoute', 'angular-loading-bar', 'angularFileUpload', 'angularMoment', 'growlNotifications', 'ui.bootstrap', 'ui.codemirror', 'app.admin', 'app.category', 'app.post', 'app.user'])
     .constant('API', {
         baseUrl: ''
     })
@@ -19,6 +19,9 @@ angular
     // Use lodash
     .constant('_', window._)
     .constant('marked', window.marked)
+    .config(['cfpLoadingBarProvider', function(cfpLoadingBarProvider) {
+        cfpLoadingBarProvider.includeSpinner = false;
+    }])
     .config(['$routeProvider', '$locationProvider', function($routeProvider, $locationProvider) {
         $routeProvider
 
