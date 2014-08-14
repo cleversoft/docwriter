@@ -4,7 +4,7 @@ angular.module('app.post',     ['ngSanitize']);
 angular.module('app.user',     []);
 
 angular
-    .module('app', ['ngRoute', 'angular-loading-bar', 'angularFileUpload', 'angularMoment', 'growlNotifications', 'ui.bootstrap', 'ui.codemirror', 'app.admin', 'app.category', 'app.post', 'app.user'])
+    .module('app', ['ngRoute', 'angular-loading-bar', 'angularFileUpload', 'angularMoment', 'growlNotifications', 'ui.bootstrap', 'ui.codemirror', 'ui.gravatar', 'app.admin', 'app.category', 'app.post', 'app.user'])
     .constant('API', {
         baseUrl: ''
     })
@@ -199,240 +199,6 @@ angular
             }
 
             return (numParams == 0) ? input : input + '?' + arr.join('&');
-        };
-    }]);
-angular
-    .module('app.category')
-    .controller('AddCategoryCtrl', ['$scope', '$rootScope', 'growlNotifications', 'CategoryService', function($scope, $rootScope, growlNotifications, CategoryService) {
-        $rootScope.pageTitle = 'Add new category';
-        $scope.category      = null;
-        $scope.msg           = null;
-
-        $scope.save = function() {
-            if (!$scope.category) {
-                $scope.msg = 'Please fill in the form';
-                return;
-            }
-
-            var required = {
-                name: 'The name is required',
-                slug: 'The slug is required'
-            };
-
-            for (var key in required) {
-                if (!$scope.category[key]) {
-                    $scope.msg = required[key];
-                    return;
-                }
-            }
-
-            CategoryService
-                .add($scope.category)
-                .success(function(data) {
-                    $scope.msg = data.msg === 'ok' ? null : data.msg;
-                    if (data.msg === 'ok') {
-                        growlNotifications.add('<strong>' + $scope.category.name + '</strong> is added', 'success');
-                        $scope.category = null;
-                    }
-                });
-        };
-    }]);
-angular
-    .module('app.category')
-    .controller('CategoryCtrl', ['$scope', '$rootScope', '_', 'growlNotifications', '$modal', 'CategoryService', function($scope, $rootScope, _, growlNotifications, $modal, CategoryService) {
-        $rootScope.pageTitle = 'Categories';
-        $scope.categories    = [];
-        $scope.selected      = null;
-        $scope.ordering      = false;
-
-        CategoryService
-            .list()
-            .success(function(data) {
-                for (var i = 0; i < data.categories.length; i++) {
-                    var category = data.categories[i];
-                    category.index = i;
-                    $scope.categories.push(category);
-                }
-            });
-
-        $scope.confirm = function(category) {
-            $scope.selected = category;
-
-            // Show the modal
-            $modal
-                .open({
-                    templateUrl: 'removeCategoryModal.html',
-                    size: 'sm',
-                    controller: function($scope, $modalInstance, selected) {
-                        $scope.selected = selected;
-
-                        $scope.remove = function() {
-                            $modalInstance.close($scope.selected);
-                        };
-
-                        $scope.cancel = function() {
-                            $modalInstance.dismiss('cancel');
-                        };
-                    },
-                    resolve: {
-                        selected: function() {
-                            return category;
-                        }
-                    }
-                })
-                .result
-                .then(function(selected) {
-                    CategoryService
-                        .remove(selected._id)
-                        .success(function(data) {
-                            if (data.msg === 'ok') {
-                                // Remove from the collections
-                                _.remove($scope.categories, function(item) {
-                                    return item._id === selected._id;
-                                });
-                                // Update the index
-                                for (var i = 0; i < $scope.categories.length; i++) {
-                                    $scope.categories[i].index = i;
-                                }
-                                growlNotifications.add('<strong>' + selected.name + '</strong> is removed', 'success');
-                            }
-                        });
-                }, function() {
-                });
-        };
-
-        $scope.order = function(category, direction) {
-            $scope.ordering = true;
-
-            var index    = category.index,
-                newIndex = index + (direction === 'up' ? -1 : 1);
-            CategoryService
-                .order(category._id, newIndex)
-                .success(function(data) {
-                    $scope.ordering = false;
-                    if (data.msg === 'ok') {
-                        var c = $scope.categories[newIndex];
-                        $scope.categories[newIndex] = category;
-                        category.index = newIndex;
-
-                        $scope.categories[index] = c;
-                        c.index = index;
-                    }
-                });
-        };
-    }]);
-angular
-    .module('app.category')
-    .controller('EditCategoryCtrl', ['$scope', '$rootScope', '$routeParams', 'growlNotifications', 'CategoryService', function($scope, $rootScope, $routeParams, growlNotifications, CategoryService) {
-        $rootScope.pageTitle = 'Edit the category';
-        $scope.category      = null;
-        $scope.msg           = null;
-
-        CategoryService
-            .get($routeParams.id)
-            .success(function(data) {
-                if (data.msg === 'ok') {
-                    $scope.category = data.category;
-                }
-            });
-
-        $scope.save = function() {
-            if (!$scope.category) {
-                $scope.msg = 'Please fill in the form';
-                return;
-            }
-
-            var required = {
-                name: 'The name is required',
-                slug: 'The slug is required'
-            };
-
-            for (var key in required) {
-                if (!$scope.category[key]) {
-                    $scope.msg = required[key];
-                    return;
-                }
-            }
-
-            CategoryService
-                .save($scope.category)
-                .success(function(data) {
-                    $scope.msg = data.msg === 'ok' ? null : data.msg;
-                    if (data.msg === 'ok') {
-                        growlNotifications.add('<strong>' + $scope.category.name + '</strong> is updated', 'success');
-                    }
-                });
-        };
-    }]);
-angular
-    .module('app.category')
-    .directive('categorySlug', ['CategoryService', function(CategoryService) {
-        return {
-            restrict: 'A',
-            scope: {
-                categoryName: '=',
-                categoryId: '=',
-                ngModel: '='
-            },
-            link: function(scope, ele, attrs) {
-                scope.$watch('categoryName', function(val) {
-                    if (!val) {
-                        scope.ngModel = '';
-                        return;
-                    }
-                    CategoryService
-                        .generateSlug(val, scope.categoryId)
-                        .success(function(data) {
-                            scope.ngModel = data.slug;
-                        });
-                });
-            }
-        };
-    }]);
-angular
-    .module('app.category')
-    .factory('CategoryService', ['$injector', 'API', function($injector, API) {
-        var $http;
-        return {
-            add: function(category) {
-                $http = $http || $injector.get('$http');
-                return $http.post(API.baseUrl + '/category/add', category);
-            },
-
-            generateSlug: function(name, id) {
-                $http = $http || $injector.get('$http');
-                return $http.post(API.baseUrl + '/category/slug', { name: name, id: id });
-            },
-
-            get: function(id) {
-                $http = $http || $injector.get('$http');
-                return $http.get(API.baseUrl + '/category/get/' + id);
-            },
-
-            list: function() {
-                $http = $http || $injector.get('$http');
-                return $http.post(API.baseUrl + '/category');
-            },
-
-            order: function(id, position) {
-                $http = $http || $injector.get('$http');
-                return $http.post(API.baseUrl + '/category/order', {
-                    id: id,
-                    position: position
-                });
-            },
-
-            remove: function(id) {
-                $http = $http || $injector.get('$http');
-                return $http.post(API.baseUrl + '/category/remove', {
-                    id: id
-                });
-            },
-
-            save: function(category) {
-                $http = $http || $injector.get('$http');
-                return $http.post(API.baseUrl + '/category/save/' + category._id, category);
-            }
         };
     }]);
 angular
@@ -1109,6 +875,240 @@ angular
             add: function(user) {
                 $http = $http || $injector.get('$http');
                 return $http.post(API.baseUrl + '/user/add', user);
+            }
+        };
+    }]);
+angular
+    .module('app.category')
+    .controller('AddCategoryCtrl', ['$scope', '$rootScope', 'growlNotifications', 'CategoryService', function($scope, $rootScope, growlNotifications, CategoryService) {
+        $rootScope.pageTitle = 'Add new category';
+        $scope.category      = null;
+        $scope.msg           = null;
+
+        $scope.save = function() {
+            if (!$scope.category) {
+                $scope.msg = 'Please fill in the form';
+                return;
+            }
+
+            var required = {
+                name: 'The name is required',
+                slug: 'The slug is required'
+            };
+
+            for (var key in required) {
+                if (!$scope.category[key]) {
+                    $scope.msg = required[key];
+                    return;
+                }
+            }
+
+            CategoryService
+                .add($scope.category)
+                .success(function(data) {
+                    $scope.msg = data.msg === 'ok' ? null : data.msg;
+                    if (data.msg === 'ok') {
+                        growlNotifications.add('<strong>' + $scope.category.name + '</strong> is added', 'success');
+                        $scope.category = null;
+                    }
+                });
+        };
+    }]);
+angular
+    .module('app.category')
+    .controller('CategoryCtrl', ['$scope', '$rootScope', '_', 'growlNotifications', '$modal', 'CategoryService', function($scope, $rootScope, _, growlNotifications, $modal, CategoryService) {
+        $rootScope.pageTitle = 'Categories';
+        $scope.categories    = [];
+        $scope.selected      = null;
+        $scope.ordering      = false;
+
+        CategoryService
+            .list()
+            .success(function(data) {
+                for (var i = 0; i < data.categories.length; i++) {
+                    var category = data.categories[i];
+                    category.index = i;
+                    $scope.categories.push(category);
+                }
+            });
+
+        $scope.confirm = function(category) {
+            $scope.selected = category;
+
+            // Show the modal
+            $modal
+                .open({
+                    templateUrl: 'removeCategoryModal.html',
+                    size: 'sm',
+                    controller: function($scope, $modalInstance, selected) {
+                        $scope.selected = selected;
+
+                        $scope.remove = function() {
+                            $modalInstance.close($scope.selected);
+                        };
+
+                        $scope.cancel = function() {
+                            $modalInstance.dismiss('cancel');
+                        };
+                    },
+                    resolve: {
+                        selected: function() {
+                            return category;
+                        }
+                    }
+                })
+                .result
+                .then(function(selected) {
+                    CategoryService
+                        .remove(selected._id)
+                        .success(function(data) {
+                            if (data.msg === 'ok') {
+                                // Remove from the collections
+                                _.remove($scope.categories, function(item) {
+                                    return item._id === selected._id;
+                                });
+                                // Update the index
+                                for (var i = 0; i < $scope.categories.length; i++) {
+                                    $scope.categories[i].index = i;
+                                }
+                                growlNotifications.add('<strong>' + selected.name + '</strong> is removed', 'success');
+                            }
+                        });
+                }, function() {
+                });
+        };
+
+        $scope.order = function(category, direction) {
+            $scope.ordering = true;
+
+            var index    = category.index,
+                newIndex = index + (direction === 'up' ? -1 : 1);
+            CategoryService
+                .order(category._id, newIndex)
+                .success(function(data) {
+                    $scope.ordering = false;
+                    if (data.msg === 'ok') {
+                        var c = $scope.categories[newIndex];
+                        $scope.categories[newIndex] = category;
+                        category.index = newIndex;
+
+                        $scope.categories[index] = c;
+                        c.index = index;
+                    }
+                });
+        };
+    }]);
+angular
+    .module('app.category')
+    .controller('EditCategoryCtrl', ['$scope', '$rootScope', '$routeParams', 'growlNotifications', 'CategoryService', function($scope, $rootScope, $routeParams, growlNotifications, CategoryService) {
+        $rootScope.pageTitle = 'Edit the category';
+        $scope.category      = null;
+        $scope.msg           = null;
+
+        CategoryService
+            .get($routeParams.id)
+            .success(function(data) {
+                if (data.msg === 'ok') {
+                    $scope.category = data.category;
+                }
+            });
+
+        $scope.save = function() {
+            if (!$scope.category) {
+                $scope.msg = 'Please fill in the form';
+                return;
+            }
+
+            var required = {
+                name: 'The name is required',
+                slug: 'The slug is required'
+            };
+
+            for (var key in required) {
+                if (!$scope.category[key]) {
+                    $scope.msg = required[key];
+                    return;
+                }
+            }
+
+            CategoryService
+                .save($scope.category)
+                .success(function(data) {
+                    $scope.msg = data.msg === 'ok' ? null : data.msg;
+                    if (data.msg === 'ok') {
+                        growlNotifications.add('<strong>' + $scope.category.name + '</strong> is updated', 'success');
+                    }
+                });
+        };
+    }]);
+angular
+    .module('app.category')
+    .factory('CategoryService', ['$injector', 'API', function($injector, API) {
+        var $http;
+        return {
+            add: function(category) {
+                $http = $http || $injector.get('$http');
+                return $http.post(API.baseUrl + '/category/add', category);
+            },
+
+            generateSlug: function(name, id) {
+                $http = $http || $injector.get('$http');
+                return $http.post(API.baseUrl + '/category/slug', { name: name, id: id });
+            },
+
+            get: function(id) {
+                $http = $http || $injector.get('$http');
+                return $http.get(API.baseUrl + '/category/get/' + id);
+            },
+
+            list: function() {
+                $http = $http || $injector.get('$http');
+                return $http.post(API.baseUrl + '/category');
+            },
+
+            order: function(id, position) {
+                $http = $http || $injector.get('$http');
+                return $http.post(API.baseUrl + '/category/order', {
+                    id: id,
+                    position: position
+                });
+            },
+
+            remove: function(id) {
+                $http = $http || $injector.get('$http');
+                return $http.post(API.baseUrl + '/category/remove', {
+                    id: id
+                });
+            },
+
+            save: function(category) {
+                $http = $http || $injector.get('$http');
+                return $http.post(API.baseUrl + '/category/save/' + category._id, category);
+            }
+        };
+    }]);
+angular
+    .module('app.category')
+    .directive('categorySlug', ['CategoryService', function(CategoryService) {
+        return {
+            restrict: 'A',
+            scope: {
+                categoryName: '=',
+                categoryId: '=',
+                ngModel: '='
+            },
+            link: function(scope, ele, attrs) {
+                scope.$watch('categoryName', function(val) {
+                    if (!val) {
+                        scope.ngModel = '';
+                        return;
+                    }
+                    CategoryService
+                        .generateSlug(val, scope.categoryId)
+                        .success(function(data) {
+                            scope.ngModel = data.slug;
+                        });
+                });
             }
         };
     }]);

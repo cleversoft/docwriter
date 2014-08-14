@@ -2,7 +2,7 @@
     Users <a href="/admin/user/add" class="btn btn-default btn-sm"><i class="fa fa-plus"></i> Add new user</a>
 </div>
 
-<table class="table table-striped">
+<table class="table table-striped dw-table-middle">
     <thead>
         <tr>
             <th>Username</th>
@@ -15,7 +15,7 @@
 
     <tbody>
         <tr ng-repeat="user in users">
-            <td>{{ user.username }}</td>
+            <td><img gravatar-src="user.email" gravatar-size="50" class="dw-avatar" /> {{ user.username }}</td>
             <td>{{ user.first_name + ' ' + user.last_name }}</td>
             <td>{{ user.email }}</td>
             <td>{{ user.role }}</td>

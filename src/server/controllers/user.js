@@ -51,7 +51,8 @@ exports.me = function(req, res) {
     return res.json({
         msg: 'ok',
         user: {
-            username: req.session.user.username
+            username: req.session.user.username,
+            email: req.session.user.email
         }
     });
 };
