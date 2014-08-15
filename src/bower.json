@@ -10,6 +10,7 @@
         "angular-moment": "latest",
         "angular-route": "latest",
         "angular-sanitize": "latest",
+        "angular-socket-io": "latest",
         "angular-ui-bootstrap-bower": "latest",
         "angular-ui-codemirror": "latest",
         "bootstrap": "latest",

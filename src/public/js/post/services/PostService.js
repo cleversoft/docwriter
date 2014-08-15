@@ -18,6 +18,11 @@ angular
                 return $http.post(API.baseUrl + '/post/duplicate/' + id);
             },
 
+            exportPdf: function(id) {
+                $http = $http || $injector.get('$http');
+                return $http.post(API.baseUrl + '/pdf/export/' + id);
+            },
+
             generateSlug: function(title, id) {
                 $http = $http || $injector.get('$http');
                 return $http.post(API.baseUrl + '/post/slug', { title: title, id: id });

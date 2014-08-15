@@ -14,7 +14,9 @@
         "moment": "latest",
         "mongoose": "latest",
         "redis": "latest",
-        "socket.io": "latest"
+        "socket.io": "latest",
+        "socket.io-emitter": "latest",
+        "socket.io-redis": "latest"
     },
     "devDependencies": {
         "gulp": "latest",

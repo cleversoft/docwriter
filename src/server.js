@@ -6,7 +6,7 @@ var env        = process.env.NODE_ENV || 'development',
     bodyParser = require('body-parser'),
     mongoose   = require('mongoose'),
     mongoStore = require('connect-mongo')(session),
-    app        = module.exports = express();
+    app        = express();
 
 // Connect the database
 mongoose.connect(config.db);
@@ -49,6 +49,7 @@ var controller = {
         admin: require('./server/controllers/admin'),
         category: require('./server/controllers/category'),
         file: require('./server/controllers/file'),
+        pdf: require('./server/controllers/pdf'),
         post: require('./server/controllers/post'),
         user: require('./server/controllers/user')
     },
@@ -56,17 +57,26 @@ var controller = {
         auth: require('./server/middlewares/auth')
     };
 
+// Front-end
+app.route('/pdf/preview/:slug').get(controller.pdf.preview);
+app.route('/pdf/footer').get(function(req, res) {
+    res.render('pdf/footer');
+});
+
+// Back-end
 app.route('/admin').get(controller.admin.index);
 
-app.route('/category').post(middleware.auth.requireAuth,          controller.category.list);
-app.route('/category/add').post(middleware.auth.requireAuth,      controller.category.add);
-app.route('/category/get/:id').get(middleware.auth.requireAuth,   controller.category.get);
-app.route('/category/order').post(middleware.auth.requireAuth,    controller.category.order);
-app.route('/category/save/:id').post(middleware.auth.requireAuth, controller.category.save);
-app.route('/category/remove').post(middleware.auth.requireAuth,   controller.category.remove);
-app.route('/category/slug').post(middleware.auth.requireAuth,     controller.category.slug);
+app.route('/category').post(middleware.auth.requireAuth,           controller.category.list);
+app.route('/category/add').post(middleware.auth.requireAuth,       controller.category.add);
+app.route('/category/get/:id').get(middleware.auth.requireAuth,    controller.category.get);
+app.route('/category/order').post(middleware.auth.requireAuth,     controller.category.order);
+app.route('/category/save/:id').post(middleware.auth.requireAuth,  controller.category.save);
+app.route('/category/remove').post(middleware.auth.requireAuth,    controller.category.remove);
+app.route('/category/slug').post(middleware.auth.requireAuth,      controller.category.slug);
 
-app.route('/file/upload').post(middleware.auth.requireAuth, controller.file.upload);
+app.route('/file/upload').post(middleware.auth.requireAuth,        controller.file.upload);
+
+app.route('/pdf/export/:id').post(middleware.auth.requireAuth,     controller.pdf.export);
 
 app.route('/post').post(middleware.auth.requireAuth,               controller.post.list);
 app.route('/post/activate/:id').post(middleware.auth.requireAuth,  controller.post.activate);
@@ -77,15 +87,38 @@ app.route('/post/remove').post(middleware.auth.requireAuth,        controller.po
 app.route('/post/save/:id').post(middleware.auth.requireAuth,      controller.post.save);
 app.route('/post/slug').post(middleware.auth.requireAuth,          controller.post.slug);
 
-app.route('/user').post(middleware.auth.requireAuth,          controller.user.list);
-app.route('/user/add').post(middleware.auth.requireAuth,      controller.user.add);
-app.route('/user/get/:id').get(middleware.auth.requireAuth,   controller.user.get);
-app.route('/user/lock').post(middleware.auth.requireAuth,     controller.user.lock);
-app.route('/user/me').post(middleware.auth.requireAuth,       controller.user.me);
-app.route('/user/password').post(middleware.auth.requireAuth, controller.user.password);
-app.route('/user/save/:id').post(middleware.auth.requireAuth, controller.user.save);
+app.route('/user').post(middleware.auth.requireAuth,               controller.user.list);
+app.route('/user/add').post(middleware.auth.requireAuth,           controller.user.add);
+app.route('/user/get/:id').get(middleware.auth.requireAuth,        controller.user.get);
+app.route('/user/lock').post(middleware.auth.requireAuth,          controller.user.lock);
+app.route('/user/me').post(middleware.auth.requireAuth,            controller.user.me);
+app.route('/user/password').post(middleware.auth.requireAuth,      controller.user.password);
+app.route('/user/save/:id').post(middleware.auth.requireAuth,      controller.user.save);
 app.route('/user/signin').post(controller.user.signin);
-app.route('/user/signout').post(middleware.auth.requireAuth,  controller.user.signout);
+app.route('/user/signout').post(middleware.auth.requireAuth,       controller.user.signout);
 
-app.listen(port);
-console.log('Start on port ' + port);
+// Create socket IO
+var http         = require('http'),
+    server       = http.createServer(app),
+    redis        = require('redis'),
+    pub          = redis.createClient(),
+    sub          = redis.createClient(null, null, { detect_buffers: true }),
+    redisAdapter = require('socket.io-redis'),
+    io           = require('socket.io')(server, {
+        adapter: redisAdapter({
+            key: config.redis.namespace + ':socket_io',
+            pubClient: pub,
+            subClient: sub
+        })
+    });
+
+io.on('connection', function(socket) {
+    socket.on('/job/exportPdf/starting', function(data) {
+        console.log('emit ...', data);
+        socket.broadcast.emit('/job/exportPdf/started', data);
+    });
+});
+
+server.listen(port, function() {
+    console.log('Starting app on port %d', port);
+});

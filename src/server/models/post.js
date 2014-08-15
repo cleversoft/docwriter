@@ -16,13 +16,20 @@ var mongoose   = require('mongoose'),
             full_name: { type: String }
         },
         categories: [
-            { type : Schema.ObjectId, ref: 'category' }
+            { type: Schema.ObjectId, ref: 'category' }
         ],
         pdf_downloads:  { type: Number, default: 0 },
         heading_styles: { type: String, default: '______' },
         like:           { type: Number, default: 0 },
         dislike:        { type: Number, default: 0 },
-        views:          { type: Number, default: 0 }
+        views:          { type: Number, default: 0 },
+        pdf: {
+            status:   { type: String },
+            user_id:  { type: Schema.ObjectId, ref: 'user' },
+            username: { type: String },
+            email:    { type: String },
+            date:     { type: Date }
+        }
     }),
     slugPlugin = require('./plugins/slug');
 

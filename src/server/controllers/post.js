@@ -248,6 +248,7 @@ exports.save = function(req, res) {
                 queue.enqueue('exportPdf', '/jobs/exportPdf', {
                     id: id,
                     url: config.app.url + '/post/preview/' + post.slug,
+                    footer: config.app.url + '/post/preview',
                     file: config.jobs.exportPdf.dir + '/' + post.slug + '.pdf'
                 });
             }
@@ -486,26 +487,6 @@ exports.view = function(req, res) {
                 });
             });
         }
-    });
-};
-
-/**
- * Preview post
- * It's used by exporting to PDF job
- */
-exports.preview = function(req, res) {
-    var slug   = req.param('slug'),
-        config = req.app.get('config');
-    Post.findOne({ slug: slug }).exec(function(err, post) {
-        res.render('post/preview', {
-            title: post.title,
-            appName: config.app.name,
-            appUrl: config.app.url || req.protocol + '://' + req.get('host'),
-            marked: marked,
-            moment: moment,
-            post: post,
-            year: new Date().getFullYear()
-        });
     });
 };
 

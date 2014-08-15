@@ -4,7 +4,23 @@ angular.module('app.post',     ['ngSanitize']);
 angular.module('app.user',     []);
 
 angular
-    .module('app', ['ngRoute', 'angular-loading-bar', 'angularFileUpload', 'angularMoment', 'growlNotifications', 'ui.bootstrap', 'ui.codemirror', 'ui.gravatar', 'app.admin', 'app.category', 'app.post', 'app.user'])
+    .module('app', [
+        'ngRoute',
+        'angular-loading-bar',
+        'angularFileUpload',
+        'angularMoment',
+        'btford.socket-io',
+        'growlNotifications',
+        'ui.bootstrap',
+        'ui.codemirror',
+        'ui.gravatar',
+
+        // App mofules
+        'app.admin',
+        'app.category',
+        'app.post',
+        'app.user'
+    ])
     .constant('API', {
         baseUrl: ''
     })
@@ -115,6 +131,9 @@ angular
     .config(['$httpProvider', function($httpProvider) {
         $httpProvider.interceptors.push('TokenInterceptor');
     }])
+    .factory('socket', function(socketFactory) {
+        return socketFactory();
+    })
     .run(['$rootScope', 'AUTH_EVENTS', 'AuthService', function($rootScope, AUTH_EVENTS, AuthService) {
         $rootScope.$on('$routeChangeStart', function(event, nextRoute, currentRoute) {
             if (nextRoute !== null && nextRoute.data && nextRoute.data.requiredAuthentication && !AuthService.isAuthenticated) {

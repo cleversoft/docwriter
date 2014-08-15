@@ -16,14 +16,7 @@ module.exports = function(app) {
     app.get('/', index.index);
     app.get('/category/:slug',     post.category);
     app.get('/post/pdf/:slug',     post.download);
-    app.get('/post/preview/:slug', post.preview);
     app.get('/search',             post.search);
     app.all('/post/feedback',      post.feedback);
     app.get('/post/:slug',         post.view);
-
-    // --- Back-end routes ---
-
-    // Posts
-    app.all('/admin/post/activate', authentication.requireAuthentication, post.activate);
-    app.all('/admin/post/duplicate/:id',    authentication.requireAuthentication, post.duplicate);
 };

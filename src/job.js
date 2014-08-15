@@ -1,8 +1,21 @@
-var env    = process.env.NODE_ENV || 'development',
-    config = require('./config/config')[env],
-    redis  = require('redis'),
-    Queue  = require(config.root + '/app/queue/queue'),
-    queue  = new Queue(config.redis.host, config.redis.port);
+var env      = process.env.NODE_ENV || 'development',
+    config   = require('./server/config/config')[env],
+    redis    = require('redis'),
+    Queue    = require(config.root + '/queue/queue'),
+    mongoose = require('mongoose'),
+    queue    = new Queue(config.redis.host, config.redis.port);
+
+// Connect the database
+mongoose.connect(config.db);
+
+// Load models
+var modelsPath = __dirname + '/server/models',
+    fs         = require('fs');
+fs.readdirSync(modelsPath).forEach(function(file) {
+    if (~file.indexOf('.js')) {
+        require(modelsPath + '/' + file);
+    }
+});
 
 queue
     .setRootJobPath(config.root)

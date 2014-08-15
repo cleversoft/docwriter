@@ -28,9 +28,8 @@ module.exports = {
         },
         jobs: {
             exportPdf: {
-                command: '/Applications/wkhtmltopdf.app/Contents/MacOS/wkhtmltopdf --encoding utf-8 --outline --margin-top 30 --margin-bottom 30 --footer-spacing 10 --footer-html {footer_template} {preview_url} {pdf_path}',
-                dir: '/Volumes/data/projects_workspace/docwriter/pdf',
-                footerTemplate: rootPath + '/config/template/pdfFooter.html'
+                command: 'wkhtmltopdf --encoding utf-8 --outline --margin-top 30 --margin-bottom 30 --footer-spacing 10 --footer-html {footer} {url} {dest}',
+                dir: '/Volumes/data/projects_workspace/docwriter/pdf'
             }
         },
         comment: {

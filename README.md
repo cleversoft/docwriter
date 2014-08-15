@@ -195,32 +195,19 @@ All the Redis keys are combination of the namespace, keys, and colons (```:```).
 ```jobs.exportPdf.command```: The full command of exporting to PDF.
 
 ```bash
-wkhtmltopdf                             // Path to wkhtmltopdf
-    --outline                           // Include table of contents in PDF
-    --margin-top 30                     // The margin top value
-    --margin-bottom 30                  // The margin bottom value
-    --footer-spacing 10                 // The footer spacing value
-    --footer-html {footer_template}     // Path to the footer template
-    {preview_url}                       // URL of previewing guide (DO NOT change this)
-    {pdf_path}                          // Path of output PDF      (DO NOT change this)
+wkhtmltopdf                     // Path to wkhtmltopdf
+    --outline                   // Include table of contents in PDF
+    --margin-top 30             // The margin top value
+    --margin-bottom 30          // The margin bottom value
+    --footer-spacing 10         // The footer spacing value
+    --footer-html {footer}      // Path to the footer template
+    {url}                       // URL of previewing guide (DO NOT change this)
+    {dest}                      // Path of output PDF      (DO NOT change this)
 ```
 
 Of course, you can use other parameters supported by wkhtmltopdf. Take a look at [this document](http://madalgo.au.dk/~jakobt/wkhtmltoxdoc/wkhtmltopdf_0.10.0_rc2-doc.html) for more details.
 
 ```jobs.exportPdf.dir```: The directory storing PDF files. __REMEMBER__ to set this directory writable
-
-```jobs.exportPdf.footerTemplate```: The path of PDF footer template.
-
-By default, it is placed at ```src/config/template/pdfFooter.html```
-
-Open this file and change the URL defining CSS styles for the footer to the root URL:
-
-```html
-<link rel="stylesheet" href="http://<change to the root URL>/vendor/bootstrap-theme/css/yeti.css">
-<link rel="stylesheet" href="http://<change to the root URL>/vendor/font-awesome/css/font-awesome.min.css">
-```
-
-```mail```: NodeDesk uses [nodemail](https://github.com/andris9/Nodemailer) to send email, please refer to ```nodemailer``` to config your email relay service. The default configuration makes use of Gmail SMTP service, just simply enter your Gmail's address and password.
 
 ## Running
 

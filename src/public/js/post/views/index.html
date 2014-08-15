@@ -28,9 +28,9 @@
     <thead>
         <tr>
             <th>Title</th>
-            <th>Slug</th>
             <th>Created date</th>
             <th>Status</th>
+            <th>PDF</th>
             <th>Actions</th>
         </tr>
     </thead>
@@ -38,18 +38,25 @@
     <tbody>
         <tr ng-repeat="post in posts" ng-show="!criteria.status || criteria.status === post.status">
             <td>{{ post.title }}</td>
-            <td>{{ post.slug }}</td>
             <td><span am-time-ago="post.created_date"></span></td>
-            <td ng-switch="post.status">
-                <span ng-switch-when="deactivated">Not publish yet</span>
-                <span ng-switch-when="activated">Published</span>
-                <span ng-switch-when="draft">Draft</span>
+            <td>
+                <button type="button" class="btn btn-default" ng-click="publish(post)">{{ post.status === 'activated' ? 'Unpublish' : 'Publish' }}</button>
+                <span ng-switch="post.status" class="text-right">
+                    <span ng-switch-when="deactivated">Not publish yet</span>
+                    <span ng-switch-when="activated">Published</span>
+                    <span ng-switch-when="draft">Draft</span>
+                </span>
             </td>
             <td>
-                <button type="button" class="btn btn-danger" ng-click="confirm(post)" >Remove</button>
+                <button type="button" class="btn btn-default" ng-click="exportPdf(post)" ng-disabled="post.status !== 'activated'">Export</button>
+                <span ng-show="post.pdf">
+                    <img gravatar-src="post.pdf.email" gravatar-size="50" class="dw-avatar" title="{{ post.pdf.username }}" /> <span am-time-ago="post.pdf.date"></span>
+                </span>
+            </td>
+            <td>
+                <button type="button" class="btn btn-danger" ng-click="confirm(post)">Remove</button>
                 <a href="/admin/post/edit/{{ post._id }}" class="btn btn-default">Edit</a>
                 <button type="button" class="btn btn-default" ng-click="duplicate(post)">Duplicate</button>
-                <button type="button" class="btn btn-default" ng-click="publish(post)">{{ post.status === 'activated' ? 'Unpublish' : 'Publish' }}</button>
             </td>
         </tr>
     </tbody>
