@@ -37,6 +37,7 @@ angular
                 });
                 if (post) {
                     post.pdf = post.pdf || {};
+                    post.status       = 'activated';
                     post.pdf.status   = 'done';
                     post.pdf.username = data.username;
                     post.pdf.email    = data.email;

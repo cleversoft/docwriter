@@ -20,12 +20,14 @@ exports.activate = function(req, res) {
 
             post.status          = (post.status === 'activated') ? 'deactivated' : 'activated';
             post.prev_categories = post.categories;
-            post.pdf             = {
-                user_id: req.session.user._id,
-                username: req.session.user.username,
-                email: req.session.user.email,
-                date: new Date()
-            };
+            if (post.status === 'activated') {
+                post.pdf = {
+                    user_id: req.session.user._id,
+                    username: req.session.user.username,
+                    email: req.session.user.email,
+                    date: new Date()
+                };
+            }
             post.save(function(err) {
                 return res.json({ msg: err || 'ok' });
             });
