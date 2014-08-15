@@ -5,15 +5,17 @@ var mongoose   = require('mongoose'),
         slug:         { type: String, default: '' },
         content:      { type: String, default: '' },
         status:       { type: String, default: 'deactivated' },
-        created_date: { type: Date,   default: Date.now },
-        created_user: {
-            username:  { type: String },
-            full_name: { type: String }
+        created: {
+            user_id:  { type: String },
+            username: { type: String },
+            email:    { type: String },
+            date:     { type: Date, default: Date.now }
         },
-        updated_date: { type: Date },
-        updated_user: {
-            username:  { type: String },
-            full_name: { type: String }
+        updated: {
+            user_id:  { type: String },
+            username: { type: String },
+            email:    { type: String },
+            date:     { type: Date }
         },
         categories: [
             { type: Schema.ObjectId, ref: 'category' }

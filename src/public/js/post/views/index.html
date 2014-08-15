@@ -28,7 +28,7 @@
     <thead>
         <tr>
             <th>Title</th>
-            <th>Created date</th>
+            <th>Updated</th>
             <th>Status</th>
             <th>PDF</th>
             <th>Actions</th>
@@ -38,7 +38,9 @@
     <tbody>
         <tr ng-repeat="post in posts" ng-show="!criteria.status || criteria.status === post.status">
             <td>{{ post.title }}</td>
-            <td><span am-time-ago="post.created_date"></span></td>
+            <td>
+                <img gravatar-src="post.updated.email || post.created.email" gravatar-size="50" class="dw-avatar" title="{{ post.updated.username || post.created.username }}" /> <span am-time-ago="post.updated.date || post.created.date"></span>
+            </td>
             <td>
                 <button type="button" class="btn btn-default" ng-click="publish(post)">{{ post.status === 'activated' ? 'Unpublish' : 'Publish' }}</button>
                 <span ng-switch="post.status" class="text-right">

@@ -43,9 +43,10 @@ exports.add = function(req, res) {
         title: req.body.title,
         slug: req.body.slug,
         content: req.body.content,
-        created_user: {
+        created: {
+            user_id: req.session.user._id,
             username: req.session.user.username,
-            full_name: req.session.user.full_name
+            email: req.session.user.email
         },
         categories: req.body.categories || [],
         pdf: {
@@ -66,18 +67,6 @@ exports.add = function(req, res) {
 
     post.prev_categories = null;
     post.save(function(err) {
-        if (post.status === 'activated') {
-            // Export to PDF as background job
-            var Queue = require(config.root + '/queue/queue'),
-                queue = new Queue(config.redis.host, config.redis.port);
-            queue.setNamespace(config.redis.namespace);
-            queue.enqueue('exportPdf', '/jobs/exportPdf', {
-                id: post._id,
-                url: config.app.url + '/post/preview/' + post.slug,
-                file: config.jobs.exportPdf.dir + '/' + post.slug + '.pdf'
-            });
-        }
-
         return res.json({
             msg: err || 'ok',
             id: err ? null : post._id
@@ -101,9 +90,10 @@ exports.duplicate = function(req, res) {
                 title: post.title + ' copy',
                 content: post.content,
                 status: post.status,
-                created_user: {
+                created: {
+                    user_id: req.session.user._id,
                     username: req.session.user.username,
-                    full_name: req.session.user.full_name
+                    email: req.session.user.email
                 },
                 categories: post.categories,
                 heading_styles: post.heading_styles,
@@ -233,10 +223,11 @@ exports.save = function(req, res) {
         post.slug            = req.body.slug;
         post.content         = req.body.content;
         post.categories      = req.body.categories || [];
-        post.updated_date    = new Date();
-        post.updated_user    = {
+        post.updated         = {
+            user_id: req.session.user._id,
             username: req.session.user.username,
-            full_name: req.session.user.full_name
+            email: req.session.user.email,
+            date: new Date()
         };
         post.pdf             = {
             user_id: req.session.user._id,
