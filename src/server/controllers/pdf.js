@@ -23,23 +23,16 @@ exports.export = function(req, res) {
                 return res.json({ msg: 'The post has not published yet' });
             }
 
-            // Export to PDF as background job
-            var Queue = require(config.root + '/queue/queue'),
-                queue = new Queue(config.redis.host, config.redis.port);
-            queue.setNamespace(config.redis.namespace);
-            queue.enqueue('exportPdf', '/jobs/exportPdf', {
-                post_id: post._id,
-                url: config.app.url + '/pdf/preview/' + post.slug,
-                footer: config.app.url + '/pdf/footer',
-                file: config.jobs.exportPdf.dir + '/' + post.slug + '.pdf',
-                user: {
-                    user_id: req.session.user._id,
-                    username: req.session.user.username,
-                    email: req.session.user.email
-                }
+            post.pdf = {
+                status: 'done',
+                user_id: req.session.user._id,
+                username: req.session.user.username,
+                email: req.session.user.email,
+                date: new Date()
+            };
+            post.save(function(err) {
+                return res.json({ msg: err || 'ok' });
             });
-
-            return res.json({ msg: 'ok', status: 'exporting' });
         });
 };
 

@@ -9,6 +9,7 @@ var env        = process.env.NODE_ENV || 'development',
     app        = express();
 
 // Connect the database
+mongoose.set('config', config);
 mongoose.connect(config.db);
 
 // Load models

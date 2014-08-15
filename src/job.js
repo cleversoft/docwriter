@@ -6,6 +6,7 @@ var env      = process.env.NODE_ENV || 'development',
     queue    = new Queue(config.redis.host, config.redis.port);
 
 // Connect the database
+mongoose.set('config', config);
 mongoose.connect(config.db);
 
 // Load models

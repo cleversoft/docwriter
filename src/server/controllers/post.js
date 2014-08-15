@@ -20,19 +20,13 @@ exports.activate = function(req, res) {
 
             post.status          = (post.status === 'activated') ? 'deactivated' : 'activated';
             post.prev_categories = post.categories;
+            post.pdf             = {
+                user_id: req.session.user._id,
+                username: req.session.user.username,
+                email: req.session.user.email,
+                date: new Date()
+            };
             post.save(function(err) {
-                if (post.status === 'activated') {
-                    // Export to PDF as background job
-                    var Queue = require(config.root + '/queue/queue'),
-                        queue = new Queue(config.redis.host, config.redis.port);
-                    queue.setNamespace(config.redis.namespace);
-                    queue.enqueue('exportPdf', '/jobs/exportPdf', {
-                        id: id,
-                        url: config.app.url + '/post/preview/' + post.slug,
-                        file: config.jobs.exportPdf.dir + '/' + post.slug + '.pdf'
-                    });
-                }
-
                 return res.json({ msg: err || 'ok' });
             });
         });
@@ -51,7 +45,13 @@ exports.add = function(req, res) {
             username: req.session.user.username,
             full_name: req.session.user.full_name
         },
-        categories: req.body.categories || []
+        categories: req.body.categories || [],
+        pdf: {
+            user_id: req.session.user._id,
+            username: req.session.user.username,
+            email: req.session.user.email,
+            date: new Date()
+        }
     });
 
     post.heading_styles = req.body.heading_styles === 'custom'
@@ -104,7 +104,13 @@ exports.duplicate = function(req, res) {
                     full_name: req.session.user.full_name
                 },
                 categories: post.categories,
-                heading_styles: post.heading_styles
+                heading_styles: post.heading_styles,
+                pdf: {
+                    user_id: req.session.user._id,
+                    username: req.session.user.username,
+                    email: req.session.user.email,
+                    date: new Date()
+                }
             });
 
             // Generate new Slug
@@ -230,29 +236,22 @@ exports.save = function(req, res) {
             username: req.session.user.username,
             full_name: req.session.user.full_name
         };
+        post.pdf             = {
+            user_id: req.session.user._id,
+            username: req.session.user.username,
+            email: req.session.user.email,
+            date: new Date()
+        };
 
-        post.heading_styles = req.body.heading_styles === 'custom'
-                            ? [req.body.heading_style_h1 || '_', req.body.heading_style_h2 || '_', req.body.heading_style_h3 || '_', req.body.heading_style_h4 || '_', req.body.heading_style_h5 || '_', req.body.heading_style_h6 || '_'].join('')
-                            : req.body.heading_styles;
+        post.heading_styles  = req.body.heading_styles === 'custom'
+                             ? [req.body.heading_style_h1 || '_', req.body.heading_style_h2 || '_', req.body.heading_style_h3 || '_', req.body.heading_style_h4 || '_', req.body.heading_style_h5 || '_', req.body.heading_style_h6 || '_'].join('')
+                             : req.body.heading_styles;
 
         if (req.body.status) {
             post.status = req.body.status;
         }
 
         post.save(function(err) {
-            if (post.status === 'activated') {
-                // Export to PDF as background job
-                var Queue = require(config.root + '/queue/queue'),
-                    queue = new Queue(config.redis.host, config.redis.port);
-                queue.setNamespace(config.redis.namespace);
-                queue.enqueue('exportPdf', '/jobs/exportPdf', {
-                    id: id,
-                    url: config.app.url + '/post/preview/' + post.slug,
-                    footer: config.app.url + '/post/preview',
-                    file: config.jobs.exportPdf.dir + '/' + post.slug + '.pdf'
-                });
-            }
-
             return res.json({ msg: err || 'ok' });
         });
     });

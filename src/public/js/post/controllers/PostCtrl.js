@@ -36,6 +36,7 @@ angular
                     return p._id + '' === data.post_id;
                 });
                 if (post) {
+                    post.pdf = post.pdf || {};
                     post.pdf.status   = 'done';
                     post.pdf.username = data.username;
                     post.pdf.email    = data.email;
