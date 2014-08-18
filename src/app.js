@@ -46,8 +46,9 @@ app.use(session({
     })
 }));
 
-app.locals.config = config;
-app.locals.url    = require('./server/helpers/url');
+app.locals.config   = config;
+app.locals.gravatar = require('./server/helpers/gravatar');
+app.locals.url      = require('./server/helpers/url');
 
 // Routes
 var controller = {

@@ -1,5 +1,4 @@
 var fs       = require('fs'),
-    crypto   = require('crypto'),
     marked   = require('marked'),
     moment   = require('moment'),
     mongoose = require('mongoose'),
@@ -85,7 +84,6 @@ exports.preview = function(req, res) {
             marked: marked,
             moment: moment,
             post: post,
-            gravatar: crypto.createHash('md5').update(post.updated.email || post.created.email).digest('hex'),
             year: new Date().getFullYear()
         });
     });
