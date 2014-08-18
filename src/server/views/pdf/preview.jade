@@ -11,7 +11,7 @@ html
         link(rel="stylesheet", href="/bower_components/fontawesome/css/font-awesome.min.css")
         link(rel="stylesheet", href="http://fonts.googleapis.com/css?family=Noto+Sans:400,700")
 
-        link(rel="stylesheet", href="/css/backend.css")
+        link(rel="stylesheet", href="/css/preview.css")
 
         | <!--[if lt IE 9]>
         | <script src="/bower_components/html5shiv/dist/html5shiv.min.js"></script>
@@ -22,7 +22,7 @@ html
             h1
                 a(href="#{appUrl}/post/#{post.slug}") #{post.title}
 
-            small This guide is updated on #{moment(post.updated_date || post.created_date).format('YYYY-MM-DD HH:mm')}
+            small Updated on #{moment(post.updated_date || post.created_date).format('YYYY-MM-DD HH:mm')}
 
             p(style="margin-top: 50px;") &copy; #{year} <a href="#{appUrl}">#{appName}</a>. All rights reserved
 

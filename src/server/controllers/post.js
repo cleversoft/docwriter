@@ -5,6 +5,211 @@ var fs       = require('fs'),
     Category = mongoose.model('category'),
     Post     = mongoose.model('post');
 
+// --- FRONT-END ---
+
+/**
+ * List posts in given category
+ */
+exports.category = function(req, res) {
+    var slug   = req.param('slug'),
+        config = req.app.get('config');
+    Category
+        .find({})
+        .sort({ position: 1 })
+        .exec(function(err, categories) {
+            Category
+                .findOne({ slug: slug })
+                .exec(function(err, category) {
+                    if (err || !category) {
+                        return res.send('The category is not found', 404);
+                    }
+
+                    var perPage   = 10,
+                        pageRange = 5,
+                        page      = req.param('page') || 1,
+                        q         = req.param('q') || '',
+                        criteria  = q ? { title: new RegExp(q, 'i') } : {};
+
+                    criteria.status     = 'activated';
+                    criteria.categories = { $in: [category._id] };
+
+                    Post.count(criteria, function(err, total) {
+                        Post
+                            .find(criteria)
+                            .sort({ created_date: -1 })
+                            .skip((page - 1) * perPage)
+                            .limit(perPage)
+                            .exec(function(err, posts) {
+                                if (err) {
+                                    posts = [];
+                                }
+
+                                var numPages   = Math.ceil(total / perPage),
+                                    startRange = (page == 1) ? 1 : pageRange * Math.floor((page - 1) / pageRange) + 1,
+                                    endRange   = startRange + pageRange;
+
+                                if (endRange > numPages) {
+                                    endRange = numPages;
+                                }
+
+                                res.render('partial/posts', {
+                                    title: category.name,
+                                    appUrl: config.app.url || req.protocol + '://' + req.get('host'),
+                                    categories: categories,
+                                    category: category,
+                                    req: req,
+                                    moment: moment,
+                                    total: total,
+                                    posts: posts,
+
+                                    // Criteria
+                                    q: q,
+                                    criteria: criteria,
+
+                                    // Pagination
+                                    page: page,
+                                    numPages: numPages,
+                                    startRange: startRange,
+                                    endRange: endRange
+                                });
+                            });
+                    });
+            });
+    });
+};
+
+exports.feedback = function (req, res) {
+    var id     = req.body.id,
+        action = req.body.action;
+
+    if (req.session && req.session.feedback && req.session.feedback[id]) {
+        if (req.session.feedback[id] == action) {
+            // user already has had feedback for this post
+            return res.json({ result: 'error'});
+        }
+        else {
+            // if user had feedback, but now change to like/dislike
+            req.session.feedback = {  };
+            req.session.feedback[id] = action;
+
+            var newData = action == 'like' ?
+                {$inc: { like: 1, dislike: -1 }} :
+                {$inc: { like: -1, dislike: 1 }};
+
+            Post.findByIdAndUpdate(id, newData, function (err, post) {
+                return res.json({ result: err ? 'error' : 'ok' });
+            });
+        }
+    } else {
+        // user does not have feedback for this post
+        if (!req.session.feedback) req.session.feedback = { };
+        req.session.feedback[id] = action;
+
+        if (id) {
+            // update new data
+            Post.findByIdAndUpdate(id, { $inc: (action == 'like' ? { like: 1 } : { dislike: 1 }) }, function (err, post) {
+                return res.json({ result: err ? 'error' : 'ok' });
+            });
+        } else {
+            // no id was found
+            return res.json({ result: 'error' });
+        }
+    }
+};
+
+/**
+ * Search for posts
+ */
+exports.search = function(req, res) {
+    var slug   = req.param('slug'),
+        config = req.app.get('config');
+    Category.find({}).sort({ position: 1 }).exec(function(err, categories) {
+        var perPage   = 10,
+            pageRange = 5,
+            page      = req.param('page') || 1,
+            q         = req.param('q') || '',
+            criteria  = q ? { title: new RegExp(q, 'i') } : {};
+
+        criteria.status = 'activated';
+
+        Post.count(criteria, function(err, total) {
+            Post
+                .find(criteria)
+                .sort({ created_date: -1 })
+                .skip((page - 1) * perPage)
+                .limit(perPage)
+                .exec(function(err, posts) {
+                    if (err) {
+                        posts = [];
+                    }
+
+                    var numPages   = Math.ceil(total / perPage),
+                        startRange = (page == 1) ? 1 : pageRange * Math.floor((page - 1) / pageRange) + 1,
+                        endRange   = startRange + pageRange;
+
+                    if (endRange > numPages) {
+                        endRange = numPages;
+                    }
+
+                    res.render('partial/posts', {
+                        title: 'Search for ' + q,
+                        appUrl: config.app.url || req.protocol + '://' + req.get('host'),
+                        categories: categories,
+                        req: req,
+                        moment: moment,
+                        total: total,
+                        posts: posts,
+
+                        // Criteria
+                        q: q,
+                        criteria: criteria,
+
+                        // Pagination
+                        page: page,
+                        numPages: numPages,
+                        startRange: startRange,
+                        endRange: endRange
+                    });
+                });
+        });
+    });
+};
+
+/**
+ * View post details
+ */
+exports.view = function(req, res) {
+    var slug   = req.param('slug'),
+        config = req.app.get('config');
+    Post.findOne({ slug: slug }).populate('categories').exec(function(err, post) {
+        if (err || !post || post.status != 'activated') {
+            return res.send('The guide is not found or has not been published yet', 404);
+        }
+
+        var pdfAvailable = fs.existsSync(config.jobs.exportPdf.dir + '/' + post.slug + '.pdf');
+
+        // calculate percent for the feedback bar
+        var likePercent = post.dislike != 0 ? ((post.like / (post.dislike + post.like)) * 100) : 100;
+        var dislikePercent = 100 - likePercent;
+
+        res.render('post/view', {
+            title: post.title,
+            appUrl: config.app.url || req.protocol + '://' + req.get('host'),
+            marked: marked,
+            moment: moment,
+            pdfAvailable: pdfAvailable,
+            post: post,
+            comment: config.comment,
+            signedIn: (req.session && req.session.user),
+            userFeedback: ((req.session && req.session.feedback && req.session.feedback[post._id]) ? req.session.feedback[post._id] : ''),
+            likePercent: likePercent,
+            dislikePercent: dislikePercent
+        });
+    });
+};
+
+// --- BACK-END ---
+
 /**
  * Activate/deactivate post
  */
@@ -263,260 +468,4 @@ exports.slug = function(req, res) {
     Post.generateSlug(post, function(slug) {
         res.json({ slug: slug });
     });
-};
-
-// --------------------------------------------------------------------------------------------------------------------
-
-/**
- * List posts in given category
- */
-exports.category = function(req, res) {
-    var slug   = req.param('slug'),
-        config = req.app.get('config');
-    Category
-        .find({})
-        .sort({ position: 1 })
-        .exec(function(err, categories) {
-            Category
-                .findOne({ slug: slug })
-                .exec(function(err, category) {
-                    if (err || !category) {
-                        return res.send('The category is not found', 404);
-                    }
-
-                    var perPage   = 10,
-                        pageRange = 5,
-                        page      = req.param('page') || 1,
-                        q         = req.param('q') || '',
-                        criteria  = q ? { title: new RegExp(q, 'i') } : {};
-
-                    criteria.status     = 'activated';
-                    criteria.categories = { $in: [category._id] };
-
-                    Post.count(criteria, function(err, total) {
-                        Post
-                            .find(criteria)
-                            .sort({ created_date: -1 })
-                            .skip((page - 1) * perPage)
-                            .limit(perPage)
-                            .exec(function(err, posts) {
-                                if (err) {
-                                    posts = [];
-                                }
-
-                                var numPages   = Math.ceil(total / perPage),
-                                    startRange = (page == 1) ? 1 : pageRange * Math.floor((page - 1) / pageRange) + 1,
-                                    endRange   = startRange + pageRange;
-
-                                if (endRange > numPages) {
-                                    endRange = numPages;
-                                }
-
-                                res.render('partial/posts', {
-                                    title: category.name,
-                                    appUrl: config.app.url || req.protocol + '://' + req.get('host'),
-                                    categories: categories,
-                                    category: category,
-                                    req: req,
-                                    moment: moment,
-                                    total: total,
-                                    posts: posts,
-
-                                    // Criteria
-                                    q: q,
-                                    criteria: criteria,
-
-                                    // Pagination
-                                    page: page,
-                                    numPages: numPages,
-                                    startRange: startRange,
-                                    endRange: endRange
-                                });
-                            });
-                    });
-            });
-    });
-};
-
-/**
- * Download PDF
- */
-exports.download = function(req, res) {
-    var slug   = req.param('slug'),
-        config = req.app.get('config');
-    Post.findOne({ slug: slug }).exec(function(err, post) {
-        if (err || !post || post.status != 'activated') {
-            return res.send('The guide is not found or has not been published yet', 404);
-        }
-
-        var pdfFile = config.jobs.exportPdf.dir + '/' + post.slug + '.pdf';
-        if (!fs.existsSync(pdfFile)) {
-            return res.send('The PDF is not available at the moment', 403);
-        }
-
-        post.prev_categories = post.categories;
-        post.pdf_downloads++;
-        post.save(function() {
-            res.setHeader('Content-Description', 'Download file');
-            res.setHeader('Content-Type', 'application/octet-stream');
-            res.setHeader('Content-Disposition', 'attachment; filename=' + post.slug + '.pdf');
-
-            var stream = fs.createReadStream(pdfFile);
-            stream.pipe(res);
-        });
-    });
-};
-
-/**
- * Search for posts
- */
-exports.search = function(req, res) {
-    var slug   = req.param('slug'),
-        config = req.app.get('config');
-    Category.find({}).sort({ position: 1 }).exec(function(err, categories) {
-        var perPage   = 10,
-            pageRange = 5,
-            page      = req.param('page') || 1,
-            q         = req.param('q') || '',
-            criteria  = q ? { title: new RegExp(q, 'i') } : {};
-
-        criteria.status = 'activated';
-
-        Post.count(criteria, function(err, total) {
-            Post
-                .find(criteria)
-                .sort({ created_date: -1 })
-                .skip((page - 1) * perPage)
-                .limit(perPage)
-                .exec(function(err, posts) {
-                    if (err) {
-                        posts = [];
-                    }
-
-                    var numPages   = Math.ceil(total / perPage),
-                        startRange = (page == 1) ? 1 : pageRange * Math.floor((page - 1) / pageRange) + 1,
-                        endRange   = startRange + pageRange;
-
-                    if (endRange > numPages) {
-                        endRange = numPages;
-                    }
-
-                    res.render('partial/posts', {
-                        title: 'Search for ' + q,
-                        appUrl: config.app.url || req.protocol + '://' + req.get('host'),
-                        categories: categories,
-                        req: req,
-                        moment: moment,
-                        total: total,
-                        posts: posts,
-
-                        // Criteria
-                        q: q,
-                        criteria: criteria,
-
-                        // Pagination
-                        page: page,
-                        numPages: numPages,
-                        startRange: startRange,
-                        endRange: endRange
-                    });
-                });
-        });
-    });
-};
-
-/**
- * View post details
- */
-exports.view = function(req, res) {
-    var slug   = req.param('slug'),
-        config = req.app.get('config');
-    Post.findOne({ slug: slug }).populate('categories').exec(function(err, post) {
-        if (err || !post || post.status != 'activated') {
-            return res.send('The guide is not found or has not been published yet', 404);
-        }
-
-        var pdfAvailable = fs.existsSync(config.jobs.exportPdf.dir + '/' + post.slug + '.pdf');
-
-        // calculate percent for the feedback bar
-        var likePercent = post.dislike != 0 ? ((post.like / (post.dislike + post.like)) * 100) : 100;
-        var dislikePercent = 100 - likePercent;
-
-        var remoteIp = (req.headers['x-forwarded-for'] || '').split(',')[0]
-                    || req.connection.remoteAddress;
-
-        if (remoteIp) {
-            Visit.count({ip: remoteIp, postId: post._id.toString()}, function(err, total) {
-                if (total == 0) {
-                    if (post.views) post.views++;
-                    else post.views = 1;
-
-                    post.save();
-                }
-
-                var visit = new Visit({
-                    ip: remoteIp,
-                    referer: req.headers.referer ? req.headers.referer : '',
-                    userAgent: req.headers['user-agent'] ? req.headers['user-agent'] : '',
-                    postId: post._id.toString()
-                });
-
-                visit.save(function(err) {
-                    // save visit information then render HTML
-                    res.render('post/view', {
-                        title: post.title,
-                        appUrl: config.app.url || req.protocol + '://' + req.get('host'),
-                        marked: marked,
-                        moment: moment,
-                        pdfAvailable: pdfAvailable,
-                        post: post,
-                        comment: config.comment,
-                        signedIn: (req.session && req.session.user),
-                        userFeedback: ((req.session && req.session.feedback && req.session.feedback[post._id]) ? req.session.feedback[post._id] : ''),
-                        likePercent: likePercent,
-                        dislikePercent: dislikePercent
-                    });
-                });
-            });
-        }
-    });
-};
-
-exports.feedback = function (req, res) {
-    var id     = req.body.id,
-        action = req.body.action;
-
-    if (req.session && req.session.feedback && req.session.feedback[id]) {
-        if (req.session.feedback[id] == action) {
-            // user already has had feedback for this post
-            return res.json({ result: 'error'});
-        }
-        else {
-            // if user had feedback, but now change to like/dislike
-            req.session.feedback = {  };
-            req.session.feedback[id] = action;
-
-            var newData = action == 'like' ?
-                {$inc: { like: 1, dislike: -1 }} :
-                {$inc: { like: -1, dislike: 1 }};
-
-            Post.findByIdAndUpdate(id, newData, function (err, post) {
-                return res.json({ result: err ? 'error' : 'ok' });
-            });
-        }
-    } else {
-        // user does not have feedback for this post
-        if (!req.session.feedback) req.session.feedback = { };
-        req.session.feedback[id] = action;
-
-        if (id) {
-            // update new data
-            Post.findByIdAndUpdate(id, { $inc: (action == 'like' ? { like: 1 } : { dislike: 1 }) }, function (err, post) {
-                return res.json({ result: err ? 'error' : 'ok' });
-            });
-        } else {
-            // no id was found
-            return res.json({ result: 'error' });
-        }
-    }
 };

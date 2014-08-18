@@ -1,8 +1,38 @@
 var fs       = require('fs'),
+    crypto   = require('crypto'),
     marked   = require('marked'),
     moment   = require('moment'),
     mongoose = require('mongoose'),
     Post     = mongoose.model('post');
+
+/**
+ * Download PDF
+ */
+exports.download = function(req, res) {
+    var slug   = req.param('slug'),
+        config = req.app.get('config');
+    Post.findOne({ slug: slug }).exec(function(err, post) {
+        if (err || !post || post.status != 'activated') {
+            return res.send('The guide is not found or has not been published yet', 404);
+        }
+
+        var pdfFile = config.jobs.exportPdf.dir + '/' + post.slug + '.pdf';
+        if (!fs.existsSync(pdfFile)) {
+            return res.send('The PDF is not available at the moment', 403);
+        }
+
+        post.prev_categories = post.categories;
+        post.pdf_downloads++;
+        post.save(function() {
+            res.setHeader('Content-Description', 'Download file');
+            res.setHeader('Content-Type', 'application/octet-stream');
+            res.setHeader('Content-Disposition', 'attachment; filename=' + post.slug + '.pdf');
+
+            var stream = fs.createReadStream(pdfFile);
+            stream.pipe(res);
+        });
+    });
+};
 
 /**
  * Export to PDF
@@ -44,6 +74,10 @@ exports.preview = function(req, res) {
     var slug   = req.param('slug'),
         config = req.app.get('config');
     Post.findOne({ slug: slug }).exec(function(err, post) {
+        if (err || !post || post.status !== 'activated') {
+            return res.send(404);
+        }
+
         res.render('pdf/preview', {
             title: post.title,
             appName: config.app.name,
@@ -51,6 +85,7 @@ exports.preview = function(req, res) {
             marked: marked,
             moment: moment,
             post: post,
+            gravatar: crypto.createHash('md5').update(post.updated.email || post.created.email).digest('hex'),
             year: new Date().getFullYear()
         });
     });

@@ -1,7 +1,7 @@
 extends ../layouts/frontend
 
 block head
-    link(rel="stylesheet", href="/vendor/highlight/css/github.css")
+    link(rel="stylesheet", href="/vendor/highlight/styles/github.css")
 
 block content
     .post.post-with-toc
@@ -32,7 +32,7 @@ block content
                 i.fa.fa-facebook
             a.btn.pull-right.tooltipButton(href="http://www.facebook.com/sharer.php?url=#{appUrl}/post/#{post.slug}&title=#{post.title}", target="_blank", data-placement="bottom", data-title="Share the guide on Twitter")
                 i.fa.fa-twitter
-            a.btn.pull-right.tooltipButton#downloadPdfButton(href="/post/pdf/#{post.slug}", class=!pdfAvailable ? '_hide' : '', rel="nofollow", data-placement="bottom", data-title=post.pdf_downloads == 0 ? "This guide has not been downloaded yet! Let's be the first one" : "This guide has been downloaded " + post.pdf_downloads + (post.pdf_downloads == 1 ? " time" : " times")) PDF
+            a.btn.pull-right.tooltipButton#downloadPdfButton(href="/pdf/download/#{post.slug}", class=!pdfAvailable ? '_hide' : '', rel="nofollow", data-placement="bottom", data-title=post.pdf_downloads == 0 ? "This guide has not been downloaded yet! Let's be the first one" : "This guide has been downloaded " + post.pdf_downloads + (post.pdf_downloads == 1 ? " time" : " times")) PDF
             a.btn.pull-right.tooltipButton(href="/admin/post/edit/#{post._id}", data-placement="bottom", data-title="Edit the post") EDIT
 
             h1
@@ -41,7 +41,7 @@ block content
         .post-toc
             .post-meta
                 div
-                    | By #{post.created_user.username}, #{moment(post.updated_date || post.created_date).format('YYYY-MM-DD')}
+                    | By #{post.created.username}, #{moment(post.updated.date || post.created.date).format('YYYY-MM-DD')}
 
             hr
 
@@ -65,9 +65,8 @@ block content
                     include ../layouts/footer
 
 block footerScript
-    script(type="text/javascript", src="/vendor/tocjs/js/toc.js")
-    script(type="text/javascript", src="/vendor/highlight/js/highlight.pack.js")
-    script(type="text/javascript", src="/vendor/socket.io/socket.io.min.js")
+    script(type="text/javascript", src="/bower_components/tocjs/dist/js/toc.min.js")
+    script(type="text/javascript", src="/vendor/highlight/highlight.pack.js")
 
     if comment.disqus.shortName
         script(type="text/javascript").
@@ -137,14 +136,4 @@ block footerScript
 
             // Highlight the source code
             hljs.initHighlightingOnLoad();
-
-            var socket = io.connect();
-            socket.on('connect', function() {
-                socket.on('job:exportPdf:#{post._id}', function(data) {
-                    $('#downloadPdfButton').removeClass('hide');
-                });
-            });
-            socket.on('error', function(err) {
-                socket.socket.reconnect();
-            });
         });

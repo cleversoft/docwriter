@@ -1,19 +1,18 @@
 // Variables
-$fontFamily: 'Droid Serif', sans-serif;
-$footerHeight: 80px;
-$navbarHeight: 45px;
-$headerHeight: 50px;
-$tocPaddingLevel: 25px;
+@font-family: 'Noto Sans', sans-serif;
+@footer-height: 80px;
+@navbar-height: 45px;
+@header-height: 50px;
+@toc-padding-level: 25px;
 
 body {
-  font-family: $fontFamily;
-  //font-family: 'Source Sans Pro', sans-serif;
+  font-family: @font-family;
   font-size: 16px;
   font-weight: 400;
   line-height: 1.75;
 }
 h1, h2, h3, h4, h5, h6 {
-  font-family: $fontFamily;
+  font-family: @font-family;
 }
 h1, h2, h3, h4 {
   font-weight: bold;
@@ -82,7 +81,7 @@ h1, h2, h3, h4 {
   right: 0;
   left: 0;
   width: 100%;
-  height: $headerHeight + 1;
+  height: @header-height + 1;
   z-index: 1000;
   a {
     color: #fff;
@@ -91,8 +90,8 @@ h1, h2, h3, h4 {
     border: none;
     border-radius: 0;
     display: block;
-    height: $headerHeight;
-    line-height: $headerHeight;
+    height: @header-height;
+    line-height: @header-height;
     padding: 0 15px;
     &:hover {
       background: #f1c40f;
@@ -100,7 +99,7 @@ h1, h2, h3, h4 {
   }
   h1 {
     font-weight: normal;
-    line-height: $headerHeight;
+    line-height: @header-height;
     margin: 0;
     padding: 0 150px;
     text-align: center;
@@ -110,7 +109,7 @@ h1, h2, h3, h4 {
   form {
     width: 200px;
     input {
-      margin: ($headerHeight - 34)/2;
+      margin: (@header-height - 34)/2;
     }
   }
   .dropdown-menu {
@@ -125,7 +124,7 @@ h1, h2, h3, h4 {
   position: fixed;
   left: -250px;
   bottom: 0;
-  top: $headerHeight;
+  top: @header-height;
   width: 250px;
   height: 100%;
   overflow-y: auto;
@@ -170,19 +169,19 @@ h1, h2, h3, h4 {
 
   // Children links
   .post-toc-level2 {
-    padding-left: $tocPaddingLevel;
+    padding-left: @toc-padding-level;
   }
   .post-toc-level3 {
-    padding-left: $tocPaddingLevel * 2;
+    padding-left: @toc-padding-level * 2;
   }
   .post-toc-level4 {
-    padding-left: $tocPaddingLevel * 3;
+    padding-left: @toc-padding-level * 3;
   }
   .post-toc-level5 {
-    padding-left: $tocPaddingLevel * 4;
+    padding-left: @toc-padding-level * 4;
   }
   .post-toc-level6 {
-    padding-left: $tocPaddingLevel * 5;
+    padding-left: @toc-padding-level * 5;
   }
 }
 .post-meta {
@@ -191,7 +190,7 @@ h1, h2, h3, h4 {
 .post-body {
   background: #fff;
   position: absolute;
-  top: $headerHeight;
+  top: @header-height;
   left: 0;
   bottom: 0;
   right: 0;
@@ -219,7 +218,7 @@ h1, h2, h3, h4 {
     }
   }
   h2 {
-    padding-top: $headerHeight + 10px;
+    padding-top: @header-height + 10px;
     &:first-child {
       padding-top: 0;
     }
@@ -299,17 +298,17 @@ html, body {
   min-height: 100%;
   height: auto !important;
   height: 100%;
-  margin: 0 auto -#{$footerHeight} auto;
+  margin: 0 auto -@footer-height auto;
 }
 .d-main {
-  /*padding-top: $navbarHeight;*/
+  /*padding-top: @navbar-height;*/
 }
 .d-push {
-  height: $footerHeight;
+  height: @footer-height;
 }
 footer {
   border-top: 1px solid #c0c0c0;
-  height: $footerHeight - 1;
+  height: @footer-height - 1;
 
   .container {
     padding-top: 8px;

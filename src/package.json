@@ -4,6 +4,7 @@
     "private": true,
     "dependencies": {
         "body-parser": "latest",
+        "compression": "latest",
         "connect-mongo": "latest",
         "express": "latest",
         "express-session": "latest",

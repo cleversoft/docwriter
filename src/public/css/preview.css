@@ -1,0 +1,20 @@
+body {
+  font-family: 'Noto Sans', sans-serif;
+  padding: 0 30px;
+}
+code {
+  border: 1px solid #ccc;
+  background: #fff;
+}
+pre code {
+  border: none;
+}
+blockquote {
+  border-left: 5px solid #ccc;
+  padding: 10px 15px;
+  margin: 15px 0 15px -15px;
+}
+h2 {
+  border-bottom: 1px solid #bbb;
+  padding-bottom: 10px;
+}

@@ -1,12 +1,13 @@
-var env        = process.env.NODE_ENV || 'development',
-    port       = process.env.PORT     || 3000,
-    config     = require('./server/config/config')[env],
-    express    = require('express'),
-    session    = require('express-session'),
-    bodyParser = require('body-parser'),
-    mongoose   = require('mongoose'),
-    mongoStore = require('connect-mongo')(session),
-    app        = express();
+var env         = process.env.NODE_ENV || 'development',
+    port        = process.env.PORT     || 3000,
+    config      = require('./server/config/config')[env],
+    express     = require('express'),
+    compression = require('compression'),
+    session     = require('express-session'),
+    bodyParser  = require('body-parser'),
+    mongoose    = require('mongoose'),
+    mongoStore  = require('connect-mongo')(session),
+    app         = express();
 
 // Connect the database
 mongoose.set('config', config);
@@ -24,7 +25,7 @@ fs.readdirSync(modelsPath).forEach(function(file) {
 app.set('config', config);
 app.set('views', config.root + '/views');
 app.set('view engine', 'jade');
-
+app.use(compression());
 app.use(express.static(__dirname + '/public'));
 app.use('/bower_components',  express.static(__dirname + '/bower_components'));
 app.use(bodyParser());
@@ -45,11 +46,15 @@ app.use(session({
     })
 }));
 
+app.locals.config = config;
+app.locals.url    = require('./server/helpers/url');
+
 // Routes
 var controller = {
         admin: require('./server/controllers/admin'),
         category: require('./server/controllers/category'),
         file: require('./server/controllers/file'),
+        index: require('./server/controllers/index'),
         pdf: require('./server/controllers/pdf'),
         post: require('./server/controllers/post'),
         user: require('./server/controllers/user')
@@ -59,6 +64,14 @@ var controller = {
     };
 
 // Front-end
+app.route('/').get(controller.index.index);
+
+app.route('/category/:slug').get(controller.post.category);
+app.route('/search').get(controller.post.search);
+app.route('/post/feedback').all(controller.post.feedback);
+app.route('/post/:slug').get(controller.post.view);
+
+app.route('/pdf/download/:slug').get(controller.pdf.download);
 app.route('/pdf/preview/:slug').get(controller.pdf.preview);
 app.route('/pdf/footer').get(function(req, res) {
     res.render('pdf/footer');
@@ -97,6 +110,38 @@ app.route('/user/password').post(middleware.auth.requireAuth,      controller.us
 app.route('/user/save/:id').post(middleware.auth.requireAuth,      controller.user.save);
 app.route('/user/signin').post(controller.user.signin);
 app.route('/user/signout').post(middleware.auth.requireAuth,       controller.user.signout);
+
+// Handle 404 error
+app.use(function(req, res, next) {
+    res.status(404);
+
+    // Respond with html page
+    if (req.accepts('html')) {
+        res.render('404', {
+            title: 'Not found',
+            url: req.url
+        });
+        return;
+    }
+
+    // Respond with json
+    if (req.accepts('json')) {
+        res.send({ error: 'Not found' });
+        return;
+    }
+
+    // default to plain-text. send()
+    res.type('txt').send('Not found');
+});
+
+// Handle 500 error
+app.use(function(err, req, res, next) {
+    res.status(err.status || 500);
+    res.render('500', {
+        title: 'Error',
+        error: err
+    });
+});
 
 // Create socket IO
 var http         = require('http'),
