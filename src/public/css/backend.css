@@ -41,6 +41,12 @@
   margin-left: 200px;
   padding-left: 15px;
 }
+.dw-header .navbar-nav.navbar-right {
+  margin-right: 0;
+}
+.dw-header .fa-caret-down {
+  padding-left: 5px;
+}
 .dw-header .dropdown-toggle {
   height: 50px;
   line-height: 50px;
@@ -48,6 +54,22 @@
 }
 .dw-header .dropdown-toggle span {
   padding: 5px;
+}
+.dw-dropdown-tasks {
+  width: 450px;
+}
+.dw-dropdown-tasks li {
+  border-bottom: 1px solid #e5e5e5;
+  margin-bottom: 10px;
+}
+.dw-dropdown-tasks li:last-child {
+  margin-bottom: 0;
+}
+.dw-dropdown-tasks li .progress {
+  margin: 5px 0;
+}
+.dw-task-pdf .btn {
+  margin-right: 5px;
 }
 .dw-sidebar {
   position: absolute;
@@ -125,8 +147,14 @@
 }
 .dw-avatar {
   border-radius: 15px;
-  height: 30px;
   width: 30px;
+  height: 30px;
+  margin-right: 5px;
+}
+.dw-header .dw-avatar {
+  border-radius: 10px;
+  width: 20px;
+  height: 20px;
 }
 .dw-table-middle > tbody > tr > td {
   vertical-align: middle;

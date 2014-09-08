@@ -393,6 +393,31 @@ angular
     }]);
 angular
     .module('app.category')
+    .directive('categorySlug', ['CategoryService', function(CategoryService) {
+        return {
+            restrict: 'A',
+            scope: {
+                categoryName: '=',
+                categoryId: '=',
+                ngModel: '='
+            },
+            link: function(scope, ele, attrs) {
+                scope.$watch('categoryName', function(val) {
+                    if (!val) {
+                        scope.ngModel = '';
+                        return;
+                    }
+                    CategoryService
+                        .generateSlug(val, scope.categoryId)
+                        .success(function(data) {
+                            scope.ngModel = data.slug;
+                        });
+                });
+            }
+        };
+    }]);
+angular
+    .module('app.category')
     .factory('CategoryService', ['$injector', 'API', function($injector, API) {
         var $http;
         return {
@@ -434,31 +459,6 @@ angular
             save: function(category) {
                 $http = $http || $injector.get('$http');
                 return $http.post(API.baseUrl + '/category/save/' + category._id, category);
-            }
-        };
-    }]);
-angular
-    .module('app.category')
-    .directive('categorySlug', ['CategoryService', function(CategoryService) {
-        return {
-            restrict: 'A',
-            scope: {
-                categoryName: '=',
-                categoryId: '=',
-                ngModel: '='
-            },
-            link: function(scope, ele, attrs) {
-                scope.$watch('categoryName', function(val) {
-                    if (!val) {
-                        scope.ngModel = '';
-                        return;
-                    }
-                    CategoryService
-                        .generateSlug(val, scope.categoryId)
-                        .success(function(data) {
-                            scope.ngModel = data.slug;
-                        });
-                });
             }
         };
     }]);
@@ -699,6 +699,18 @@ angular
     }]);
 angular
     .module('app.post')
+    .controller('ExportPdf', ['$scope', function($scope) {
+        $scope.tasks = [];
+
+        $scope.$on('job:exportPdf:starting', function(e, data) {
+            $scope.tasks.push({
+                post_id: data.post_id,
+                title: data.title.substr(0, 60)
+            });
+        });
+    }]);
+angular
+    .module('app.post')
     .controller('PostCtrl', [
         '$scope', '$rootScope', '$location',
         '_', 'growlNotifications', '$modal', 'socket',
@@ -857,6 +869,31 @@ angular
                 .exportPdf(post._id)
                 .success(function(data) {
                 });
+        };
+    }]);
+angular
+    .module('app.post')
+    .directive('exportPdf', [function() {
+        return {
+            restrict: 'E',
+            scope: {
+                ngModel: '='
+            },
+            template:   '<button type="button" class="btn btn-default" ng-click="exportPdf(ngModel)" ng-disabled="ngModel.status !== \'activated\'">Export</button>' +
+                        '<span ng-show="ngModel.pdf">' +
+                            '<img gravatar-src="ngModel.pdf.email" gravatar-size="50" class="dw-avatar" title="{{ ngModel.pdf.username }}" /> <span am-time-ago="ngModel.pdf.date">' +
+                        '</span>',
+            controller: ['$scope', '$rootScope', function($scope, $rootScope) {
+                $scope.exportPdf = function(post) {
+                    $rootScope.$broadcast('job:exportPdf:starting', {
+                        post_id: post._id,
+                        title: post.title
+                    });
+                };
+            }],
+            link: function(scope, ele, attrs) {
+
+            }
         };
     }]);
 angular

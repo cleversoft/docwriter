@@ -50,10 +50,7 @@
                 </span>
             </td>
             <td>
-                <button type="button" class="btn btn-default" ng-click="exportPdf(post)" ng-disabled="post.status !== 'activated'">Export</button>
-                <span ng-show="post.pdf">
-                    <img gravatar-src="post.pdf.email" gravatar-size="50" class="dw-avatar" title="{{ post.pdf.username }}" /> <span am-time-ago="post.pdf.date"></span>
-                </span>
+                <export-pdf ng-model="post" class="dw-task-pdf"></export-pdf>
             </td>
             <td>
                 <button type="button" class="btn btn-danger" ng-click="confirm(post)">Remove</button>

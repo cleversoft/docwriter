@@ -346,7 +346,7 @@ exports.get = function(req, res) {
  * List posts
  */
 exports.list = function(req, res) {
-    var perPage       = 10,
+    var perPage       = 20,
         page          = req.body.page    || 1,
         status        = req.body.status,
         q             = req.body.keyword || '',

@@ -30,11 +30,28 @@ html(ng-app="app")
                     a.dw-toggle(href="javascript: void(0);")
                         i.fa.fa-bars
 
-                    ul.nav.navbar-right
+                    ul.nav.navbar-nav.navbar-right
+                        li
+                            a(href="javascript: void(0);")
+                                img.dw-avatar(gravatar-size="20", gravatar-src="currentUser.email")
+                                span {{ currentUser.username }}
+                        li.dropdown(ng-controller="ExportPdf")
+                            a.dropdown-toggle(href="javascript: void(0);", data-toggle="dropdown")
+                                i.fa.fa-tasks
+                                i.fa.fa-caret-down
+                            ul.dropdown-menu(ng-show="tasks.length === 0")
+                                li
+                                    a(href="javascript: void(0);") No tasks available
+                            ul.dropdown-menu.dw-dropdown-tasks(ng-show="tasks.length > 0")
+                                li(ng-repeat="task in tasks")
+                                    a(href="javascript: void(0);")
+                                        span
+                                            | Exporting <strong>{{ task.title }}</strong> to PDF
+                                        div.progress
+                                            div.progress-bar.progress-bar-striped.active(style="width: 100%")
                         li.dropdown
                             a.dropdown-toggle(href="javascript: void(0);", data-toggle="dropdown")
-                                img.dw-avatar(gravatar-src="currentUser.email")
-                                span {{ currentUser.username }}
+                                i.fa.fa-cog
                                 i.fa.fa-caret-down
                             ul.dropdown-menu
                                 li
@@ -42,6 +59,7 @@ html(ng-app="app")
                                 li.divider
                                 li
                                     a(href="javascript: void(0);", ng-click="signout()") Signout
+
 
             .dw-wrapper(ng-show="currentUser")
                 div.dw-sidebar

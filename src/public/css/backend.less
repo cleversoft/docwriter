@@ -47,6 +47,12 @@
     margin-left: @sidebar-width;
     padding-left: 15px;
   }
+  .navbar-nav.navbar-right {
+    margin-right: 0;
+  }
+  .fa-caret-down {
+    padding-left: 5px;
+  }
   .dropdown-toggle {
     height: @header-height;
     line-height: @header-height;
@@ -54,6 +60,25 @@
     span {
       padding: 5px;
     }
+  }
+}
+
+.dw-dropdown-tasks {
+  width: 450px;
+  li {
+    border-bottom: 1px solid #e5e5e5;
+    margin-bottom: 10px;
+    &:last-child {
+      margin-bottom: 0;
+    }
+    .progress {
+      margin: 5px 0;
+    }
+  }
+}
+.dw-task-pdf {
+  .btn {
+    margin-right: 5px;
   }
 }
 
@@ -144,9 +169,16 @@
 
 .dw-avatar {
   border-radius: 15px;
-  height: 30px;
   width: 30px;
+  height: 30px;
+  margin-right: 5px;
 }
+.dw-header .dw-avatar {
+  border-radius: 10px;
+  width: 20px;
+  height: 20px;
+}
+
 .dw-table-middle {
   >tbody>tr>td {
     vertical-align: middle;
