@@ -251,7 +251,14 @@ exports.add = function(req, res) {
         created: {
             user_id: req.session.user._id,
             username: req.session.user.username,
-            email: req.session.user.email
+            email: req.session.user.email,
+            date: new Date()
+        },
+        updated: {
+            user_id: req.session.user._id,
+            username: req.session.user.username,
+            email: req.session.user.email,
+            date: new Date()
         },
         categories: req.body.categories || [],
         pdf: {
@@ -298,7 +305,14 @@ exports.duplicate = function(req, res) {
                 created: {
                     user_id: req.session.user._id,
                     username: req.session.user.username,
-                    email: req.session.user.email
+                    email: req.session.user.email,
+                    date: new Date()
+                },
+                updated: {
+                    user_id: req.session.user._id,
+                    username: req.session.user.username,
+                    email: req.session.user.email,
+                    date: new Date()
                 },
                 categories: post.categories,
                 heading_styles: post.heading_styles,
