@@ -59,9 +59,23 @@ exports.export = function(req, res) {
                 email: req.session.user.email,
                 date: new Date()
             };
-            post.save(function(err) {
-                return res.json({ msg: err || 'ok' });
+
+            // Export to PDF as background job
+            var Queue = require(config.root + '/queue/queue'),
+                queue = new Queue(config.redis.host, config.redis.port);
+
+            queue.setNamespace(config.redis.namespace);
+            queue.enqueue('exportPdf', '/jobs/exportPdf', {
+                post_id: post._id,
+                url: config.app.url + '/post/preview/' + post.slug,
+                file: config.jobs.exportPdf.dir + '/' + post.slug + '.pdf',
+                user_id: post.pdf.user_id,
+                username: post.pdf.username,
+                email: post.pdf.email,
+                date: post.pdf.date
             });
+
+            return res.json({ msg: 'ok' });
         });
 };
 

@@ -72,10 +72,6 @@ postSchema.post('save', function(post) {
         .exec();
 });
 
-postSchema.post('save', function(post) {
-    post.exportPdf();
-});
-
 postSchema.post('remove', function(post) {
     mongoose
         .model('category')
@@ -88,25 +84,5 @@ postSchema.post('remove', function(post) {
         })
         .exec();
 });
-
-postSchema.methods.exportPdf = function() {
-    // Export to PDF as background job
-    if (this.status === 'activated') {
-        var config = mongoose.get('config'),
-            Queue  = require(config.root + '/queue/queue'),
-            queue  = new Queue(config.redis.host, config.redis.port);
-
-        queue.setNamespace(config.redis.namespace);
-        queue.enqueue('exportPdf', '/jobs/exportPdf', {
-            post_id: this._id,
-            url: config.app.url + '/post/preview/' + this.slug,
-            file: config.jobs.exportPdf.dir + '/' + this.slug + '.pdf',
-            user_id: this.pdf.user_id,
-            username: this.pdf.username,
-            email: this.pdf.email,
-            date: this.pdf.date
-        });
-    }
-};
 
 module.exports = mongoose.model('post', postSchema, 'post');

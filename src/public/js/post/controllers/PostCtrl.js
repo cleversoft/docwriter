@@ -49,7 +49,7 @@ angular
                     return p._id + '' === data.post_id;
                 });
                 if (post) {
-                    post.pdf = post.pdf || {};
+                    post.pdf          = post.pdf || {};
                     post.status       = 'activated';
                     post.pdf.status   = 'done';
                     post.pdf.username = data.username;
@@ -157,7 +157,6 @@ angular
             PostService
                 .exportPdf(post._id)
                 .success(function(data) {
-
                 });
         };
     }]);

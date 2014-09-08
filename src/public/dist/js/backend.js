@@ -393,31 +393,6 @@ angular
     }]);
 angular
     .module('app.category')
-    .directive('categorySlug', ['CategoryService', function(CategoryService) {
-        return {
-            restrict: 'A',
-            scope: {
-                categoryName: '=',
-                categoryId: '=',
-                ngModel: '='
-            },
-            link: function(scope, ele, attrs) {
-                scope.$watch('categoryName', function(val) {
-                    if (!val) {
-                        scope.ngModel = '';
-                        return;
-                    }
-                    CategoryService
-                        .generateSlug(val, scope.categoryId)
-                        .success(function(data) {
-                            scope.ngModel = data.slug;
-                        });
-                });
-            }
-        };
-    }]);
-angular
-    .module('app.category')
     .factory('CategoryService', ['$injector', 'API', function($injector, API) {
         var $http;
         return {
@@ -463,13 +438,38 @@ angular
         };
     }]);
 angular
+    .module('app.category')
+    .directive('categorySlug', ['CategoryService', function(CategoryService) {
+        return {
+            restrict: 'A',
+            scope: {
+                categoryName: '=',
+                categoryId: '=',
+                ngModel: '='
+            },
+            link: function(scope, ele, attrs) {
+                scope.$watch('categoryName', function(val) {
+                    if (!val) {
+                        scope.ngModel = '';
+                        return;
+                    }
+                    CategoryService
+                        .generateSlug(val, scope.categoryId)
+                        .success(function(data) {
+                            scope.ngModel = data.slug;
+                        });
+                });
+            }
+        };
+    }]);
+angular
     .module('app.post')
     .controller('AddPostCtrl', [
         '$scope', '$rootScope',
-        'growlNotifications', 'marked', '$upload',
+        'growlNotifications', 'marked', 'socket', '$upload',
         'API', 'CategoryService', 'PostService',
         function($scope, $rootScope,
-                 growlNotifications, marked, $upload,
+                 growlNotifications, marked, socket, $upload,
                  API, CategoryService, PostService) {
         $rootScope.pageTitle = 'Add new post';
         $scope.categories    = [];
@@ -748,7 +748,7 @@ angular
                     return p._id + '' === data.post_id;
                 });
                 if (post) {
-                    post.pdf = post.pdf || {};
+                    post.pdf          = post.pdf || {};
                     post.status       = 'activated';
                     post.pdf.status   = 'done';
                     post.pdf.username = data.username;
@@ -856,7 +856,6 @@ angular
             PostService
                 .exportPdf(post._id)
                 .success(function(data) {
-
                 });
         };
     }]);
