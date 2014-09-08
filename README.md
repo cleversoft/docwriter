@@ -56,8 +56,8 @@ Refer to their documentation to see how to install them:
 ### Installing NodeJS modules and Bower components
 
 ```bash
-$ sudo npm install
-$ sudo bower install
+$ cd src
+$ npm install
 ```
 
 ### Setting Nginx

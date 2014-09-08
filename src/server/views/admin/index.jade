@@ -7,18 +7,13 @@ html(ng-app="app")
         title(ng-bind-template="{{ pageTitle || 'Template manager' }}")
         link(rel="icon", type="image/x-icon", href="/favicon.ico")
 
-        link(rel="stylesheet", href="/bower_components/codemirror/lib/codemirror.css")
-        link(rel="stylesheet", href="/bower_components/bootstrap/dist/css/bootstrap.min.css")
-        link(rel="stylesheet", href="/bower_components/fontawesome/css/font-awesome.min.css")
-        link(rel="stylesheet", href="/bower_components/angular-loading-bar/build/loading-bar.min.css")
+        link(rel="stylesheet", href="/vendor/codemirror/lib/codemirror.css")
+        link(rel="stylesheet", href="/vendor/bootstrap/css/bootstrap.min.css")
+        link(rel="stylesheet", href="/vendor/font-awesome/css/font-awesome.min.css")
+        link(rel="stylesheet", href="/vendor/angular-loading-bar/loading-bar.min.css")
         link(rel="stylesheet", href="http://fonts.googleapis.com/css?family=Noto+Sans:400,700")
 
         link(rel="stylesheet", href="/css/backend.css")
-
-        | <!--[if lt IE 9]>
-        | <script src="/bower_components/html5shiv/dist/html5shiv.min.js"></script>
-        | <script src="/bower_components/respond/dest/respond.min.js"></script>
-        | <![endif]-->
     body(ng-controller="AppCtrl", ng-class="{ 'dw-body': currentUser }")
         div(ng-if="!loadingDone")
             .container
@@ -84,28 +79,26 @@ html(ng-app="app")
 
             div(login-modal)
 
-        script(src="/bower_components/jquery/dist/jquery.min.js")
-        script(src="/bower_components/codemirror/lib/codemirror.js")
-        script(src="/bower_components/codemirror/mode/markdown/markdown.js")
+        script(src="/vendor/jquery/jquery.min.js")
+        script(src="/vendor/moment/moment.min.js")
+        script(src="/vendor/angular/angular.min.js")
+        script(src="/vendor/angular/angular-route.min.js")
+        script(src="/vendor/angular/angular-sanitize.min.js")
 
-        script(src="/bower_components/angular/angular.js")
-        script(src="/bower_components/angular-route/angular-route.min.js")
-        script(src="/bower_components/angular-sanitize/angular-sanitize.min.js")
-        script(src="/bower_components/angular-socket-io/socket.min.js")
+        script(src="/vendor/angular-gravatar/md5.min.js")
+        script(src="/vendor/angular-gravatar/angular-gravatar.min.js")
+        script(src="/vendor/angular-file-upload/angular-file-upload.min.js")
+        script(src="/vendor/angular-growl-notifications/growl-notifications.min.js")
+        script(src="/vendor/angular-loading-bar/loading-bar.min.js")
+        script(src="/vendor/angular-moment/angular-moment.min.js")
+        script(src="/vendor/angular-socket-io/socket.min.js")
+        script(src="/vendor/angular-ui/ui-bootstrap-tpls.min.js")
+        script(src="/vendor/angular-ui/ui-codemirror.min.js")
 
-        script(src="/bower_components/angular-gravatar/build/md5.min.js")
-        script(src="/bower_components/angular-gravatar/build/angular-gravatar.min.js")
-        script(src="/bower_components/angular-growl-notifications/dist/angular-growl-notifications.min.js")
-        script(src="/bower_components/angular-loading-bar/build/loading-bar.min.js")
-        script(src="/bower_components/angular-ui-bootstrap-bower/ui-bootstrap-tpls.min.js")
-        script(src="/bower_components/angular-ui-codemirror/ui-codemirror.min.js")
-
-        script(src="/bower_components/lodash/dist/lodash.min.js")
-        script(src="/bower_components/marked/lib/marked.js")
-        script(src="/bower_components/moment/min/moment.min.js")
-        script(src="/bower_components/angular-moment/angular-moment.min.js")
-        script(src="/bower_components/ng-file-upload/angular-file-upload.min.js")
-
+        script(src="/vendor/codemirror/lib/codemirror.js")
+        script(src="/vendor/codemirror/mode/markdown/markdown.js")
+        script(src="/vendor/lodash/lodash.min.js")
+        script(src="/vendor/marked/marked.js")
         script(src="/vendor/socket.io/socket.io.js")
 
         script(src="/dist/js/backend.js")

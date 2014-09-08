@@ -6,6 +6,7 @@ angular.module('app.user',     []);
 angular
     .module('app', [
         'ngRoute',
+
         'angular-loading-bar',
         'angularFileUpload',
         'angularMoment',
@@ -15,7 +16,7 @@ angular
         'ui.codemirror',
         'ui.gravatar',
 
-        // App mofules
+        // App modules
         'app.admin',
         'app.category',
         'app.post',

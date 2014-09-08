@@ -1,6 +1,12 @@
 angular
     .module('app.post')
-    .controller('EditPostCtrl', ['$scope', '$rootScope', '$compile', '$routeParams', 'marked', '$upload', 'API', 'CategoryService', 'PostService', function($scope, $rootScope, $compile, $routeParams, marked, $upload, API, CategoryService, PostService) {
+    .controller('EditPostCtrl', [
+        '$scope', '$rootScope', '$compile', '$routeParams',
+        'growlNotifications', 'marked', '$upload',
+        'API', 'CategoryService', 'PostService',
+        function($scope, $rootScope, $compile, $routeParams,
+                 growlNotifications, marked, $upload,
+                 API, CategoryService, PostService) {
         $rootScope.pageTitle = 'Edit post';
         $scope.categories    = [];
         $scope.post          = {
@@ -119,6 +125,7 @@ angular
             PostService
                 .save($scope.post)
                 .success(function(data) {
+                    growlNotifications.add('<strong>' + $scope.post.title + '</strong> is updated', 'success');
                 });
         };
     }]);

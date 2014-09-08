@@ -7,16 +7,11 @@ html
 
         title #{title}
 
-        link(rel="stylesheet", href="/bower_components/bootstrap/dist/css/bootstrap.min.css")
-        link(rel="stylesheet", href="/bower_components/fontawesome/css/font-awesome.min.css")
+        link(rel="stylesheet", href="/vendor/bootstrap/css/bootstrap.min.css")
+        link(rel="stylesheet", href="/vendor/font-awesome/css/font-awesome.min.css")
         link(rel="stylesheet", href="http://fonts.googleapis.com/css?family=Noto+Sans:400,700")
 
         link(rel="stylesheet", href="/css/preview.css")
-
-        | <!--[if lt IE 9]>
-        | <script src="/bower_components/html5shiv/dist/html5shiv.min.js"></script>
-        | <script src="/bower_components/respond/dest/respond.min.js"></script>
-        | <![endif]-->
     body
         section.text-center
             h1
@@ -35,8 +30,8 @@ html
             div#content.post-content
                 != marked(post.content)
 
-        script(src="/bower_components/jquery/dist/jquery.min.js")
-        script(src="/bower_components/bootstrap/dist/js/bootstrap.min.js")
+        script(src="/vendor/jquery/jquery.min.js")
+        script(src="/vendor/bootstrap/js/bootstrap.min.js")
 
         script.
             $(document).ready(function() {

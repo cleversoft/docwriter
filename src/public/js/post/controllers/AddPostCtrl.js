@@ -1,6 +1,12 @@
 angular
     .module('app.post')
-    .controller('AddPostCtrl', ['$scope', '$rootScope', 'marked', '$upload', 'API', 'CategoryService', 'PostService', function($scope, $rootScope, marked, $upload, API, CategoryService, PostService) {
+    .controller('AddPostCtrl', [
+        '$scope', '$rootScope',
+        'growlNotifications', 'marked', '$upload',
+        'API', 'CategoryService', 'PostService',
+        function($scope, $rootScope,
+                 growlNotifications, marked, $upload,
+                 API, CategoryService, PostService) {
         $rootScope.pageTitle = 'Add new post';
         $scope.categories    = [];
         $scope.post          = {
@@ -83,6 +89,7 @@ angular
                     .save($scope.post)
                     .success(function(data) {
                         $scope.mode = 'edit';
+                        growlNotifications.add('<strong>' + $scope.post.title + '</strong> is updated', 'success');
                     })
                 : PostService
                     .add($scope.post)
@@ -90,6 +97,7 @@ angular
                         if (data.msg === 'ok') {
                             $scope.mode = 'edit';
                             $scope.post._id = data.id;
+                            growlNotifications.add('<strong>' + $scope.post.title + '</strong> is added', 'success');
                         }
                     });
         };

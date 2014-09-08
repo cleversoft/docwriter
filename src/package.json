@@ -1,5 +1,5 @@
 {
-    "name": "nodedesk",
+    "name": "docwriter",
     "version": "2.0.0-dev",
     "private": true,
     "dependencies": {

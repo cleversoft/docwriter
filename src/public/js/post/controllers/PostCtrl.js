@@ -1,6 +1,12 @@
 angular
     .module('app.post')
-    .controller('PostCtrl', ['$scope', '$rootScope', '$location', '_', 'growlNotifications', '$modal', 'socket', 'AUTH_EVENTS', 'PostService', function($scope, $rootScope, $location, _, growlNotifications, $modal, socket, AUTH_EVENTS, PostService) {
+    .controller('PostCtrl', [
+        '$scope', '$rootScope', '$location',
+        '_', 'growlNotifications', '$modal', 'socket',
+        'AUTH_EVENTS', 'PostService',
+        function($scope, $rootScope, $location,
+                 _, growlNotifications, $modal, socket,
+                 AUTH_EVENTS, PostService) {
         $rootScope.pageTitle = 'Posts';
         $scope.posts         = [];
 

@@ -6,6 +6,7 @@ angular.module('app.user',     []);
 angular
     .module('app', [
         'ngRoute',
+
         'angular-loading-bar',
         'angularFileUpload',
         'angularMoment',
@@ -15,7 +16,7 @@ angular
         'ui.codemirror',
         'ui.gravatar',
 
-        // App mofules
+        // App modules
         'app.admin',
         'app.category',
         'app.post',
@@ -463,7 +464,13 @@ angular
     }]);
 angular
     .module('app.post')
-    .controller('AddPostCtrl', ['$scope', '$rootScope', 'marked', '$upload', 'API', 'CategoryService', 'PostService', function($scope, $rootScope, marked, $upload, API, CategoryService, PostService) {
+    .controller('AddPostCtrl', [
+        '$scope', '$rootScope',
+        'growlNotifications', 'marked', '$upload',
+        'API', 'CategoryService', 'PostService',
+        function($scope, $rootScope,
+                 growlNotifications, marked, $upload,
+                 API, CategoryService, PostService) {
         $rootScope.pageTitle = 'Add new post';
         $scope.categories    = [];
         $scope.post          = {
@@ -546,6 +553,7 @@ angular
                     .save($scope.post)
                     .success(function(data) {
                         $scope.mode = 'edit';
+                        growlNotifications.add('<strong>' + $scope.post.title + '</strong> is updated', 'success');
                     })
                 : PostService
                     .add($scope.post)
@@ -553,13 +561,20 @@ angular
                         if (data.msg === 'ok') {
                             $scope.mode = 'edit';
                             $scope.post._id = data.id;
+                            growlNotifications.add('<strong>' + $scope.post.title + '</strong> is added', 'success');
                         }
                     });
         };
     }]);
 angular
     .module('app.post')
-    .controller('EditPostCtrl', ['$scope', '$rootScope', '$compile', '$routeParams', 'marked', '$upload', 'API', 'CategoryService', 'PostService', function($scope, $rootScope, $compile, $routeParams, marked, $upload, API, CategoryService, PostService) {
+    .controller('EditPostCtrl', [
+        '$scope', '$rootScope', '$compile', '$routeParams',
+        'growlNotifications', 'marked', '$upload',
+        'API', 'CategoryService', 'PostService',
+        function($scope, $rootScope, $compile, $routeParams,
+                 growlNotifications, marked, $upload,
+                 API, CategoryService, PostService) {
         $rootScope.pageTitle = 'Edit post';
         $scope.categories    = [];
         $scope.post          = {
@@ -678,12 +693,19 @@ angular
             PostService
                 .save($scope.post)
                 .success(function(data) {
+                    growlNotifications.add('<strong>' + $scope.post.title + '</strong> is updated', 'success');
                 });
         };
     }]);
 angular
     .module('app.post')
-    .controller('PostCtrl', ['$scope', '$rootScope', '$location', '_', 'growlNotifications', '$modal', 'socket', 'AUTH_EVENTS', 'PostService', function($scope, $rootScope, $location, _, growlNotifications, $modal, socket, AUTH_EVENTS, PostService) {
+    .controller('PostCtrl', [
+        '$scope', '$rootScope', '$location',
+        '_', 'growlNotifications', '$modal', 'socket',
+        'AUTH_EVENTS', 'PostService',
+        function($scope, $rootScope, $location,
+                 _, growlNotifications, $modal, socket,
+                 AUTH_EVENTS, PostService) {
         $rootScope.pageTitle = 'Posts';
         $scope.posts         = [];
 
