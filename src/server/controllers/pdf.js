@@ -67,7 +67,8 @@ exports.export = function(req, res) {
             queue.setNamespace(config.redis.namespace);
             queue.enqueue('exportPdf', '/jobs/exportPdf', {
                 post_id: post._id,
-                url: config.app.url + '/post/preview/' + post.slug,
+                url: config.app.url + '/pdf/preview/' + post.slug,
+                footer: config.app.url + '/pdf/footer',
                 file: config.jobs.exportPdf.dir + '/' + post.slug + '.pdf',
                 user_id: post.pdf.user_id,
                 username: post.pdf.username,
@@ -75,7 +76,9 @@ exports.export = function(req, res) {
                 date: post.pdf.date
             });
 
-            return res.json({ msg: 'ok' });
+            post.save(function(err) {
+                return res.json({ msg: err || 'ok' });
+            });
         });
 };
 

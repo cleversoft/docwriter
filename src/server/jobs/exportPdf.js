@@ -41,7 +41,7 @@ ExportPdf.prototype.perform = function(args) {
 
         that.complete();
 
-        that.socketIo.emit('/jobs/exportPdf/done', {
+        that.socketIo.emit('jobs:exportPdf:done', {
             post_id: args.post_id,
             user_id: args.user_id,
             username: args.username,

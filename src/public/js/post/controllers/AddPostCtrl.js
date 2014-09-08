@@ -2,10 +2,10 @@ angular
     .module('app.post')
     .controller('AddPostCtrl', [
         '$scope', '$rootScope',
-        'growlNotifications', 'marked', 'socket', '$upload',
+        'growlNotifications', 'marked', '$upload',
         'API', 'CategoryService', 'PostService',
         function($scope, $rootScope,
-                 growlNotifications, marked, socket, $upload,
+                 growlNotifications, marked, $upload,
                  API, CategoryService, PostService) {
         $rootScope.pageTitle = 'Add new post';
         $scope.categories    = [];

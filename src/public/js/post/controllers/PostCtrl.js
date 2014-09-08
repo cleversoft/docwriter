@@ -2,10 +2,10 @@ angular
     .module('app.post')
     .controller('PostCtrl', [
         '$scope', '$rootScope', '$location',
-        '_', 'growlNotifications', '$modal', 'socket',
+        '_', 'growlNotifications', '$modal',
         'AUTH_EVENTS', 'PostService',
         function($scope, $rootScope, $location,
-                 _, growlNotifications, $modal, socket,
+                 _, growlNotifications, $modal,
                  AUTH_EVENTS, PostService) {
         $rootScope.pageTitle = 'Posts';
         $scope.posts         = [];
@@ -36,27 +36,6 @@ angular
 
         $scope.$on(AUTH_EVENTS.loginSuccess, function() {
             $scope.load();
-        });
-
-        // Init the socket
-        socket.on('connect', function() {
-            socket.on('/job/exportPdf/started', function(data) {
-
-            });
-
-            socket.on('/jobs/exportPdf/done', function(data) {
-                var post = _.find($scope.posts, function(p) {
-                    return p._id + '' === data.post_id;
-                });
-                if (post) {
-                    post.pdf          = post.pdf || {};
-                    post.status       = 'activated';
-                    post.pdf.status   = 'done';
-                    post.pdf.username = data.username;
-                    post.pdf.email    = data.email;
-                    post.pdf.date     = data.date;
-                }
-            });
         });
 
         $scope.search = function() {
@@ -142,21 +121,6 @@ angular
                         post.status = (post.status === 'activated') ? 'deactivated' : 'activated';
                         growlNotifications.add('<strong>' + post.title + '</strong> is ' + (post.status === 'deactivated' ? 'unpublished' : 'published'), 'success');
                     }
-                });
-        };
-
-        /**
-         * Export to PDF
-         */
-        $scope.exportPdf = function(post) {
-            socket.emit('/job/exportPdf/starting', {
-                id: post._id,
-                user: $scope.currentUser.username
-            });
-
-            PostService
-                .exportPdf(post._id)
-                .success(function(data) {
                 });
         };
     }]);
