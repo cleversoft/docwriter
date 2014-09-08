@@ -1,20 +1,27 @@
 angular
     .module('app.category')
-    .controller('CategoryCtrl', ['$scope', '$rootScope', '_', 'growlNotifications', '$modal', 'CategoryService', function($scope, $rootScope, _, growlNotifications, $modal, CategoryService) {
+    .controller('CategoryCtrl', ['$scope', '$rootScope', '_', 'growlNotifications', '$modal', 'AUTH_EVENTS', 'CategoryService', function($scope, $rootScope, _, growlNotifications, $modal, AUTH_EVENTS, CategoryService) {
         $rootScope.pageTitle = 'Categories';
         $scope.categories    = [];
         $scope.selected      = null;
         $scope.ordering      = false;
 
-        CategoryService
-            .list()
-            .success(function(data) {
-                for (var i = 0; i < data.categories.length; i++) {
-                    var category = data.categories[i];
-                    category.index = i;
-                    $scope.categories.push(category);
-                }
-            });
+        $scope.load = function() {
+            CategoryService
+                .list()
+                .success(function(data) {
+                    for (var i = 0; i < data.categories.length; i++) {
+                        var category = data.categories[i];
+                        category.index = i;
+                        $scope.categories.push(category);
+                    }
+                });
+        };
+        $scope.load();
+
+        $scope.$on(AUTH_EVENTS.loginSuccess, function() {
+            $scope.load();
+        });
 
         $scope.confirm = function(category) {
             $scope.selected = category;

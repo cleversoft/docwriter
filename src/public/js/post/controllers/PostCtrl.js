@@ -1,6 +1,6 @@
 angular
     .module('app.post')
-    .controller('PostCtrl', ['$scope', '$rootScope', '$location', '_', 'growlNotifications', '$modal', 'socket', 'PostService', function($scope, $rootScope, $location, _, growlNotifications, $modal, socket, PostService) {
+    .controller('PostCtrl', ['$scope', '$rootScope', '$location', '_', 'growlNotifications', '$modal', 'socket', 'AUTH_EVENTS', 'PostService', function($scope, $rootScope, $location, _, growlNotifications, $modal, socket, AUTH_EVENTS, PostService) {
         $rootScope.pageTitle = 'Posts';
         $scope.posts         = [];
 
@@ -18,12 +18,19 @@ angular
             num_pages: 1
         };
 
-        PostService
-            .list($scope.criteria)
-            .success(function(data) {
-                $scope.posts      = data.posts;
-                $scope.pagination = data.pagination;
-            });
+        $scope.load = function() {
+            PostService
+                .list($scope.criteria)
+                .success(function(data) {
+                    $scope.posts      = data.posts;
+                    $scope.pagination = data.pagination;
+                });
+        };
+        $scope.load();
+
+        $scope.$on(AUTH_EVENTS.loginSuccess, function() {
+            $scope.load();
+        });
 
         // Init the socket
         socket.on('connect', function() {

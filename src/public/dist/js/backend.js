@@ -258,21 +258,28 @@ angular
     }]);
 angular
     .module('app.category')
-    .controller('CategoryCtrl', ['$scope', '$rootScope', '_', 'growlNotifications', '$modal', 'CategoryService', function($scope, $rootScope, _, growlNotifications, $modal, CategoryService) {
+    .controller('CategoryCtrl', ['$scope', '$rootScope', '_', 'growlNotifications', '$modal', 'AUTH_EVENTS', 'CategoryService', function($scope, $rootScope, _, growlNotifications, $modal, AUTH_EVENTS, CategoryService) {
         $rootScope.pageTitle = 'Categories';
         $scope.categories    = [];
         $scope.selected      = null;
         $scope.ordering      = false;
 
-        CategoryService
-            .list()
-            .success(function(data) {
-                for (var i = 0; i < data.categories.length; i++) {
-                    var category = data.categories[i];
-                    category.index = i;
-                    $scope.categories.push(category);
-                }
-            });
+        $scope.load = function() {
+            CategoryService
+                .list()
+                .success(function(data) {
+                    for (var i = 0; i < data.categories.length; i++) {
+                        var category = data.categories[i];
+                        category.index = i;
+                        $scope.categories.push(category);
+                    }
+                });
+        };
+        $scope.load();
+
+        $scope.$on(AUTH_EVENTS.loginSuccess, function() {
+            $scope.load();
+        });
 
         $scope.confirm = function(category) {
             $scope.selected = category;
@@ -676,7 +683,7 @@ angular
     }]);
 angular
     .module('app.post')
-    .controller('PostCtrl', ['$scope', '$rootScope', '$location', '_', 'growlNotifications', '$modal', 'socket', 'PostService', function($scope, $rootScope, $location, _, growlNotifications, $modal, socket, PostService) {
+    .controller('PostCtrl', ['$scope', '$rootScope', '$location', '_', 'growlNotifications', '$modal', 'socket', 'AUTH_EVENTS', 'PostService', function($scope, $rootScope, $location, _, growlNotifications, $modal, socket, AUTH_EVENTS, PostService) {
         $rootScope.pageTitle = 'Posts';
         $scope.posts         = [];
 
@@ -694,12 +701,19 @@ angular
             num_pages: 1
         };
 
-        PostService
-            .list($scope.criteria)
-            .success(function(data) {
-                $scope.posts      = data.posts;
-                $scope.pagination = data.pagination;
-            });
+        $scope.load = function() {
+            PostService
+                .list($scope.criteria)
+                .success(function(data) {
+                    $scope.posts      = data.posts;
+                    $scope.pagination = data.pagination;
+                });
+        };
+        $scope.load();
+
+        $scope.$on(AUTH_EVENTS.loginSuccess, function() {
+            $scope.load();
+        });
 
         // Init the socket
         socket.on('connect', function() {
@@ -1004,15 +1018,22 @@ angular
     }]);
 angular
     .module('app.user')
-    .controller('UserCtrl', ['$scope', '$rootScope', 'UserService', function($scope, $rootScope, UserService) {
+    .controller('UserCtrl', ['$scope', '$rootScope', 'AUTH_EVENTS', 'UserService', function($scope, $rootScope, AUTH_EVENTS, UserService) {
         $rootScope.pageTitle = 'Users';
         $scope.users         = [];
 
-        UserService
-            .list()
-            .success(function(data) {
-                $scope.users = data.users;
-            });
+        $scope.load = function() {
+            UserService
+                .list()
+                .success(function(data) {
+                    $scope.users = data.users;
+                });
+        };
+        $scope.load();
+
+        $scope.$on(AUTH_EVENTS.loginSuccess, function() {
+            $scope.load();
+        });
 
         $scope.lock = function(user) {
             UserService
