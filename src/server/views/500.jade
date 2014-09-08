@@ -1,13 +1,23 @@
 extends layouts/frontend
 
 block content
-    div.d-separator
-        span Oops! Error
+    div.heading
+        div.container
+            div.row
+                h1.text-center
+                    a(href="#{config.app.url}") #{config.app.name}
 
-    div.row
-        div.col-lg-8.col-lg-offset-2
-            blockquote(style="max-height: 500px; overflow: scroll;")
-                | #{error}
+                div.col-md-6.col-md-offset-3
+                    form(method="get", action="/search")
+                        div.input-group.input-group-lg
+                            input.form-control(type="text", name="q", placeholder="Search for guides")
+                            span.input-group-btn
+                                button.btn.btn-default(type="submit")
+                                    i.fa.fa-search
 
-    div.text-center
-        a.btn.btn-info(href="/") Homepage
+    div.container
+        div.row
+            div.col-md-8.col-md-offset-2
+                div.error
+                    h2 Error
+                    | #{error}
