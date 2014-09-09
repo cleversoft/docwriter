@@ -33,7 +33,6 @@ block content
             a.btn.pull-right.tooltipButton(href="http://www.facebook.com/sharer.php?url=#{appUrl}/post/#{post.slug}&title=#{post.title}", target="_blank", data-placement="bottom", data-title="Share the guide on Twitter")
                 i.fa.fa-twitter
             a.btn.pull-right.tooltipButton#downloadPdfButton(href="/pdf/download/#{post.slug}", class=!pdfAvailable ? '_hide' : '', rel="nofollow", data-placement="bottom", data-title=post.pdf_downloads == 0 ? "This guide has not been downloaded yet! Let's be the first one" : "This guide has been downloaded " + post.pdf_downloads + (post.pdf_downloads == 1 ? " time" : " times")) PDF
-            a.btn.pull-right.tooltipButton(href="/admin/post/edit/#{post._id}", data-placement="bottom", data-title="Edit the post") EDIT
 
             h1
                 a(href="/post/#{post.slug}") #{post.title}
