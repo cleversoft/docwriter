@@ -47,6 +47,7 @@ block content
                             a.list-group-item(href="/post/#{post.slug}")
                                 span #{post.title}
                                 span.pull-right
+                                    img(src="#{gravatar(post.updated.email || post.created.email)}", style="width: 30px; height: 30px; border-radius: 15px; margin: 0 10px;", title="#{post.updated.username || post.created.username}")
                                     | #{moment(post.updated.date || post.created.date).format('YYYY-MM-DD HH:mm')}
 
                 // Pagination
