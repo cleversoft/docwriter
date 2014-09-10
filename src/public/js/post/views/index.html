@@ -56,6 +56,7 @@
                 <button type="button" class="btn btn-danger" ng-click="confirm(post)">Remove</button>
                 <a href="/admin/post/edit/{{ post._id }}" class="btn btn-default">Edit</a>
                 <button type="button" class="btn btn-default" ng-click="duplicate(post)">Duplicate</button>
+                <a href="/post/{{ post.slug }}" target="_blank" class="btn btn-default" ng-disabled="post.status !== 'activated'">View</a>
             </td>
         </tr>
     </tbody>
