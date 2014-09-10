@@ -128,6 +128,8 @@ Index the collections by the commands:
 > db.category.ensureIndex({ position: 1 });
 > db.category.ensureIndex({ slug: 1 });
 > db.post.ensureIndex({ slug: 1 });
+> db.post.ensureIndex({ 'created.date': 1 });
+> db.post.ensureIndex({ 'updated.date': 1 });
 > db.user.ensureIndex({ email: 1 });
 > db.user.ensureIndex({ username: 1 });
 ```
