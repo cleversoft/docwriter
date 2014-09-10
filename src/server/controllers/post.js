@@ -36,7 +36,7 @@ exports.category = function(req, res) {
                     Post.count(criteria, function(err, total) {
                         Post
                             .find(criteria)
-                            .sort({ created_date: -1 })
+                            .sort({ 'updated.date': -1 })
                             .skip((page - 1) * perPage)
                             .limit(perPage)
                             .exec(function(err, posts) {
@@ -135,7 +135,7 @@ exports.search = function(req, res) {
         Post.count(criteria, function(err, total) {
             Post
                 .find(criteria)
-                .sort({ created_date: -1 })
+                .sort({ 'updated.date': -1 })
                 .skip((page - 1) * perPage)
                 .limit(perPage)
                 .exec(function(err, posts) {

@@ -11,7 +11,7 @@ exports.index = function(req, res) {
         .exec(function(err, categories) {
             Post
                 .find({ status: 'activated' })
-                .sort({ created_date: -1 })
+                .sort({ 'updated.date': -1 })
                 .limit(10)
                 .exec(function(err, posts) {
                     res.render('partial/posts', {
