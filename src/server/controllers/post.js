@@ -357,6 +357,25 @@ exports.get = function(req, res) {
 };
 
 /**
+ * Push post to trash
+ */
+exports.pushToTrash = function(req, res) {
+    var id = req.param('id');
+    Post
+        .findOne({ _id: id })
+        .exec(function(err, post) {
+            if (err || !post) {
+                return res.json({ msg: 'error' });
+            }
+
+            post.status = 'trash';
+            post.save(function(err) {
+                return res.json({ msg: err || 'ok' });
+            });
+        });
+};
+
+/**
  * List posts
  */
 exports.list = function(req, res) {
@@ -405,7 +424,7 @@ exports.list = function(req, res) {
  * Remove post
  */
 exports.remove = function(req, res) {
-    var id = req.body.id;
+    var id = req.param('id');
     Post
         .findOne({ _id: id })
         .exec(function(err, post) {

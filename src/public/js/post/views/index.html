@@ -15,11 +15,12 @@
 
         <div class="col-md-3 text-right">
             <div class="btn-group">
-                <button type="button" class="btn btn-default" ng-class="{ 'active': !criteria.status }" ng-click="filter()">All</button>
-                <button type="button" class="btn btn-default" ng-class="{ 'active': criteria.status === 'activated' }" ng-click="filter('activated')">Published</button>
-                <button type="button" class="btn btn-default" ng-class="{ 'active': criteria.status === 'deactivated' }" ng-click="filter('deactivated')">Not publish yet</button>
-                <button type="button" class="btn btn-default" ng-class="{ 'active': criteria.status === 'draft' }" ng-click="filter('draft')">Draft</button>
+                <button type="button" class="btn btn-default" ng-class="{ 'active': !criteria.status }" ng-click="filter()" title="All"><i class="fa fa-list"></i></button>
+                <button type="button" class="btn btn-default" ng-class="{ 'active': criteria.status === 'activated' }" ng-click="filter('activated')" title="Published"><i class="fa fa-check"></i></button>
+                <button type="button" class="btn btn-default" ng-class="{ 'active': criteria.status === 'deactivated' }" ng-click="filter('deactivated')" title="Not published yet"><i class="fa fa-ban"></i></button>
+                <button type="button" class="btn btn-default" ng-class="{ 'active': criteria.status === 'draft' }" ng-click="filter('draft')" title="Draft"><i class="fa fa-edit"></i></button>
             </div>
+            <button type="button" class="btn btn-default" ng-class="{ 'active': criteria.status === 'trash' }" ng-click="filter('trash')" title="Trash"><i class="fa fa-trash"></i></button>
         </div>
     </div>
 </div>
@@ -31,7 +32,8 @@
             <th>Updated</th>
             <th>Status</th>
             <th>PDF</th>
-            <th>Actions</th>
+            <th>Edit | Duplicate | View</th>
+            <th>Remove</th>
         </tr>
     </thead>
 
@@ -53,10 +55,15 @@
                 <export-pdf ng-model="post" class="dw-task-pdf"></export-pdf>
             </td>
             <td>
-                <button type="button" class="btn btn-danger" ng-click="confirm(post)">Remove</button>
-                <a ng-href="/admin/post/edit/{{ post._id }}" class="btn btn-default">Edit</a>
-                <button type="button" class="btn btn-default" ng-click="duplicate(post)">Duplicate</button>
-                <a ng-href="/post/{{ post.slug }}" target="_blank" class="btn btn-default" ng-disabled="post.status !== 'activated'">View</a>
+                <span class="btn-group">
+                    <a ng-href="/admin/post/edit/{{ post._id }}" class="btn btn-default" title="Edit"><i class="fa fa-edit"></i></a>
+                    <button type="button" class="btn btn-default" ng-click="duplicate(post)" title="Duplicate"><i class="fa fa-copy"></i></button>
+                    <a ng-href="/post/{{ post.slug }}" target="_blank" class="btn btn-default" ng-disabled="post.status !== 'activated'" title="View"><i class="fa fa-eye"></i></a>
+                </span>
+            </td>
+            <td>
+                <button type="button" class="btn btn-warning" ng-click="pushToTrash(post)" ng-show="post.status !== 'trash' && criteria.status !== 'trash'">Remove</button>
+                <button type="button" class="btn btn-danger" ng-click="remove(post)" ng-show="post.status === 'trash' || criteria.status === 'trash'">Remove forever</button>
             </td>
         </tr>
     </tbody>

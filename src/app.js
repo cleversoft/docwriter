@@ -98,9 +98,10 @@ app.route('/post/activate/:id').post(middleware.auth.requireAuth,  controller.po
 app.route('/post/add').post(middleware.auth.requireAuth,           controller.post.add);
 app.route('/post/duplicate/:id').post(middleware.auth.requireAuth, controller.post.duplicate);
 app.route('/post/get/:id').get(middleware.auth.requireAuth,        controller.post.get);
-app.route('/post/remove').post(middleware.auth.requireAuth,        controller.post.remove);
+app.route('/post/remove/:id').post(middleware.auth.requireAuth,    controller.post.remove);
 app.route('/post/save/:id').post(middleware.auth.requireAuth,      controller.post.save);
 app.route('/post/slug').post(middleware.auth.requireAuth,          controller.post.slug);
+app.route('/post/trash/:id').post(middleware.auth.requireAuth,     controller.post.pushToTrash);
 
 app.route('/user').post(middleware.auth.requireAuth,               controller.user.list);
 app.route('/user/add').post(middleware.auth.requireAuth,           controller.user.add);

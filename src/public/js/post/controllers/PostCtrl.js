@@ -70,7 +70,29 @@ angular
                 });
         };
 
-        $scope.confirm = function(post) {
+        $scope.publish = function(post) {
+            PostService
+                .activate(post._id)
+                .success(function(data) {
+                    if (data.msg === 'ok') {
+                        post.status = (post.status === 'activated') ? 'deactivated' : 'activated';
+                        growlNotifications.add('<strong>' + post.title + '</strong> is ' + (post.status === 'deactivated' ? 'unpublished' : 'published'), 'success');
+                    }
+                });
+        };
+
+        $scope.pushToTrash = function(post) {
+            PostService
+                .pushToTrash(post._id)
+                .success(function(data) {
+                    if (data.msg === 'ok') {
+                        post.status = 'trash';
+                        growlNotifications.add('<strong>' + post.title + '</strong> is pushed to Trash', 'success');
+                    }
+                });
+        };
+
+        $scope.remove = function(post) {
             $scope.selected = post;
 
             // Show the modal
@@ -110,17 +132,6 @@ angular
                             }
                         });
                 }, function() {
-                });
-        };
-
-        $scope.publish = function(post) {
-            PostService
-                .activate(post._id)
-                .success(function(data) {
-                    if (data.msg === 'ok') {
-                        post.status = (post.status === 'activated') ? 'deactivated' : 'activated';
-                        growlNotifications.add('<strong>' + post.title + '</strong> is ' + (post.status === 'deactivated' ? 'unpublished' : 'published'), 'success');
-                    }
                 });
         };
     }]);

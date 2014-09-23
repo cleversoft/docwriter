@@ -788,7 +788,29 @@ angular
                 });
         };
 
-        $scope.confirm = function(post) {
+        $scope.publish = function(post) {
+            PostService
+                .activate(post._id)
+                .success(function(data) {
+                    if (data.msg === 'ok') {
+                        post.status = (post.status === 'activated') ? 'deactivated' : 'activated';
+                        growlNotifications.add('<strong>' + post.title + '</strong> is ' + (post.status === 'deactivated' ? 'unpublished' : 'published'), 'success');
+                    }
+                });
+        };
+
+        $scope.pushToTrash = function(post) {
+            PostService
+                .pushToTrash(post._id)
+                .success(function(data) {
+                    if (data.msg === 'ok') {
+                        post.status = 'trash';
+                        growlNotifications.add('<strong>' + post.title + '</strong> is pushed to Trash', 'success');
+                    }
+                });
+        };
+
+        $scope.remove = function(post) {
             $scope.selected = post;
 
             // Show the modal
@@ -828,17 +850,6 @@ angular
                             }
                         });
                 }, function() {
-                });
-        };
-
-        $scope.publish = function(post) {
-            PostService
-                .activate(post._id)
-                .success(function(data) {
-                    if (data.msg === 'ok') {
-                        post.status = (post.status === 'activated') ? 'deactivated' : 'activated';
-                        growlNotifications.add('<strong>' + post.title + '</strong> is ' + (post.status === 'deactivated' ? 'unpublished' : 'published'), 'success');
-                    }
                 });
         };
     }]);
@@ -968,11 +979,14 @@ angular
                 return $http.post(API.baseUrl + '/post', criteria);
             },
 
+            pushToTrash: function(id) {
+                $http = $http || $injector.get('$http');
+                return $http.post(API.baseUrl + '/post/trash/' + id);
+            },
+
             remove: function(id) {
                 $http = $http || $injector.get('$http');
-                return $http.post(API.baseUrl + '/post/remove', {
-                    id: id
-                });
+                return $http.post(API.baseUrl + '/post/remove/' + id);
             },
 
             save: function(post) {

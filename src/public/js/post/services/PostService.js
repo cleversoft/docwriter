@@ -38,11 +38,14 @@ angular
                 return $http.post(API.baseUrl + '/post', criteria);
             },
 
+            pushToTrash: function(id) {
+                $http = $http || $injector.get('$http');
+                return $http.post(API.baseUrl + '/post/trash/' + id);
+            },
+
             remove: function(id) {
                 $http = $http || $injector.get('$http');
-                return $http.post(API.baseUrl + '/post/remove', {
-                    id: id
-                });
+                return $http.post(API.baseUrl + '/post/remove/' + id);
             },
 
             save: function(post) {
