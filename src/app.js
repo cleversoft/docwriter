@@ -28,7 +28,7 @@ app.set('view engine', 'jade');
 app.use(compression());
 app.use(express.static(__dirname + '/public'));
 app.use('/bower_components',  express.static(__dirname + '/bower_components'));
-app.use(bodyParser());
+app.use(bodyParser({ limit: '5mb' }));
 //app.use(bodyParser.json());
 //app.use(bodyParser.urlencoded());
 app.use(session({
