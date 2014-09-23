@@ -6,6 +6,8 @@
         <button class="btn btn-default" ng-click="save('draft')">Save as draft</button>
     </span>
 
+    <a ng-href="/post/{{ post.slug }}" target="_blank" class="btn btn-default" ng-disabled="!post._id || post.status !== 'activated'">View</a>
+
     <export-pdf ng-model="post" class="dw-task-pdf"></export-pdf>
 </div>
 
