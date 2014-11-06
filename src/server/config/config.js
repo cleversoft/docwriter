@@ -9,7 +9,8 @@ module.exports = {
             secret: 'XrQ2Vsw2tESughz71l1B80NwqxA7z499',
             lifetime: 3600 * 1000 * 24           // 1 day
         },
-        db: 'mongodb://localhost/docwriter_dev',
+        //db: 'mongodb://localhost/docwriter_dev',
+        db: 'mongodb://localhost/docs_zootemplate',
         upload: {
             dir: '/Volumes/data/projects_workspace/docwriter/upload',
             url: '/upload',
